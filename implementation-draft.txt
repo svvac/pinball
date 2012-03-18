@@ -1,0 +1,234 @@
+      +-----------------------------------+ 
+      |    __                             |
+      |   / _  _  _  _   _ |_ . _ _|_ _   |
+      |   \__)(_||||(-  (_)|_)|(-(_|__)   |
+      |                       /           |
+      +-----------------------------------+
+
+
+
+
+                        +--------------------------------+
+                        |       aObject (abstract)       |
+                        +. . . . . . . . . . . . . . . . +
+                        |           oPoint  pPosition    |
+                        |           oShape  pmask        |
+                        |              int  pScore       |
+                        | oEventDispatcher  pDispatcher  |
+                        |                                |
+                        | void  onCollision(oSignal)     |
+                        |                                |
+                        | bool  isColliding(aObject)     |
+                        | void  handleCollision(aObject) |
+                        +---------------.----------------+
+                                       /_\
+                                        |
+                                        |
+                                        |
+                                        |
+                      =====:============+====================:==========================:==================:======================:=====
+                          /_\                               /_\                        /_\                /_\                    /_\
+                           |                                 |                          |                  |                      |
+                           |                                 |                          |                  |                      |
+                           |                                 |                          |                  |                      |
+             +-------------+--------------+     +------------+-------------+     +------+------+     +-----+-----+     +----------+---------+
+             | aBouncingObject (abstract) |     | aMovingObject (abstract) |     |   oTarget   |     | oDeathPit |     |      oSpinner      |
+             +. . . . . . . . . . . . . . +     +. . . . . . . . . . . . . +     +. . . . . . .|     +-----------+     +. . . . . . . . . . +
+             | float  pBounceFactor       |     | oVector  pSpeed          |     | bool pState |                       | float  pSpinFactor |
+             |                            |     |                          |     +-------------+                       +--------------------+
+             | bool  getTangent(oPoint)   |     | void  onMove(oSignal)    |            A
+             +-------------.--------------+     +-------------.------------+         (us:es)
+                          /_\                                /_\                        :
+                           |                                  |                  +------O------------------------+
+                           |                        +---------+---------+        |        oTargetAggregate       |
+                           |                        |       oBall       |        +. . . . . . . . . . . . . . . .+
+                           |                        +-------------------+        | [oTarget]  pTargets           |
+                           |                                                     |       int  pPow               |
+                           |                                                     |                               |
+                           |                                                     | void  onTargetToggle(oSignal) |
+                           |                                                     +-------------------------------+
+                           |
+                           |
+                           |
+                           |
+             =====:========+=================:===============:=======================:=====
+                 /_\                        /_\             /_\                     /_\
+                  |                          |               |                       |
+                  |                          |               |                       |
+    +-------------+---------------+     +----+----+     +----+----+     +------------+-------------+
+    |          oFlipper           |     | oBumper |     | oKicker |     |         oPlunger         |
+    +. . . . . . . . . . . . . . .+     +----.----+     +---------+     +. . . . . . . . . . . . . +
+    |   oPoint  pAxis             |         /_\                         |     int  pInfluenceZone  |
+    |      int  pAngle            |          |                          | oVector  pMaxKick        |
+    | [oShape]  pPositions        |          |                          |   float  pKickfactor     |
+    |    float  pBounceBase       |          |                          |  oTimer  pLastPull       |
+    |    float  pSpeedFactor      |     +----+----------+               |                          |
+    |   oTimer  pLastMove         |     | oTargetBumper |               | void  onPull(oSignal)    |
+    |                             |     +. . . . . . . .+               | void  onRelease(oSignal) |
+    | void  onToggleUp(oSignal)   |     | bool pState   |               |                          |
+    | void  onToggleDown(oSignal) |     +---------------+               | void  stretch()          |
+    | void  onToggle(oSignal)     |            A                        +--------------------------+
+    |                             |            :
+    | void  positionUp(int)       |         (us:es)
+    | void  positionDown(int)     |            :
+    +-----------------------------+     +------O------------------------------+
+                                        |       oTargetBumperAggregate        |
+                                        +. . . . . . . . . . . . . . . . . . .|
+                                        | [oTargetBumper]  pTargets           |
+                                        |             int  pPow               |
+                                        |                                     |
+                                        | void  onTargetBumperToggle(oSignal) |
+                                        +-------------------------------------+
+
+
+
+    * Events (i.e. on{event}() methods) are managed using the event handling system described
+      in the next section.
+      These methods MUST accept one sole argument, which MUST be an oSignal object. It will
+      include every data related to the event (e.g. collision coordinates for a collision, ...)
+    
+    * Every object on the stage extends oObject, which is the fundamental component in our
+      physical environment.
+    
+    * Aggregates (oTargetAggregate and oTargetBumperAggregate) DO NOT extend oObject because
+      they don't have any physical aspect. They just link objects together.
+
+
+
+
+     +-----------------------+      
+     |      __               |
+     |     |_    _ _ |_ _    |
+     |     |__\/(-| )|__)    |
+     |                       |
+     +-----------------------+
+    
+    +--------------------+----------------------------------------------+----------------------------------+
+    | Event name         | Description                                  | Related data                     |
+    +--------------------+----------------------------------------------+-------------+--------------------+
+    | score              | Triggers a score increase                    | points      | score increase     |
+    |                    |                                              | sender      | (tObject)          |
+    |                    |                                              |             |                    |
+    | collision          | Triggered when two objects collide           | target      | hit object         |
+    |                    |                                              | position    | coordinates        |
+    |                    |                                              | sender      | (aMovingObject)    |
+    |                    |                                              |             |                    |
+    | death              | Game Over (typically, the ball hit a Death   | sender      | (oDeathPit)        |
+    |                    | Pit)                                         |             |                    |
+    |                    |                                              |             |                    |
+    | target_toogle      | A target changed state                       | sender      | (oTarget)          |
+    |                    |                                              | state       | on/off             |
+    |                    |                                              |             |                    |
+    | target_bumper_togg | A target bumper changed state                | sender      | (otargetBumper)    |
+    | le                 |                                              | state       | on/off             |
+    |                    |                                              |             |                    |
+    | plunger_pull       | Plunger is pulled                            | sender      | (tObject)          |
+    |                    |                                              |             |                    |
+    | plunger_release    | Plunger is released                          | sender      | (tObject)          |
+    |                    |                                              |             |                    |
+    | flipper_up         | Flipper toggling upwards                     | sender      | (tObject)          |
+    |                    |                                              |             |                    |
+    | flipper_down       | Flipper toggling downwards                   | sender      | (tObject)          |
+    |                    |                                              |             |                    |
+    | flipper_toggle     | Flipper toggling                             | sender      | (tObject)          |
+    |                    |                                              | direction   | up/down            |
+    |                    |                                              |             |                    |
+    |                    |                                              |             |                    |
+    +--------------------+----------------------------------------------+-------------+--------------------+
+
+
+
+
+
+     +----------------------------------------+
+     |     __                                 |
+     |    |_    _ _ |_   _  _  _  _  _  _ _   |
+     |    |__\/(-| )|_  |||(_|| )(_|(_)(-|    |
+     |                              _/        |
+     +----------------------------------------+
+
+
+
+                                                            +-------------------------+
+                                                            | tStringHash  (provided) |
+                                                            +------------.------------+
+                                                                A       /_\
+       +--------------------------------+                       :        |
+       |        oEventDispatcher        |                       :        |
+       +. . . . . . . . . . . . . . . . +                       :        |
+       | tStringHash  pKnownSignals     O·······(uses)··········`        |
+       |                                |                                |
+       | void  register(oSignal)        |                    +-----------+----------+
+       | void  bind(oSignal, @callback) O·······(uses)······>|        oSignal       |
+       | void  emit(oSignal)            |                    +. . . . . . . . . . . +
+       +--------------------------------+                    |  string  pSignalName |
+                                                             | tObject  pSender     |
+                                                             +----------------------+
+
+    
+    * tStringHash is an implementation of Java's Collection in Pascal, provided by fentucci
+        http://www.benya.com/code/collections/stringhash.html
+      It allows to encapsulate objects (extending tObject) identified by a string. This is
+      similar to Python's dict.
+
+    * Signal registration: Just make the event dispatcher aware that we'll use a signal
+      named pSignalName. Sender object is irrelevant, as is every other information
+      encapsulated in the signal.
+        
+        ed := oEventDispatcher.create()
+        ed.register(oSignal.create('signal_name', ed))   // One can use the event dispatcher itself as sender.
+      
+    * A callback is a variable containing a function:
+        
+        procedure sayHello(name: string);
+        begin writeln('Hello ' + name); end;
+        // Now suppose the variable foo contains a callback to sayHello
+        foo('John');   // Will print 'Hello John'
+      
+      A word on callbacks on fpc-pascal mailing list:
+        http://lists.freepascal.org/lists/fpc-pascal/2002-December/004322.html
+
+    * When a oSignal is emitted (using oEventDispatcher.emit())
+        1) Check its ID (pSignalName) against registred signals.
+        2) Call every callback function bound to it, using the oSignal object as its 
+           sole argument, containing all data related.
+      
+
+
+
+
+
+
+     +------------------------+
+     |                        |
+     |    |   _ _  _ _  _|    |
+     |    |__(-(_)(-| )(_|    |
+     |         _/             |
+     +------------------------+
+
+          .                         A
+         /_\                        :
+          |                         :
+          |                     (leg:end)
+          |                         :
+          +                         O
+          
+        ARROW                  DOTTED ARROW
+        ------                 ------------
+    inherits from              relationship
+
+
+
+
+   +-------------------------------------------------------+
+   |               {class name}  ({comment})               |                    // HEADER
+   +. . . . . . . . . . . . . . . . . . . . . . . . . . . .+
+   | {type}  {name}                                        |                    // OBJECT PROPERTIES
+   | {type}  {name}                                        |                    //   note: [{type}] means ``list of {type} objects''
+   |                                                       |
+   | {return type}  on{event name}({arguments types list}) |                    // EVENTS
+   |                                                       |
+   | {return type}  {method name}({arguments types list})  |                    // METHODS
+   +-------------------------------------------------------+
+   
+   
