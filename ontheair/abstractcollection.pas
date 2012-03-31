@@ -2,11 +2,11 @@ unit AbstractCollection;
 
 interface
 
-const COLLECTION_MAX_SIZE = 512;
-
 uses classes, sysutils;
 
-type AbstractCollection = class(TObject)
+const COLLECTION_MAX_SIZE = 512;
+
+type TAbstractCollection = class(TObject)
     protected 
         _keys   = array [0 .. COLLECTION_MAX_SIZE - 1] of string;
         {_values = array [0 .. COLLECTION_MAX_SIZE - 1] of tObject;}

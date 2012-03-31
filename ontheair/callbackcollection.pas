@@ -27,11 +27,15 @@ end;
 
 implementation
 
+// create(void)
+// Creates a collection to store callback methods
 constructor oCallbackCollection.create();
 begin
 	n := 0;
 end;
 
+// push(c: tSignalCallback)
+// Adds the callback `c' to the collection
 procedure oCallbackCollection.push(c: tSignalCallback);
 begin
     if (n + 1) >= MAXBOUND then
@@ -41,6 +45,8 @@ begin
     n := n + 1;
 end;
 
+// tSignalCallback(i: integer)
+// returns the callback identified by index `i'
 function oCallbackCollection.get(i: integer) : tSignalCallback;
 begin
     if i > n then raise Exception.create('No object indexed ' + intToStr(i));
@@ -48,6 +54,8 @@ begin
     get := o[i];
 end;
 
+// integer count(void)
+// Returns the object count for the collection
 function oCallbackCollection.count(): integer;
 begin
     count := n;
