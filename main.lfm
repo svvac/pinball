@@ -1,0 +1,29 @@
+object Form1: TForm1
+  Left = 532
+  Height = 632
+  Top = 232
+  Width = 1177
+  Caption = 'Form1'
+  ClientHeight = 632
+  ClientWidth = 1177
+  OnCreate = FormCreate
+  LCLVersion = '0.9.30.4'
+  object Memo1: TMemo
+    Left = 0
+    Height = 632
+    Top = 0
+    Width = 1176
+    Color = clBlack
+    Font.Color = clMedGray
+    Font.Height = -8
+    Font.Name = 'Monospace'
+    Lines.Strings = (
+      'Memo1'
+    )
+    ParentFont = False
+    ReadOnly = True
+    ScrollBars = ssVertical
+    TabOrder = 0
+    WordWrap = False
+  end
+end
