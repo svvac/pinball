@@ -21,6 +21,7 @@ Type oShape = Class
         destructor destroy; override;
 
         Function getPoint(p: oPoint) : boolean;
+        function getPoint(x, y: integer);
         function getTangentAngleAt(p: oPoint) : real;
         function isOnEdge(p: oPoint) : boolean;
 
@@ -52,11 +53,18 @@ end;
 // boolean getPoint(p: oPoint)
 // returns true if the point `p' is solid on the shape, false otherwise.
 function oShape.getPoint(p: oPoint) : boolean;
+begin
+    getPoint := getPoint(p.getX(), p.getY());
+end;
+
+// boolean getPoint(x, y: integer)
+// returns true if the point at (`x', `y') is solid on the shape, false otherwise.
+function oShape.getPoint(x, y: integer) : boolean;
 var c: Tcolor;
 begin
     getPoint := false; // We return false if we're outside of the box defined by the shape
-    if  (p.getX() >= 0) and (p.getX() <= getWidth() - 1)
-    and (p.getY() >= 0) and (p.getY() <= getHeight() - 1)
+    if  (x >= 0) and (x <= getWidth() - 1)
+    and (y >= 0) and (y <= getHeight() - 1)
         then getPoint := (_bm.Canvas.Pixels[p.getX(), p.getY()] = SHAPE_COLOR_FULL);  // A point is solid if the associated pixel is white
 end;
 
@@ -86,7 +94,7 @@ begin
         s := 0;
         for i := p.getX() - 1 to p.getX() + 1 do
             for j := p.getY() - 1 to p.getY() + 1 do
-                if getPoint(oPoint.create(i, j)) then s += 1;
+                if getPoint(i, j) then s += 1;
         
         // The best way I found is to count the solid points in the direct neighbourhood of the point
         if (s > 2) and (s < 8) then isOnEdge := true
