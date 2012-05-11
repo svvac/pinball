@@ -15,6 +15,7 @@ Type oPoint = class
     public
 
     constructor create(aPx, aPy : integer);
+    constructor clone(p: oPoint);
 
     function distanceTo(p:oPoint) : real;
 
@@ -35,22 +36,27 @@ Type oPoint = class
 implementation
 
 
-constructor 
-
 // create(x, y: integer)
 // creates a point of coordinates (x, y)
-oPoint.create(aPx, aPy: integer);
+constructor oPoint.create(aPx, aPy: integer);
 begin
-    inherited create;
-    _x:=aPx;
-    _y:=aPy;
+    _x := aPx;
+    _y := aPy;
+end;
+
+// clone(p: oPoint)
+// creates a new point by cloning p
+constructor oPoint.clone(p: oPoint);
+begin
+    _x := p.getX();
+    _y := p.getY();
 end;
 
 // real distanceTo(p: oPoint)
 // computes the distance to the point `p'
 function oPoint.distanceTo(p:oPoint):real;
 begin
-    distanceTo:=sqrt((p.getX-_x)*(p.getX-_x)+(p.getY-_y)*(p.getY-_y));
+    distanceTo := sqrt((p.getX - _x) * (p.getX - _x) + (p.getY - _y) * (p.getY - _y));
 end;
 
 // boolean sameAs(p: oPoint)

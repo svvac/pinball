@@ -4,11 +4,15 @@ unit main;
 
 interface
 
-uses Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls, ushape, upoint, math;
+uses Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
+  ExtCtrls, ushape, upoint, math;
 
 type
 
+ { TForm1 }
+
  TForm1 = class(TForm)
+   Image1: TImage;
     Memo1: TMemo;
     procedure FormCreate(Sender: TObject);
     

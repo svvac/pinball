@@ -12,10 +12,10 @@ oSignal = class //(tStringHash)
     //protected pSignalName: string;
     protected _sender: TObject;
     public
-        constructor create(sender: tObject);
+        constructor create(sender: tObject); virtual;
 
-        function getName() : string;
-        function getSender() : tObject;
+        function getName() : string; virtual;
+        function getSender() : tObject; virtual;
 end;
 
 implementation

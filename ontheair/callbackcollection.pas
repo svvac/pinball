@@ -31,7 +31,7 @@ implementation
 // Creates a collection to store callback methods
 constructor oCallbackCollection.create();
 begin
-	n := 0;
+    n := 0;
 end;
 
 // push(c: tSignalCallback)

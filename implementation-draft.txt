@@ -36,7 +36,7 @@
              +. . . . . . . . . . . . . . +     +. . . . . . . . . . . . . +     +. . . . . . .|     +-----------+     +. . . . . . . . . . +
              | float  pBounceFactor       |     | oVector  pSpeed          |     | bool pState |                       | float  pSpinFactor |
              |                            |     |                          |     +-------------+                       +--------------------+
-             | bool  getTangent(oPoint)   |     | void  onMove(oSignal)    |            A
+             |                            |     | void  onMove(oSignal)    |            A
              +-------------.--------------+     +-------------.------------+         (us:es)
                           /_\                                /_\                        :
                            |                                  |                  +------O------------------------+

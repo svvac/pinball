@@ -4,7 +4,7 @@ unit ushape;
 
 interface
 
-uses Classes, SysUtils, graphics, upoint, utils, math;
+uses Classes, SysUtils, Graphics, upoint, utils, math;
 
 const TAN_SAMPLE_HALF_WIDTH = 2;
       PATHFIND_DEPTH = 2;
@@ -20,8 +20,8 @@ Type oShape = Class
         constructor create(path:string);
         destructor destroy; override;
 
-        Function getPoint(p: oPoint) : boolean;
-        function getPoint(x, y: integer);
+        function getPoint(p: oPoint) : boolean;
+        function getPoint(x, y: integer) : boolean;
         function getTangentAngleAt(p: oPoint) : real;
         function isOnEdge(p: oPoint) : boolean;
 
@@ -65,7 +65,7 @@ begin
     getPoint := false; // We return false if we're outside of the box defined by the shape
     if  (x >= 0) and (x <= getWidth() - 1)
     and (y >= 0) and (y <= getHeight() - 1)
-        then getPoint := (_bm.Canvas.Pixels[p.getX(), p.getY()] = SHAPE_COLOR_FULL);  // A point is solid if the associated pixel is white
+        then getPoint := (_bm.Canvas.Pixels[x, y] = SHAPE_COLOR_FULL);  // A point is solid if the associated pixel is white
 end;
 
 // integer getWidth(void)
