@@ -4,7 +4,7 @@ unit uplayground;
 
 interface
 
-uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection;
+uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals;
 
 CONST NB_LIFES = 3;
 
@@ -14,6 +14,7 @@ type oPlayground = class
         _ball: aObject;
         _score: integer;
         _lifes: integer;
+        _dispatcher: oEventHandler;
 
         _objects: oObjectCollection;
 
@@ -35,6 +36,7 @@ implementation
 
 constructor oPlayground.create();
 begin
+    _dispatcher := oEventHandler.create()
 end;
 
 destructor oPlayground.destroy();
@@ -55,7 +57,11 @@ begin
 end;
 
 procedure oPlayground.redraw();
+var sig: RedrawSignal;
 begin
+    sig := RedrawSignal.create(self);
+    sig.bm := _world;
+    _dispatcher.emit(sig);
 end;
 
 procedure oPlayground.start();

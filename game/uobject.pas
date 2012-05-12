@@ -23,7 +23,9 @@ type aObject = class
         destructor destroy(); override;
 
         function isColliding(o: aObject) : boolean; virtual;
-        procedure onCollision(o: oSignal); virtual; abstract;
+
+        procedure onCollision(s: oSignal); virtual; abstract;
+        procedure onRedraw(s: oSignal); virtual;
 
         function collisionSignalFactory(sender: TObject; p: oPoint) : oSignal;
 
@@ -60,6 +62,12 @@ begin
     s := self.collisionSignalFactory(_dispatcher, position);
     _dispatcher.register(s);
     _dispatcher.bind(s, @self.onCollision);
+    s.free();
+
+    // Binds onRedraw to the Redraw signal. We assume it is already registered.
+    s := redrawSignal.create(_dispatcher);
+    _dispatcher.bind(s, @self.onRedraw);
+    s.free();
 end;
 
 // destroy()
@@ -83,6 +91,15 @@ end;
 procedure aObject.draw(cv: TCanvas);
 begin
     cv.draw(self.getPosition().getX(), self.getPosition().getY(), self.getFace());
+end;
+
+// onRedraw(s: oSignal)
+// Redraws the object on the canvas
+procedure aObject.onRedraw(s: oSignal);
+var sig: RedrawSignal;
+begin
+    sig := s as RedrawSignal;
+    self.draw(sig.bm.canvas);
 end;
 
 // isColliding(o: aObject) : boolean

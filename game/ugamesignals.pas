@@ -4,7 +4,7 @@ unit ugamesignals;
 
 interface
 
-uses Classes, signal, upoint;
+uses Classes, Graphics, signal, upoint;
 
 type
 
@@ -24,6 +24,10 @@ ScoreChangeSignal = class(oSignal)
 end;
 
 DeathSignal = class(oSignal);
+
+RedrawSignal = class(oSignal)
+    bm: TBitmap;
+end;
 
 
 
