@@ -22,7 +22,8 @@ type aObject = class
         constructor create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler);
         destructor destroy(); override;
 
-        function isColliding(o: aObject) : boolean; virtual;
+        function isColliding(o: aObject; var p: oPoint) : boolean; virtual;
+        function isColliding(o: aObject) : boolean;
 
         procedure onCollision(s: oSignal); virtual; abstract;
         procedure onRedraw(s: oSignal); virtual;
@@ -102,10 +103,11 @@ begin
     self.draw(sig.bm.canvas);
 end;
 
-// isColliding(o: aObject) : boolean
+// isColliding(o: aObject, var p: oPoint) : boolean
 // Returns true if o and self phisical matrixes overlap anywhere, given their respective
 // positions in space (probably used in oPlayground)
-function aObject.isColliding(o: aObject) : boolean;
+// Put the coordinates of collision in `p'
+function aObject.isColliding(o: aObject; var p: oPoint) : boolean;
 var ich, dich: oShape;
     dx, dy: integer;
     i, j: integer;
@@ -143,7 +145,22 @@ begin
             isColliding := (ich.getPoint(i, j) = dich.getPoint(i, j));  // Check for collision at (i, j)
         end;
     end;
+
+    // For now, we assume the collision is at the first point passing the above test
+    // Not sure if this is safe though, but it's not completely wrong in theory, and it sets the
+    // interface.
+    p.setXY(i, j);
     
+end;
+
+// isColliding(o: aObject) : boolean
+// Same as above, but drops tracking of collision point
+function aObject.isColliding(o: aObject) : boolean;
+var p: oPoint;
+begin
+    p := oPoint.create(0, 0);
+    isColliding := isColliding(o, p);
+    p.free();
 end;
 
 
