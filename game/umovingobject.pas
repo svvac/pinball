@@ -4,7 +4,7 @@ unit umovingobject;
 
 interface
 
-uses Classes, eventhandler, signal, uobject, uvector, upoint, ushape, ugamesignals;
+uses Classes, Graphics, eventhandler, signal, uobject, uvector, upoint, ushape, ugamesignals;
 
 
 type aMovingObject = class(aObject)
@@ -12,7 +12,7 @@ type aMovingObject = class(aObject)
         _speed: oVector;
 
     public
-        constructor create(position: oPoint; mask: oShape; dispatcher: oEventHandler); virtual;
+        constructor create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler); virtual;
 
         procedure onCollision(s: oSignal); override;
 
@@ -22,10 +22,10 @@ end;
 
 implementation
 
-constructor aMovingObject.create(position: oPoint; mask:oShape; dispatcher:oEventHandler);
+constructor aMovingObject.create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler);
 begin
     _speed := oVector.createCartesian(0, 0);
-    inherited create(position, mask, dispatcher);
+    inherited create(position, mask, face, dispatcher);
 end;
 
 

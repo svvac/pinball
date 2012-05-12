@@ -4,14 +4,14 @@ unit uobject;
 
 interface
 
-uses Classes, ExtCtrls, SysUtils, Graphics, eventhandler, upoint, ushape, signal, ugamesignals;
+uses Classes, SysUtils, Graphics, eventhandler, upoint, ushape, signal, ugamesignals;
 
 
 type aObject = class
     protected
         _position:      oPoint;
         _mask:          oShape;
-        _face:          TImage;
+        _face:          TBitmap;
         _score:         integer;
         _dispatcher:    oEventHandler;
         _id:            string;
@@ -19,7 +19,7 @@ type aObject = class
         function getDispatcher() : oEventHandler;
 
     public
-        constructor create(position: oPoint; mask: oShape; dispatcher: oEventHandler);
+        constructor create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler);
         destructor destroy(); override;
 
         function isColliding(o: aObject) : boolean; virtual;
@@ -31,7 +31,7 @@ type aObject = class
 
         function getMask() : oShape;
         function getPosition() : oPoint;
-        function getFace() : TImage;
+        function getFace() : TBitmap;
 end;
 
 implementation
@@ -42,13 +42,14 @@ var __object_count: integer = 0;
 
 // create(position: oPoint, mask: oShape, dispatcher: oEventHandler)
 // Creates an abstract object and sets position/mask/dispatcher accordingly
-constructor aObject.create(position: oPoint; mask: oShape; dispatcher: oEventHandler);
+constructor aObject.create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler);
 var s: oSignal;
 begin
     _position := position;
     _mask := _mask;
     _score := 0;
     _dispatcher := dispatcher;
+    _face := face;
 
     // Generate object ID, used to create a separate collision signal per object instance
     _id := self.ClassName + IntToStr(__object_count);
@@ -81,8 +82,7 @@ end;
 // Draws the object on cv
 procedure aObject.draw(cv: TCanvas);
 begin
-    // TODO: draw expcts a TGraphic and not a TImage -_-
-    //cv.draw(self.getPosition().getX(), self.getPosition().getY(), self.getFace());
+    cv.draw(self.getPosition().getX(), self.getPosition().getY(), self.getFace());
 end;
 
 // isColliding(o: aObject) : boolean
@@ -145,9 +145,9 @@ begin
     getPosition := oPoint.clone(_position);
 end;
 
-// getFace() : TImage
+// getFace() : TBitmap
 // Accessor for face
-function aObject.getFace() : TImage;
+function aObject.getFace() : TBitmap;
 begin
     getFace := _face;
 end;
