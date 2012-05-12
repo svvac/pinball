@@ -3,4 +3,4 @@
 *.bak
 /lib
 /pinball
-/pinball.res
+/*.res

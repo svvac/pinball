@@ -7,9 +7,10 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, main, ubouncingobject, ugamesignals, umovingobject, uobject, upoint,
-  ushape, utils, objectcollection, uvector, callbackcollection, eventhandler,
-  signal, comparable, hashtable, integerhash, stringhash;
+  Forms, main, ubouncingobject, ugamesignals, umovingobject, uobject,
+  uplayground, upoint, ushape, utils, objectcollection, uvector,
+  callbackcollection, eventhandler, signal, comparable, hashtable, integerhash,
+  stringhash;
 
 {$R *.res}
 
