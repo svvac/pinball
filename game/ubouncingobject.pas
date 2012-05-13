@@ -4,7 +4,7 @@ unit ubouncingobject;
 
 interface
 
-uses Classes, signal, uobject, umovingobject, ugamesignals;
+uses Classes, signal, uobject, uvector, umovingobject, ugamesignals;
 
 
 type aBouncingObject = class(aObject)
@@ -23,9 +23,20 @@ implementation
 procedure aBouncingObject.onCollision(s: oSignal);
 var sig: CollisionSignal;
     o: aMovingObject;
+    v: oVector;
+    alpha: real;
 begin
     sig := s as CollisionSignal;
-    
+    o := sig.getSender() as aMovingObject;
+    v := oVector.clone(o.getSpeed());
+
+    alpha := o.getMask().getTangentAngleAt(sig.position);
+
+    o.getSpeed().setModule(v.getModule() * getBounceFactor());
+    o.getSpeed().setArgument(- v.getArgument() - 2 * alpha);
+
+    v.free();
+
 end;
 
 
