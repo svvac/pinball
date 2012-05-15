@@ -4,7 +4,7 @@ unit ubouncingobject;
 
 interface
 
-uses Classes, signal, uobject, uvector, umovingobject, ugamesignals;
+uses Classes, Graphics, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals;
 
 
 type aBouncingObject = class(aObject)
@@ -12,12 +12,19 @@ type aBouncingObject = class(aObject)
         _bounce_factor: real;
 
     public
+        constructor create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler; factor: real);
         function getBounceFactor() : real; virtual;
         procedure onCollision(s: oSignal); override;
 
 end;
 
 implementation
+
+constructor aBouncingObject.create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler; factor: real);
+begin
+    inherited create(position, mask, face, dispatcher);
+    _bounce_factor := factor;
+end;
 
 
 procedure aBouncingObject.onCollision(s: oSignal);
