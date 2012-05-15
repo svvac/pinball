@@ -57,7 +57,7 @@ begin
     ev := oVector.createPolar(1, _speed.getArgument());
     // Move the object accordingly
     _position.apply(ev);
-    p.create(0, 0);
+    p := oPoint.create(0, 0);
 
     // Check for collision with objects in the zone, and triggers collision signals if needed
     for i := 0 to zone.count() - 1 do
