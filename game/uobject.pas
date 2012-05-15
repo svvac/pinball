@@ -49,7 +49,7 @@ constructor aObject.create(position: oPoint; mask: oShape; face: TBitmap; dispat
 var s: oSignal;
 begin
     _position := position;
-    _mask := _mask;
+    _mask := mask;
     _score := 0;
     _dispatcher := dispatcher;
     _face := face;
