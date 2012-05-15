@@ -18,7 +18,7 @@ type aMovingObject = class(aObject)
 
         procedure onCollision(s: oSignal); override;
 
-        procedure elementaryMove(zone: oPlayground); virtual;
+        procedure elementaryMove(zone: oObjectCollection); virtual;
 
         procedure onTick(s: oSignal); virtual;
 
