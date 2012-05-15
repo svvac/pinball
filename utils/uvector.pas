@@ -8,7 +8,7 @@ uses Classes, math;
 
 type oVector=class
     protected
-        _x, _y: integer;
+        _x, _y: real;
         _radius, _angle: real;
 
         procedure updatePolar();
@@ -28,6 +28,8 @@ type oVector=class
 
         function getX() : integer;
         function getY() : integer;
+        function getRX() : real;
+        function getRY() : real;
         function getModule() : real;
         function getArgument() : real;
 end;
@@ -108,20 +110,34 @@ end;
 procedure  ovector.updateCartesian();
 begin
     // Boring math stuff. See OMSI or shit
-    _x := round(_radius * cos(_angle));
-    _y := round(_radius * sin(_angle));
+    _x := _radius * cos(_angle);
+    _y := _radius * sin(_angle);
 end;
 
 // getX() : integer
 // returns X cartesian coordinate
 function ovector.GetX() : integer;
 begin
-    getX := _x;
+    getX := round(_x);
 end;
 
 // getY() : integer
 // returns Y cartesian coordinate
 function ovector.getY() : integer ;
+begin
+    getY := round(_y);
+end;
+
+// getRX() : integer
+// returns X cartesian real coordinate
+function ovector.GetRX() : real;
+begin
+    getX := _x;
+end;
+
+// getRY() : integer
+// returns Y cartesian real coordinate
+function ovector.getRY() : real ;
 begin
     getY := _y;
 end;

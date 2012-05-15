@@ -5,7 +5,7 @@ unit upoint;
 interface
 
 uses
-  Classes, SysUtils; 
+  Classes, SysUtils, uvector; 
 
 Type oPoint = class
 
@@ -25,6 +25,8 @@ Type oPoint = class
     procedure setX(aPx: integer);
     procedure setY(aPy: integer);
     procedure setXY(aPx, aPy: integer);
+
+    procedure apply(v: oVector);
     
     function sameAs(p: oPoint) : boolean;
     
@@ -50,6 +52,14 @@ constructor oPoint.clone(p: oPoint);
 begin
     _x := p.getX();
     _y := p.getY();
+end;
+
+// apply(v: oVector)
+// Moves the point according to the vector `v'
+function oPoint.apply(v: oVector);
+begin
+    _x += v.getRX();
+    _y += v.getRY();
 end;
 
 // real distanceTo(p: oPoint)
