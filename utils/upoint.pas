@@ -10,7 +10,7 @@ uses
 Type oPoint = class
 
     protected
-        _x, _y: integer;
+        _x, _y: real;
 
     public
 
@@ -56,7 +56,7 @@ end;
 
 // apply(v: oVector)
 // Moves the point according to the vector `v'
-function oPoint.apply(v: oVector);
+procedure oPoint.apply(v: oVector);
 begin
     _x += v.getRX();
     _y += v.getRY();
@@ -80,14 +80,14 @@ end;
 // returns the X coordinate
 function oPoint.getX() : integer;
 begin
-    getX := _x;
+    getX := round(_x);
 end;
 
 // integer getY(void)
 // returns the Y coordinate
 function oPoint.getY() : integer;
 begin
-    getY := _y;
+    getY := round(_y);
 end;
 
 // setX(x: integer)
