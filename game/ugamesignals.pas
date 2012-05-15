@@ -18,16 +18,22 @@ CollisionSignal = class(oSignal)
         function getName() : string; override;
 end;
 
+// Signal triggered on score variation
 ScoreChangeSignal = class(oSignal)
     points: integer;
     constructor create(sender: TObject; p: integer);
 end;
 
+// Signal triggered when the player dies
 DeathSignal = class(oSignal);
 
+// Signal triggered when we need to redraw
 RedrawSignal = class(oSignal)
     bm: TBitmap;
 end;
+
+// Signal triggered at every tick of our discretized time
+TickSignal = class(oSignal);
 
 
 

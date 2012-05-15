@@ -19,11 +19,12 @@ type oPlayground = class
         _objects: oObjectCollection;
 
         procedure redraw();
-        function getObjectsInZone(p:oPoint; w,h: integer) : oObjectCollection;
 
     public
         constructor create();
         destructor destroy(); override;
+
+        function getObjectsInZone(p:oPoint; w,h: integer) : oObjectCollection;
 
         procedure init();
         procedure start();
