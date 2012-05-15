@@ -103,25 +103,25 @@ begin
             or  (true and (p.getX() > _objects.get(i).getPosition().getX)                                          // coin zone à droite limite gauche de l'image
                       and (p.getX() < _objects.get(i).getPosition().getX + _objects.get(i).getMask().getWidth())   // coin zone à gauche limite droite de l'image
                       and (p.getY() > _objects.get(i).getPosition().getY)                                          // coin zone en dessous lim sup image
-                      and (p.getY() < _objects.get(i).getPosition().getX + _objects.get(i).getMask().getHeight())) // coin zone au dessus lim inf image
+                      and (p.getY() < _objects.get(i).getPosition().getY + _objects.get(i).getMask().getHeight())) // coin zone au dessus lim inf image
 
             // cas 6 : coin inf droit zone dans l'image
             or  (true and (p.getX() + w > _objects.get(i).getPosition().getX())                                          // coin zone à droite limite gauche de l'image
                       and (p.getX() + w < _objects.get(i).getPosition().getX() + _objects.get(i).getMask().getWidth())   // coin zone à gauche limite droite de l'image
                       and (p.getY() + h > _objects.get(i).getPosition().getY())                                          // coin zone en dessous lim sup image
-                      and (p.getY() + h < _objects.get(i).getPosition().getX() + _objects.get(i).getMask().getHeight())) // coin zone au dessus lim inf image
+                      and (p.getY() + h < _objects.get(i).getPosition().getY() + _objects.get(i).getMask().getHeight())) // coin zone au dessus lim inf image
 
             // cas 7 : coin sup droit zone dans l'image
             or  (true and (p.getX() + w > _objects.get(i).getPosition().getX())                                          // coin zone à droite limite gauche de l'image
                       and (p.getX() + w < _objects.get(i).getPosition().getX() + _objects.get(i).getMask().getWidth())   // coin zone à gauche limite droite de l'image
                       and (p.getY()     > _objects.get(i).getPosition().getY())                                          // coin zone en dessous lim sup image
-                      and (p.getY()     < _objects.get(i).getPosition().getX() + _objects.get(i).getMask().getHeight())) // coin zone au dessus lim inf image
+                      and (p.getY()     < _objects.get(i).getPosition().getY() + _objects.get(i).getMask().getHeight())) // coin zone au dessus lim inf image
 
             //cas 8 coin inf gauche zone dans l'image
             or  (true and (p.getx     > _objects.get(i).getPosition().getX())                                          // coin zone à droite limite gauche de l'image
                       and (p.getx     < _objects.get(i).getPosition().getX() + _objects.get(i).getMask().getWidth())   // coin zone à gauche limite droite de l'image
                       and (p.gety + h > _objects.get(i).getPosition().getY())                                          // coin zone en dessous lim sup image
-                      and (p.gety + h < _objects.get(i).getPosition().getX() + _objects.get(i).getMask().getHeight())) // coin zone au dessus lim inf image
+                      and (p.gety + h < _objects.get(i).getPosition().getY() + _objects.get(i).getMask().getHeight())) // coin zone au dessus lim inf image
         )
         then getObjectsInZone.push(_objects.get(i)); //ajoute l'objet dans l'objectcollection s'il est superposé avec la zone
     end;
