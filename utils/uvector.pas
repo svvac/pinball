@@ -132,14 +132,14 @@ end;
 // returns X cartesian real coordinate
 function ovector.GetRX() : real;
 begin
-    getX := _x;
+    getRX := _x;
 end;
 
 // getRY() : integer
 // returns Y cartesian real coordinate
 function ovector.getRY() : real ;
 begin
-    getY := _y;
+    getRY := _y;
 end;
 
 // getModule() : real
