@@ -38,7 +38,7 @@ end;
 // Adds the callback `c' to the collection
 procedure oCallbackCollection.push(c: tSignalCallback);
 begin
-    if (n + 1) >= MAXBOUND then
+    if n >= MAXBOUND then
         raise Exception.create('No more slots available');
     
     o[n] := c;
