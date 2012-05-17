@@ -100,7 +100,7 @@ procedure aObject.onRedraw(s: oSignal);
 var sig: RedrawSignal;
 begin
     sig := s as RedrawSignal;
-    self.draw(sig.bm.canvas);
+    self.draw(sig.canvas);
 end;
 
 // isColliding(o: aObject, var p: oPoint) : boolean
