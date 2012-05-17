@@ -4,7 +4,7 @@ unit umovingobject;
 
 interface
 
-uses Classes, Graphics, eventhandler, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection;
+uses Classes, Graphics, eventhandler, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap;
 
 const GEE = -9.8;
 
@@ -14,7 +14,7 @@ type aMovingObject = class(aObject)
         _speed: oVector;
 
     public
-        constructor create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler); virtual;
+        constructor create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler); virtual;
 
         procedure onCollision(s: oSignal); override;
 
@@ -28,7 +28,7 @@ end;
 
 implementation
 
-constructor aMovingObject.create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler);
+constructor aMovingObject.create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler);
 var s: oSignal;
 begin
     _speed := oVector.createCartesian(0, 0);

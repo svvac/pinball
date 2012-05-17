@@ -4,7 +4,7 @@ unit ushape;
 
 interface
 
-uses Classes, SysUtils, Graphics, upoint, utils, math;
+uses Classes, SysUtils, Graphics, upoint, utils, math, BGRABitmap, BGRABitmapTypes;
 
 const TAN_SAMPLE_HALF_WIDTH = 2;
       PATHFIND_DEPTH = 2;
@@ -12,7 +12,7 @@ const TAN_SAMPLE_HALF_WIDTH = 2;
 
 Type oShape = Class
     protected
-        _bm: TBitmap;
+        _bm: TBGRABitmap;
 
         function edgePathFind(where, src: oPoint; dir: integer; depth: integer) : oPoint;
 
@@ -38,8 +38,7 @@ implementation
 // Loads a shape from bitmap file at `path'
 constructor oShape.create(path:string);
 begin
-    _bm := TBitmap.Create();
-    _bm.loadFromFile(path);
+    _bm := TBGRABitmap.Create(path);
 end;
 
 // destroy(void)
@@ -60,12 +59,17 @@ end;
 // boolean getPoint(x, y: integer)
 // returns true if the point at (`x', `y') is solid on the shape, false otherwise.
 function oShape.getPoint(x, y: integer) : boolean;
-var c: Tcolor;
+var p: TBGRAPixel;
 begin
     getPoint := false; // We return false if we're outside of the box defined by the shape
     if  (x >= 0) and (x <= getWidth() - 1)
     and (y >= 0) and (y <= getHeight() - 1)
-        then getPoint := (_bm.Canvas.Pixels[x, y] = SHAPE_COLOR_FULL);  // A point is solid if the associated pixel is white
+        //then getPoint := (_bm.Canvas.Pixels[x, y] = SHAPE_COLOR_FULL);  // A point is solid if the associated pixel is white
+        then begin
+            //p := _bm.getPixel(x, y);
+            //getPoint := ((p.red = BGRAWhite.red) and (p.green = BGRAWhite.green) and (p.blue = BGRAWhite.blue) and (p.alpha = BGRAWhite.alpha));
+            getPoint := (_bm.getPixel(x, y) = BGRAWhite);
+        end;
 end;
 
 // integer getWidth(void)

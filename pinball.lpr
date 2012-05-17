@@ -8,8 +8,8 @@ uses
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
   Forms, main, ubouncingobject, ugamesignals, umovingobject, uobject,
-  uplayground, upoint, ushape, utils, objectcollection, uvector,
-  callbackcollection, eventhandler, signal, stringhash;
+  uplayground, upoint, ushape, utils, objectcollection, uvector, callbackcollection,
+  eventhandler, signal, stringhash;
 
 {$R *.res}
 

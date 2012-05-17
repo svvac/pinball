@@ -4,14 +4,14 @@ unit uobject;
 
 interface
 
-uses Classes, SysUtils, Graphics, eventhandler, upoint, ushape, signal, ugamesignals;
+uses Classes, SysUtils, Graphics, eventhandler, upoint, ushape, signal, ugamesignals, BGRABitmap, BGRABitmapTypes;
 
 
 type aObject = class
     protected
         _position:      oPoint;
         _mask:          oShape;
-        _face:          TBitmap;
+        _face:          TBGRABitmap;
         _score:         integer;
         _dispatcher:    oEventHandler;
         _id:            string;
@@ -19,7 +19,7 @@ type aObject = class
         function getDispatcher() : oEventHandler;
 
     public
-        constructor create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler);
+        constructor create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler);
         destructor destroy(); override;
 
         function isColliding(o: aObject; var p: oPoint) : boolean; virtual;
@@ -30,11 +30,11 @@ type aObject = class
 
         function collisionSignalFactory(sender: TObject; p: oPoint) : oSignal;
 
-        procedure draw(cv: TCanvas); virtual;
+        procedure draw(bm: TBGRABitmap); virtual;
 
         function getMask() : oShape;
         function getPosition() : oPoint;
-        function getFace() : TBitmap;
+        function getFace() : TBGRABitmap;
 end;
 
 implementation
@@ -43,9 +43,9 @@ implementation
 // Dirty, but don't see how to do that in a clean way without too much hassle
 var __object_count: integer = 0;
 
-// create(position: oPoint, mask: oShape, dispatcher: oEventHandler)
+// create(position: oPoint, mask: oShape, face: TBGRABitmap dispatcher: oEventHandler)
 // Creates an abstract object and sets position/mask/dispatcher accordingly
-constructor aObject.create(position: oPoint; mask: oShape; face: TBitmap; dispatcher: oEventHandler);
+constructor aObject.create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler);
 var s: oSignal;
 begin
     _position := position;
@@ -87,11 +87,11 @@ begin
     collisionSignalFactory := CollisionSignal.create(sender, _id, p);
 end;
 
-// draw(cv: TCanvas)
+// draw(cv: BGRABitmap)
 // Draws the object on cv
-procedure aObject.draw(cv: TCanvas);
+procedure aObject.draw(bm: TBGRABitmap);
 begin
-    cv.draw(self.getPosition().getX(), self.getPosition().getY(), self.getFace());
+    bm.putImage(self.getPosition().getX(), self.getPosition().getY(), self.getFace(), dmDrawWithTransparency)
 end;
 
 // onRedraw(s: oSignal)
@@ -100,7 +100,7 @@ procedure aObject.onRedraw(s: oSignal);
 var sig: RedrawSignal;
 begin
     sig := s as RedrawSignal;
-    self.draw(sig.canvas);
+    self.draw(sig.bm);
 end;
 
 // isColliding(o: aObject, var p: oPoint) : boolean
@@ -181,7 +181,7 @@ end;
 
 // getFace() : TBitmap
 // Accessor for face
-function aObject.getFace() : TBitmap;
+function aObject.getFace() : TBGRABitmap;
 begin
     getFace := _face;
 end;

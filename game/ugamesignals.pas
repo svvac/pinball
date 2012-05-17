@@ -4,7 +4,7 @@ unit ugamesignals;
 
 interface
 
-uses Classes, Graphics, signal, upoint;
+uses Classes, Graphics, signal, upoint, BGRABitmap;
 
 type
 
@@ -29,7 +29,7 @@ DeathSignal = class(oSignal);
 
 // Signal triggered when we need to redraw
 RedrawSignal = class(oSignal)
-    canvas: TCanvas;
+    bm: TBGRABitmap;
 end;
 
 // Signal triggered at every tick of our discretized time

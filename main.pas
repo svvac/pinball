@@ -31,11 +31,9 @@ implementation
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-    playground := oPlayground.create(Image1.Canvas);
+    playground := oPlayground.create();
 
-    playground.tick();
-
-    //playground.free();
+    //playground.tick();
 end;
 
 end.

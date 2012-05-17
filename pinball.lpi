@@ -33,12 +33,12 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="30">
+    <Units Count="90">
       <Unit0>
         <Filename Value="pinball.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="pinball"/>
-        <UsageCount Value="110"/>
+        <UsageCount Value="113"/>
       </Unit0>
       <Unit1>
         <Filename Value="main.pas"/>
@@ -46,12 +46,11 @@
         <ComponentName Value="Form1"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="main"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="7" Y="38"/>
-        <UsageCount Value="110"/>
+        <TopLine Value="4"/>
+        <CursorPos X="15" Y="41"/>
+        <UsageCount Value="113"/>
         <Loaded Value="True"/>
         <LoadedDesigner Value="True"/>
       </Unit1>
@@ -71,18 +70,18 @@
         <WindowIndex Value="0"/>
         <TopLine Value="24"/>
         <CursorPos X="1" Y="55"/>
-        <UsageCount Value="110"/>
+        <UsageCount Value="113"/>
         <Loaded Value="True"/>
       </Unit3>
       <Unit4>
         <Filename Value="ontheair/eventhandler.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="eventhandler"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
         <TopLine Value="73"/>
         <CursorPos X="1" Y="111"/>
-        <UsageCount Value="110"/>
+        <UsageCount Value="113"/>
         <Loaded Value="True"/>
       </Unit4>
       <Unit5>
@@ -92,7 +91,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="110"/>
+        <UsageCount Value="113"/>
       </Unit5>
       <Unit6>
         <Filename Value="ontheair/hash/comparable.pas"/>
@@ -167,22 +166,24 @@
         <WindowIndex Value="0"/>
         <TopLine Value="37"/>
         <CursorPos X="1" Y="37"/>
-        <UsageCount Value="94"/>
+        <UsageCount Value="97"/>
       </Unit16>
       <Unit17>
         <Filename Value="utils/ushape.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ushape"/>
+        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="26" Y="7"/>
-        <UsageCount Value="94"/>
+        <TopLine Value="71"/>
+        <CursorPos X="15" Y="71"/>
+        <UsageCount Value="97"/>
+        <Loaded Value="True"/>
       </Unit17>
       <Unit18>
         <Filename Value="utils/utils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="utils"/>
-        <UsageCount Value="94"/>
+        <UsageCount Value="97"/>
       </Unit18>
       <Unit19>
         <Filename Value="utils/objectcollection.pas"/>
@@ -191,7 +192,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="93"/>
       </Unit19>
       <Unit20>
         <Filename Value="utils/uvector.pas"/>
@@ -200,7 +201,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="39" Y="21"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="93"/>
       </Unit20>
       <Unit21>
         <Filename Value="game/ubouncingobject.pas"/>
@@ -209,16 +210,18 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="87" Y="28"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="93"/>
       </Unit21>
       <Unit22>
         <Filename Value="game/ugamesignals.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ugamesignals"/>
+        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="23"/>
-        <CursorPos X="53" Y="23"/>
-        <UsageCount Value="90"/>
+        <TopLine Value="18"/>
+        <CursorPos X="10" Y="32"/>
+        <UsageCount Value="93"/>
+        <Loaded Value="True"/>
       </Unit22>
       <Unit23>
         <Filename Value="game/umovingobject.pas"/>
@@ -227,17 +230,18 @@
         <WindowIndex Value="0"/>
         <TopLine Value="37"/>
         <CursorPos X="14" Y="58"/>
-        <UsageCount Value="90"/>
+        <UsageCount Value="93"/>
       </Unit23>
       <Unit24>
         <Filename Value="game/uobject.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uobject"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="73"/>
-        <CursorPos X="1" Y="104"/>
-        <UsageCount Value="90"/>
+        <TopLine Value="27"/>
+        <CursorPos X="71" Y="48"/>
+        <UsageCount Value="93"/>
         <Loaded Value="True"/>
       </Unit24>
       <Unit25>
@@ -267,11 +271,11 @@
         <Filename Value="game/uplayground.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uplayground"/>
-        <EditorIndex Value="1"/>
+        <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="100"/>
-        <CursorPos X="1" Y="121"/>
-        <UsageCount Value="89"/>
+        <TopLine Value="95"/>
+        <CursorPos X="52" Y="116"/>
+        <UsageCount Value="92"/>
         <Loaded Value="True"/>
       </Unit28>
       <Unit29>
@@ -281,129 +285,415 @@
         <WindowIndex Value="0"/>
         <TopLine Value="65"/>
         <CursorPos X="16" Y="102"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="25"/>
       </Unit29>
+      <Unit30>
+        <Filename Value="/usr/lib/lazarus/lcl/include/customform.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="59"/>
+        <CursorPos X="1" Y="82"/>
+        <UsageCount Value="10"/>
+      </Unit30>
+      <Unit31>
+        <Filename Value="/usr/lib/lazarus/lcl/include/application.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2067"/>
+        <CursorPos X="1" Y="2090"/>
+        <UsageCount Value="10"/>
+      </Unit31>
+      <Unit32>
+        <Filename Value="/usr/lib/lazarus/lcl/include/canvas.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1551"/>
+        <CursorPos X="1" Y="1572"/>
+        <UsageCount Value="10"/>
+      </Unit32>
+      <Unit33>
+        <Filename Value="utils/bgrabitmap5.7.1/bgraanimatedgif.pas"/>
+        <UnitName Value="bgraanimatedgif"/>
+        <UsageCount Value="20"/>
+      </Unit33>
+      <Unit34>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrabitmap.pas"/>
+        <UnitName Value="bgrabitmap"/>
+        <UsageCount Value="20"/>
+      </Unit34>
+      <Unit35>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrabitmappack.lpk"/>
+        <UsageCount Value="20"/>
+        <DefaultSyntaxHighlighter Value="XML"/>
+      </Unit35>
+      <Unit36>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrabitmappack.pas"/>
+        <UnitName Value="bgrabitmappack"/>
+        <UsageCount Value="20"/>
+      </Unit36>
+      <Unit37>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrabitmaptypes.pas"/>
+        <UnitName Value="bgrabitmaptypes"/>
+        <UsageCount Value="20"/>
+      </Unit37>
+      <Unit38>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrablend.pas"/>
+        <UnitName Value="bgrablend"/>
+        <UsageCount Value="20"/>
+      </Unit38>
+      <Unit39>
+        <Filename Value="utils/bgrabitmap5.7.1/bgracanvas.pas"/>
+        <UnitName Value="bgracanvas"/>
+        <UsageCount Value="20"/>
+      </Unit39>
+      <Unit40>
+        <Filename Value="utils/bgrabitmap5.7.1/bgracanvas2d.pas"/>
+        <UnitName Value="bgracanvas2d"/>
+        <UsageCount Value="20"/>
+      </Unit40>
+      <Unit41>
+        <Filename Value="utils/bgrabitmap5.7.1/bgracolorint.pas"/>
+        <UnitName Value="bgracolorint"/>
+        <UsageCount Value="20"/>
+      </Unit41>
+      <Unit42>
+        <Filename Value="utils/bgrabitmap5.7.1/bgracompressablebitmap.pas"/>
+        <UnitName Value="bgracompressablebitmap"/>
+        <UsageCount Value="20"/>
+      </Unit42>
+      <Unit43>
+        <Filename Value="utils/bgrabitmap5.7.1/bgracoordpool3d.pas"/>
+        <UnitName Value="bgracoordpool3d"/>
+        <UsageCount Value="20"/>
+      </Unit43>
+      <Unit44>
+        <Filename Value="utils/bgrabitmap5.7.1/bgradefaultbitmap.pas"/>
+        <UnitName Value="bgradefaultbitmap"/>
+        <UsageCount Value="20"/>
+      </Unit44>
+      <Unit45>
+        <Filename Value="utils/bgrabitmap5.7.1/bgradnetdeserial.pas"/>
+        <UnitName Value="bgradnetdeserial"/>
+        <UsageCount Value="20"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrafillinfo.pas"/>
+        <UnitName Value="bgrafillinfo"/>
+        <UsageCount Value="20"/>
+      </Unit46>
+      <Unit47>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrafilters.pas"/>
+        <UnitName Value="bgrafilters"/>
+        <UsageCount Value="20"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="utils/bgrabitmap5.7.1/bgragradients.pas"/>
+        <UnitName Value="bgragradients"/>
+        <UsageCount Value="20"/>
+      </Unit48>
+      <Unit49>
+        <Filename Value="utils/bgrabitmap5.7.1/bgragradientscanner.pas"/>
+        <UnitName Value="bgragradientscanner"/>
+        <UsageCount Value="20"/>
+      </Unit49>
+      <Unit50>
+        <Filename Value="utils/bgrabitmap5.7.1/bgragtkbitmap.pas"/>
+        <UnitName Value="bgragtkbitmap"/>
+        <UsageCount Value="20"/>
+      </Unit50>
+      <Unit51>
+        <Filename Value="utils/bgrabitmap5.7.1/bgralayers.pas"/>
+        <UnitName Value="bgralayers"/>
+        <UsageCount Value="20"/>
+      </Unit51>
+      <Unit52>
+        <Filename Value="utils/bgrabitmap5.7.1/bgramatrix3d.pas"/>
+        <UnitName Value="bgramatrix3d"/>
+        <UsageCount Value="20"/>
+      </Unit52>
+      <Unit53>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrapaintnet.pas"/>
+        <UnitName Value="bgrapaintnet"/>
+        <UsageCount Value="20"/>
+      </Unit53>
+      <Unit54>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrapath.pas"/>
+        <UnitName Value="bgrapath"/>
+        <UsageCount Value="20"/>
+      </Unit54>
+      <Unit55>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrapen.pas"/>
+        <UnitName Value="bgrapen"/>
+        <UsageCount Value="20"/>
+      </Unit55>
+      <Unit56>
+        <Filename Value="utils/bgrabitmap5.7.1/bgraphongtypes.pas"/>
+        <UnitName Value="bgraphongtypes"/>
+        <UsageCount Value="20"/>
+      </Unit56>
+      <Unit57>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrapolygon.pas"/>
+        <UnitName Value="bgrapolygon"/>
+        <UsageCount Value="20"/>
+      </Unit57>
+      <Unit58>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrapolygonaliased.pas"/>
+        <UnitName Value="bgrapolygonaliased"/>
+        <UsageCount Value="20"/>
+      </Unit58>
+      <Unit59>
+        <Filename Value="utils/bgrabitmap5.7.1/bgraqtbitmap.pas"/>
+        <UnitName Value="bgraqtbitmap"/>
+        <UsageCount Value="20"/>
+      </Unit59>
+      <Unit60>
+        <Filename Value="utils/bgrabitmap5.7.1/bgraresample.pas"/>
+        <UnitName Value="bgraresample"/>
+        <UsageCount Value="20"/>
+      </Unit60>
+      <Unit61>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrascene3d.pas"/>
+        <UnitName Value="bgrascene3d"/>
+        <UsageCount Value="20"/>
+      </Unit61>
+      <Unit62>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrascene3dinterface.inc"/>
+        <UsageCount Value="20"/>
+      </Unit62>
+      <Unit63>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrasse.pas"/>
+        <UnitName Value="bgrasse"/>
+        <UsageCount Value="20"/>
+      </Unit63>
+      <Unit64>
+        <Filename Value="utils/bgrabitmap5.7.1/bgratext.pas"/>
+        <UnitName Value="bgratext"/>
+        <UsageCount Value="20"/>
+      </Unit64>
+      <Unit65>
+        <Filename Value="utils/bgrabitmap5.7.1/bgratextfx.pas"/>
+        <UnitName Value="bgratextfx"/>
+        <UsageCount Value="20"/>
+      </Unit65>
+      <Unit66>
+        <Filename Value="utils/bgrabitmap5.7.1/bgratransform.pas"/>
+        <UnitName Value="bgratransform"/>
+        <UsageCount Value="20"/>
+      </Unit66>
+      <Unit67>
+        <Filename Value="utils/bgrabitmap5.7.1/bgrawinbitmap.pas"/>
+        <UnitName Value="bgrawinbitmap"/>
+        <UsageCount Value="20"/>
+      </Unit67>
+      <Unit68>
+        <Filename Value="utils/bgrabitmap5.7.1/blurfast.inc"/>
+        <UsageCount Value="20"/>
+      </Unit68>
+      <Unit69>
+        <Filename Value="utils/bgrabitmap5.7.1/blurnormal.inc"/>
+        <UsageCount Value="20"/>
+      </Unit69>
+      <Unit70>
+        <Filename Value="utils/bgrabitmap5.7.1/COPYING.LGPL.txt"/>
+        <UsageCount Value="20"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit70>
+      <Unit71>
+        <Filename Value="utils/bgrabitmap5.7.1/COPYING.modifiedLGPL.txt"/>
+        <UsageCount Value="20"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit71>
+      <Unit72>
+        <Filename Value="utils/bgrabitmap5.7.1/csscolorconst.inc"/>
+        <UsageCount Value="20"/>
+      </Unit72>
+      <Unit73>
+        <Filename Value="utils/bgrabitmap5.7.1/filldensity256.inc"/>
+        <UsageCount Value="20"/>
+      </Unit73>
+      <Unit74>
+        <Filename Value="utils/bgrabitmap5.7.1/filldensitysegment256.inc"/>
+        <UsageCount Value="20"/>
+      </Unit74>
+      <Unit75>
+        <Filename Value="utils/bgrabitmap5.7.1/lightingclasses3d.inc"/>
+        <UsageCount Value="20"/>
+      </Unit75>
+      <Unit76>
+        <Filename Value="utils/bgrabitmap5.7.1/lineartexscan.inc"/>
+        <UsageCount Value="20"/>
+      </Unit76>
+      <Unit77>
+        <Filename Value="utils/bgrabitmap5.7.1/lineartexscan2.inc"/>
+        <UsageCount Value="20"/>
+      </Unit77>
+      <Unit78>
+        <Filename Value="utils/bgrabitmap5.7.1/multishapeline.inc"/>
+        <UsageCount Value="20"/>
+      </Unit78>
+      <Unit79>
+        <Filename Value="utils/bgrabitmap5.7.1/perspectivecolorscan.inc"/>
+        <UsageCount Value="20"/>
+      </Unit79>
+      <Unit80>
+        <Filename Value="utils/bgrabitmap5.7.1/perspectivescan.inc"/>
+        <UsageCount Value="20"/>
+      </Unit80>
+      <Unit81>
+        <Filename Value="utils/bgrabitmap5.7.1/perspectivescan2.inc"/>
+        <UsageCount Value="20"/>
+      </Unit81>
+      <Unit82>
+        <Filename Value="utils/bgrabitmap5.7.1/phongdraw.inc"/>
+        <UsageCount Value="20"/>
+      </Unit82>
+      <Unit83>
+        <Filename Value="utils/bgrabitmap5.7.1/phongdrawsse.inc"/>
+        <UsageCount Value="20"/>
+      </Unit83>
+      <Unit84>
+        <Filename Value="utils/bgrabitmap5.7.1/phonglight.inc"/>
+        <UsageCount Value="20"/>
+      </Unit84>
+      <Unit85>
+        <Filename Value="utils/bgrabitmap5.7.1/phonglightsse.inc"/>
+        <UsageCount Value="20"/>
+      </Unit85>
+      <Unit86>
+        <Filename Value="utils/bgrabitmap5.7.1/polyaliaspersp.inc"/>
+        <UsageCount Value="20"/>
+      </Unit86>
+      <Unit87>
+        <Filename Value="utils/bgrabitmap5.7.1/readme.txt"/>
+        <UsageCount Value="20"/>
+        <DefaultSyntaxHighlighter Value="None"/>
+      </Unit87>
+      <Unit88>
+        <Filename Value="utils/bgrabitmap5.7.1/renderdensity256.inc"/>
+        <UsageCount Value="20"/>
+      </Unit88>
+      <Unit89>
+        <Filename Value="utils/bgrabitmap5.7.1/shape3D.inc"/>
+        <UsageCount Value="20"/>
+      </Unit89>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="game/uplayground.pas"/>
-        <Caret Line="115" Column="1" TopLine="95"/>
+        <Filename Value="ontheair/callbackcollection.pas"/>
+        <Caret Line="54" Column="1" TopLine="24"/>
       </Position1>
       <Position2>
-        <Filename Value="game/uplayground.pas"/>
-        <Caret Line="116" Column="1" TopLine="95"/>
+        <Filename Value="ontheair/callbackcollection.pas"/>
+        <Caret Line="55" Column="1" TopLine="24"/>
       </Position2>
       <Position3>
-        <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="95" Column="1" TopLine="72"/>
+        <Filename Value="game/uobject.pas"/>
+        <Caret Line="102" Column="1" TopLine="94"/>
       </Position3>
       <Position4>
-        <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="96" Column="1" TopLine="72"/>
+        <Filename Value="game/uobject.pas"/>
+        <Caret Line="103" Column="1" TopLine="94"/>
       </Position4>
       <Position5>
-        <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="99" Column="1" TopLine="72"/>
+        <Filename Value="game/uobject.pas"/>
+        <Caret Line="94" Column="1" TopLine="73"/>
       </Position5>
       <Position6>
-        <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="101" Column="1" TopLine="72"/>
+        <Filename Value="game/uobject.pas"/>
+        <Caret Line="95" Column="1" TopLine="73"/>
       </Position6>
       <Position7>
-        <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="104" Column="1" TopLine="72"/>
+        <Filename Value="game/uobject.pas"/>
+        <Caret Line="104" Column="1" TopLine="73"/>
       </Position7>
       <Position8>
         <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="106" Column="1" TopLine="72"/>
+        <Caret Line="108" Column="1" TopLine="73"/>
       </Position8>
       <Position9>
         <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="108" Column="1" TopLine="73"/>
+        <Caret Line="111" Column="1" TopLine="73"/>
       </Position9>
       <Position10>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="61" Column="1" TopLine="23"/>
-      </Position10>
-      <Position11>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="62" Column="1" TopLine="24"/>
-      </Position11>
-      <Position12>
-        <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="109" Column="1" TopLine="73"/>
-      </Position12>
-      <Position13>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="51" Column="1" TopLine="24"/>
-      </Position13>
-      <Position14>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="52" Column="1" TopLine="24"/>
-      </Position14>
-      <Position15>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="54" Column="1" TopLine="24"/>
-      </Position15>
-      <Position16>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="55" Column="1" TopLine="24"/>
-      </Position16>
-      <Position17>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="51" Column="1" TopLine="24"/>
-      </Position17>
-      <Position18>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="52" Column="1" TopLine="24"/>
-      </Position18>
-      <Position19>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="54" Column="1" TopLine="24"/>
-      </Position19>
-      <Position20>
-        <Filename Value="ontheair/callbackcollection.pas"/>
-        <Caret Line="55" Column="1" TopLine="24"/>
-      </Position20>
-      <Position21>
-        <Filename Value="game/uobject.pas"/>
-        <Caret Line="102" Column="1" TopLine="94"/>
-      </Position21>
-      <Position22>
-        <Filename Value="game/uobject.pas"/>
-        <Caret Line="103" Column="1" TopLine="94"/>
-      </Position22>
-      <Position23>
-        <Filename Value="game/uobject.pas"/>
-        <Caret Line="94" Column="1" TopLine="73"/>
-      </Position23>
-      <Position24>
-        <Filename Value="game/uobject.pas"/>
-        <Caret Line="95" Column="1" TopLine="73"/>
-      </Position24>
-      <Position25>
-        <Filename Value="game/uobject.pas"/>
-        <Caret Line="104" Column="1" TopLine="73"/>
-      </Position25>
-      <Position26>
-        <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="108" Column="1" TopLine="73"/>
-      </Position26>
-      <Position27>
-        <Filename Value="ontheair/eventhandler.pas"/>
-        <Caret Line="111" Column="1" TopLine="73"/>
-      </Position27>
-      <Position28>
         <Filename Value="game/uplayground.pas"/>
         <Caret Line="117" Column="1" TopLine="95"/>
-      </Position28>
-      <Position29>
+      </Position10>
+      <Position11>
         <Filename Value="game/uplayground.pas"/>
         <Caret Line="77" Column="1" TopLine="56"/>
-      </Position29>
-      <Position30>
+      </Position11>
+      <Position12>
         <Filename Value="main.pas"/>
         <Caret Line="36" Column="1" TopLine="1"/>
+      </Position12>
+      <Position13>
+        <Filename Value="ontheair/eventhandler.pas"/>
+        <Caret Line="111" Column="1" TopLine="73"/>
+      </Position13>
+      <Position14>
+        <Filename Value="game/uplayground.pas"/>
+        <Caret Line="116" Column="1" TopLine="100"/>
+      </Position14>
+      <Position15>
+        <Filename Value="game/uplayground.pas"/>
+        <Caret Line="117" Column="1" TopLine="100"/>
+      </Position15>
+      <Position16>
+        <Filename Value="game/uplayground.pas"/>
+        <Caret Line="77" Column="1" TopLine="56"/>
+      </Position16>
+      <Position17>
+        <Filename Value="main.pas"/>
+        <Caret Line="36" Column="1" TopLine="1"/>
+      </Position17>
+      <Position18>
+        <Filename Value="game/uplayground.pas"/>
+        <Caret Line="116" Column="1" TopLine="95"/>
+      </Position18>
+      <Position19>
+        <Filename Value="game/uplayground.pas"/>
+        <Caret Line="117" Column="1" TopLine="95"/>
+      </Position19>
+      <Position20>
+        <Filename Value="game/uplayground.pas"/>
+        <Caret Line="122" Column="1" TopLine="95"/>
+      </Position20>
+      <Position21>
+        <Filename Value="main.pas"/>
+        <Caret Line="39" Column="1" TopLine="1"/>
+      </Position21>
+      <Position22>
+        <Filename Value="main.pas"/>
+        <Caret Line="36" Column="52" TopLine="3"/>
+      </Position22>
+      <Position23>
+        <Filename Value="main.pas"/>
+        <Caret Line="35" Column="26" TopLine="2"/>
+      </Position23>
+      <Position24>
+        <Filename Value="game/uplayground.pas"/>
+        <Caret Line="116" Column="13" TopLine="84"/>
+      </Position24>
+      <Position25>
+        <Filename Value="game/uplayground.pas"/>
+        <Caret Line="47" Column="16" TopLine="33"/>
+      </Position25>
+      <Position26>
+        <Filename Value="game/uplayground.pas"/>
+        <Caret Line="25" Column="28" TopLine="85"/>
+      </Position26>
+      <Position27>
+        <Filename Value="utils/ushape.pas"/>
+        <Caret Line="7" Column="26" TopLine="1"/>
+      </Position27>
+      <Position28>
+        <Filename Value="utils/ushape.pas"/>
+        <Caret Line="41" Column="23" TopLine="41"/>
+      </Position28>
+      <Position29>
+        <Filename Value="game/ugamesignals.pas"/>
+        <Caret Line="23" Column="53" TopLine="23"/>
+      </Position29>
+      <Position30>
+        <Filename Value="game/uobject.pas"/>
+        <Caret Line="104" Column="1" TopLine="104"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>
@@ -413,8 +703,8 @@
       <Filename Value="pinball"/>
     </Target>
     <SearchPaths>
-      <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="ontheair;ontheair/hash;utils;game"/>
+      <IncludeFiles Value="$(ProjOutDir);utils/bgrabitmap5.7.1"/>
+      <OtherUnitFiles Value="ontheair;ontheair/hash;utils;game;utils/bgrabitmap5.7.1"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>

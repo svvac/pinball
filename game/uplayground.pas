@@ -4,13 +4,13 @@ unit uplayground;
 
 interface
 
-uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, ushape;
+uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, ushape, BGRABitmap, BGRABitmapTypes;
 
 CONST NB_LIFES = 3;
 
 type oPlayground = class
     protected
-        _world: TCanvas;
+        _world: TBGRABitmap;
         _ball: aObject;
         _score: integer;
         _lifes: integer;
@@ -22,7 +22,7 @@ type oPlayground = class
         procedure populate();
 
     public
-        constructor create(world: TCanvas);
+        constructor create();
         destructor destroy(); override;
 
         function getObjectsInZone(p:oPoint; w,h: integer) : oObjectCollection;
@@ -40,11 +40,11 @@ end;
 implementation
 
 
-constructor oPlayground.create(world: TCanvas);
+constructor oPlayground.create();
 var s: oSignal;
 begin
     _dispatcher := oEventHandler.create();
-    _world := world;
+    _world := TBGRABitmap.create(350, 600, BGRABlack);
     _objects := oObjectCollection.create();
 
     // Registers and binds ScoreChangeSignal
@@ -84,13 +84,12 @@ procedure oPlayground.populate();
 var bo: aBouncingObject;
     shape: oShape;
     p: oPoint;
-    bm: TBitmap;
+    bm: TBGRABitmap;
 begin
     // Map
     p := oPoint.create(0, 0);
     shape := oShape.create('bitmaps/canvas.bmp');
-    bm := TBitmap.create();
-    bm.loadFromFile('bitmaps/canvas.bmp');
+    bm := TBGRABitmap.create('bitmaps/canvas.bmp');
     bo := aBouncingObject.create(p, shape, bm, _dispatcher, 0.8);
     _objects.push(bo);
 end;
@@ -112,7 +111,7 @@ procedure oPlayground.redraw();
 var sig: RedrawSignal;
 begin
     sig := RedrawSignal.create(self);
-    sig.canvas := _world;
+    sig.bm := _world;
     _dispatcher.emit(sig);
 end;
 
