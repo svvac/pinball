@@ -48,7 +48,7 @@ var __object_count: integer = 0;
 constructor aObject.create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler);
 var s: oSignal;
 begin
-    _position := position;
+    _position := oPoint.clone(position);
     _mask := mask;
     _score := 0;
     _dispatcher := dispatcher;

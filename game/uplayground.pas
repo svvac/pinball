@@ -4,7 +4,7 @@ unit uplayground;
 
 interface
 
-uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, umovingobject, ushape, BGRABitmap, BGRABitmapTypes;
+uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, uvector, umovingobject, ushape, BGRABitmap, BGRABitmapTypes;
 
 CONST NB_LIFES = 3;
 
@@ -20,6 +20,7 @@ type oPlayground = class
 
         procedure redraw();
         procedure populate();
+        procedure move();
 
     public
         constructor create();
@@ -76,8 +77,6 @@ begin
 
     populate();
 
-    redraw();
-
 end;
 
 destructor oPlayground.destroy();
@@ -95,18 +94,34 @@ begin
     shape := oShape.create('bitmaps/canvas.bmp');
     bm := TBGRABitmap.create('bitmaps/canvas.png');
     bo := aBouncingObject.create(p, shape, bm, _dispatcher, 0.8);
+    writeln('playground:populate: Added canvas at ' + bo.getPosition().toString());
     _objects.push(bo);
 
-    p := oPoint.create(318, 570);
+    p.setXY(318, 570);
     shape := oShape.create('bitmaps/ball.bmp');
     bm := TBGRABitmap.create('bitmaps/ball.png');
-    _ball := aMovingObject.create(p, shape, bm, _dispatcher)
+    _ball := aMovingObject.create(p, shape, bm, _dispatcher);
+    _ball.setSpeed(oVector.createCartesian(0, 3));
+    writeln('playground:populate: Ball at ' + _ball.getPosition().toString() + ', with speed ' + _ball.getSpeed().toString());
+
+    p.free();
 end;
 
 procedure oPlayground.init();
 begin
     _score := 0;
     _lifes := NB_LIFES;
+end;
+
+procedure oPlayground.move();
+var i, n: integer;
+begin
+    n := round(_ball.getSpeed().getModule());
+    writeln('playground: path discretization, v = ' + _ball.getSpeed().toString() + '  (' + IntToStr(n) + ' steps)');
+    for i := 1 to n do begin
+        writeln('playground: path discretization (' + IntToStr(i) + '/' + IntToStr(n) + '). Ball at ' + _ball.getPosition().toString());
+        _ball.elementaryMove(self.getObjectsInZone(_ball.getPosition(), _ball.getMask().getWidth(), _ball.getMask.getHeight()));
+    end;
 end;
 
 procedure oPlayground.onScoreChange(s: oSignal);
@@ -131,6 +146,7 @@ end;
 
 procedure oPlayground.onTick(s: oSignal);
 begin
+    move();
     redraw();
 end;
 
@@ -149,7 +165,7 @@ function oPlayground.getObjectsInZone(p: oPoint; w,h: integer) : oObjectCollecti
 var i:integer;
 begin
     getObjectsInZone := oObjectCollection.create();
-    for i := 0 to _objects.count() do begin
+    for i := 0 to _objects.count() - 1 do begin
         if ( false
             // Cas 1 : coin supérieur gauche image dans la zone
             or (true and (_objects.get(i).getPosition().getX() > p.getX())      // coin image à droite limite gauche de la zone

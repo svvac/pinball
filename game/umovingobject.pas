@@ -4,7 +4,7 @@ unit umovingobject;
 
 interface
 
-uses Classes, Graphics, eventhandler, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap;
+uses Classes, SysUtils, Graphics, eventhandler, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap;
 
 const GEE = -9.8;
 
@@ -60,6 +60,8 @@ begin
     _position.apply(ev);
     p := oPoint.create(0, 0);
 
+    writeln(_id + ': Found ' + IntToStr(zone.count()) + ' objects to check for collision');
+
     // Check for collision with objects in the zone, and triggers collision signals if needed
     for i := 0 to zone.count() - 1 do
         if self.isColliding(zone.get(i), p) then
@@ -80,10 +82,9 @@ begin
     getSpeed := oVector.clone(_speed);
 end;
 
-procedure setSpeed(s: oVector);
+procedure aMovingObject.setSpeed(v: oVector);
 begin
-    _speed.setX(round(_speed.getX() + s.getX()));
-    _speed.setY(round(_speed.getY() + s.getY()));
+    _speed.sum(v);
 end;
 
 
