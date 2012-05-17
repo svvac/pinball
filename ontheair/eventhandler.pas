@@ -4,10 +4,9 @@ interface
 
 {$mode objfpc}{$H+}
 
-{$UNITPATH ./hash}
 {$UNITPATH .}
 
-uses Classes, signal, stringhash, sysutils, callbackcollection;
+uses Classes, signal, stringhash, sysutils, callbackcollection, LCLProc;
 
 type
 
@@ -16,7 +15,7 @@ ESignalOverrideException = class(Exception);
 
 oEventHandler = class(tObject)
     protected
-        pKnownSignals: tStringHash;
+        _known_signals: oStringHash;
     public
         constructor create();
         destructor destroy(); override;
@@ -33,16 +32,16 @@ implementation
 // Initializes an EventHandler
 constructor oEventHandler.create();
 begin
+    debugLn('ontheair: Created a new event handler');
     // Create the string hash mapping signal names to callbacks
-    pKnownSignals := tStringHash.create(false);
+    _known_signals := oStringHash.create();
 end;
 
 // destroy(void)
 // Makes sure we free used memory on object destruction
 destructor oEventHandler.destroy();
 begin
-    pKnownSignals.deleteAll();
-    pKnownSignals.free();
+    _known_signals.free();
 end;
 
 
@@ -53,13 +52,15 @@ var c: oCallbackCollection;
 begin
     // Make sure no signal with the same ID is already defined.
     // We use the class name to ID a signal
-    if pKnownSignals.containsKey(sig.getName()) then
+    if _known_signals.exists(sig.getName()) then
         raise ESignalOverrideException.create('Will override signal ' + sig.getName());
     
     // Create a callback collection to store methods listening for this signal
     c := oCallbackCollection.create();
     
-    pKnownSignals.setValue(sig.getName(), c);
+    _known_signals.setValue(sig.getName(), c);
+
+    debugLn('eventhandler: registered signal ' + sig.getName());
 end;
 
 // bind(sig: oSignal, c: tSignalCallback)
@@ -69,10 +70,10 @@ var col: oCallbackCollection;
     o: TObject;
 begin
     // Check if the signal is properly registred
-    if not pKnownSignals.containsKey(sig.getName()) then
+    if not _known_signals.exists(sig.getName()) then
         raise ESignalUnknownException.create('No such signal ' + sig.getName());
     
-    o := pKnownSignals.getValue(sig.getName());
+    o := _known_signals.getValue(sig.getName());
 
     // Ensure we got a oCallbackCollection
     if o.ClassType <> oCallbackCollection then
@@ -81,6 +82,8 @@ begin
     col := o as oCallbackCollection;
     
     col.push(c);
+
+    debugLn('ontheair: Bound a new method to ' + sig.getName());
 end;
 
 // emit(sig: oSignal)
@@ -90,15 +93,17 @@ var i: integer;
     c: oCallbackCollection;
     o: TObject;
 begin
-    if not pKnownSignals.containsKey(sig.getName()) then
+    if not _known_signals.exists(sig.getName()) then
         raise ESignalUnknownException.create('No such signal ' + sig.getName());
     
-    o := pKnownSignals.getValue(sig.getName());
+    o := _known_signals.getValue(sig.getName());
 
     if o.ClassType <> oCallbackCollection then
         raise Exception.create('Inconsistency in object storage. Got ' + o.ClassName + ', expected oCallbackCollection');
     
     c := o as oCallbackCollection;
+
+    debugLn('ontheair: Signal ' + sig.getName() + ' emitted');
     
     for i:= 0 to c.count() - 1 do begin
         c.get(i)(sig);   // Calls the callback c.get(i) with `sig' as an argument
