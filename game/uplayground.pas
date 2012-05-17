@@ -1,16 +1,16 @@
 unit uplayground;
 
-{$mode objfpc}{$H+}
+{$mode objfpc}{$H+}{$M+}
 
 interface
 
-uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals;
+uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, ushape;
 
 CONST NB_LIFES = 3;
 
 type oPlayground = class
     protected
-        _world: TBitmap;
+        _world: TCanvas;
         _ball: aObject;
         _score: integer;
         _lifes: integer;
@@ -19,12 +19,17 @@ type oPlayground = class
         _objects: oObjectCollection;
 
         procedure redraw();
+        procedure populate();
 
     public
-        constructor create();
+        constructor create(world: TCanvas);
         destructor destroy(); override;
 
         function getObjectsInZone(p:oPoint; w,h: integer) : oObjectCollection;
+
+        procedure onScoreChange(s: oSignal);
+
+        procedure tick();
 
         procedure init();
         procedure start();
@@ -35,34 +40,85 @@ end;
 implementation
 
 
-constructor oPlayground.create();
+constructor oPlayground.create(world: TCanvas);
+var s: oSignal;
 begin
-    _dispatcher := oEventHandler.create()
+    _dispatcher := oEventHandler.create();
+    _world := world;
+    _objects := oObjectCollection.create();
+
+    // Registers and binds ScoreChangeSignal
+    s := ScoreChangeSignal.create(_dispatcher, 0);
+    _dispatcher.register(s);
+    _dispatcher.bind(s, @self.onScoreChange);
+    s.free();
+
+    // registers DeathSignal
+    s := DeathSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    s.free();
+
+    // Registers RedrawSignal
+    s := RedrawSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    s.free();
+
+    // Registers TickSignal
+    s := TickSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    s.free();
+
+    init();
+
+    populate();
+
+    redraw();
+
 end;
 
 destructor oPlayground.destroy();
 begin
 end;
 
-procedure oPlayground.init();
-var i:integer;
-    count:integer;
+procedure oPlayground.populate();
+var bo: aBouncingObject;
+    shape: oShape;
+    p: oPoint;
+    bm: TBitmap;
 begin
-    _world := Tbitmap.create();
-    //_world.loadFromFile('/path/to/image');//TODO: mettre nom fichier image
-    
-    //_ball := oBall.create();
-    
+    // Map
+    p := oPoint.create(0, 0);
+    shape := oShape.create('bitmaps/canvas.bmp');
+    bm := TBitmap.create();
+    bm.loadFromFile('bitmaps/canvas.bmp');
+    bo := aBouncingObject.create(p, shape, bm, _dispatcher, 0.8);
+    _objects.push(bo);
+end;
+
+procedure oPlayground.init();
+begin
     _score := 0;
     _lifes := NB_LIFES;
+end;
+
+procedure oPlayground.onScoreChange(s: oSignal);
+var sig: ScoreChangeSignal;
+begin
+    sig := s as ScoreChangeSignal;
+    _score += sig.points;
 end;
 
 procedure oPlayground.redraw();
 var sig: RedrawSignal;
 begin
     sig := RedrawSignal.create(self);
-    sig.bm := _world;
+    sig.canvas := _world;
     _dispatcher.emit(sig);
+end;
+
+procedure oPlayground.tick();
+begin
+    redraw();
 end;
 
 procedure oPlayground.start();
