@@ -55,7 +55,7 @@ begin
     _face := face;
 
     // Generate object ID, used to create a separate collision signal per object instance
-    _id := self.ClassName + IntToStr(__object_count);
+    _id := self.ClassName + '/' + IntToStr(__object_count);
     __object_count += 1;
 
     // Generate a CollisionSignal for this object, register it in the dispatcher, and

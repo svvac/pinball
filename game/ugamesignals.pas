@@ -29,7 +29,7 @@ DeathSignal = class(oSignal);
 
 // Signal triggered when we need to redraw
 RedrawSignal = class(oSignal)
-    bm: TBitmap;
+    canvas: TCanvas;
 end;
 
 // Signal triggered at every tick of our discretized time
@@ -49,7 +49,7 @@ implementation
 constructor CollisionSignal.create(sender: TObject; id: string; p: oPoint);
 begin
     position := oPoint.clone(p);
-    _id := self.ClassName + '::' + id;
+    _id := self.ClassName + '/' + id;
     inherited create(sender);
 end;
 
