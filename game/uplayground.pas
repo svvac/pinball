@@ -4,14 +4,14 @@ unit uplayground;
 
 interface
 
-uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, ushape, BGRABitmap, BGRABitmapTypes;
+uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, umovingobject, ushape, BGRABitmap, BGRABitmapTypes;
 
 CONST NB_LIFES = 3;
 
 type oPlayground = class
     protected
         _world: TBGRABitmap;
-        _ball: aObject;
+        _ball: aMovingObject;
         _score: integer;
         _lifes: integer;
         _dispatcher: oEventHandler;
@@ -28,11 +28,14 @@ type oPlayground = class
         function getObjectsInZone(p:oPoint; w,h: integer) : oObjectCollection;
 
         procedure onScoreChange(s: oSignal);
+        procedure onTick(s: oSignal);
 
         procedure tick();
 
         procedure init();
         procedure start();
+
+        function getDispatcher() : oEventHandler;
 
 end;
 
@@ -66,6 +69,7 @@ begin
     // Registers TickSignal
     s := TickSignal.create(_dispatcher);
     _dispatcher.register(s);
+    _dispatcher.bind(s, @self.onTick);
     s.free();
 
     init();
@@ -89,9 +93,14 @@ begin
     // Map
     p := oPoint.create(0, 0);
     shape := oShape.create('bitmaps/canvas.bmp');
-    bm := TBGRABitmap.create('bitmaps/canvas.bmp');
+    bm := TBGRABitmap.create('bitmaps/canvas.png');
     bo := aBouncingObject.create(p, shape, bm, _dispatcher, 0.8);
     _objects.push(bo);
+
+    p := oPoint.create(318, 570);
+    shape := oShape.create('bitmaps/ball.bmp');
+    bm := TBGRABitmap.create('bitmaps/ball.png');
+    _ball := aMovingObject.create(p, shape, bm, _dispatcher)
 end;
 
 procedure oPlayground.init();
@@ -115,9 +124,21 @@ begin
     _dispatcher.emit(sig);
 end;
 
-procedure oPlayground.tick();
+function oPlayground.getDispatcher() : oEventHandler;
+begin
+    getDispatcher := _dispatcher;
+end;
+
+procedure oPlayground.onTick(s: oSignal);
 begin
     redraw();
+end;
+
+procedure oPlayground.tick();
+var s: oSignal;
+begin
+    s := TickSignal.create(self);
+    _dispatcher.emit(s);
 end;
 
 procedure oPlayground.start();

@@ -1,11 +1,15 @@
 object Form1: TForm1
-  Left = 716
-  Height = 632
-  Top = 355
-  Width = 528
+  Left = 841
+  Height = 600
+  Top = 375
+  Width = 350
   Caption = 'Form1'
-  ClientHeight = 632
-  ClientWidth = 528
+  ClientHeight = 600
+  ClientWidth = 350
+  Constraints.MaxHeight = 600
+  Constraints.MaxWidth = 350
+  Constraints.MinHeight = 600
+  Constraints.MinWidth = 350
   OnCreate = FormCreate
   LCLVersion = '0.9.30.4'
   object Image1: TImage
@@ -13,5 +17,11 @@ object Form1: TForm1
     Height = 632
     Top = 0
     Width = 528
+  end
+  object Timer1: TTimer
+    Interval = 50
+    OnTimer = Timer1Timer
+    left = 16
+    top = 24
   end
 end

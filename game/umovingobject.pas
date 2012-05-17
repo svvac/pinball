@@ -23,6 +23,7 @@ type aMovingObject = class(aObject)
         procedure onTick(s: oSignal); virtual;
 
         function getSpeed() : oVector;
+        procedure setSpeed(v: oVector);
 
 end;
 
@@ -77,6 +78,12 @@ end;
 function aMovingObject.getSpeed() : oVector;
 begin
     getSpeed := oVector.clone(_speed);
+end;
+
+procedure setSpeed(s: oVector);
+begin
+    _speed.setX(round(_speed.getX() + s.getX()));
+    _speed.setY(round(_speed.getY() + s.getY()));
 end;
 
 
