@@ -4,7 +4,7 @@ unit uvector;
 
 interface
 
-uses Classes, math;
+uses Classes, math, SysUtils;
 
 type oVector=class
     protected
@@ -24,6 +24,7 @@ type oVector=class
         procedure setY(ay : integer);
         procedure setModule(m : real);
         procedure setArgument(a : real);
+        procedure sum(v: oVector);
 
 
         function getX() : integer;
@@ -32,6 +33,8 @@ type oVector=class
         function getRY() : real;
         function getModule() : real;
         function getArgument() : real;
+
+        function toString() : string;
 end;
 
 
@@ -78,6 +81,13 @@ procedure oVector.setY(ay : integer);
 begin
     _y := ay;
     updateCartesian();
+end;
+
+procedure oVector.sum(v: oVector);
+begin
+    _x += v.getRX();
+    _y += v.getRY();
+    updatePolar();
 end;
 
 // setModule(x: integer)
@@ -154,6 +164,11 @@ end;
 function ovector.getArgument() : real  ;
 begin
     getArgument:=_angle;
+end;
+
+function oVector.toString() : string;
+begin
+    toString := '(' + IntToStr(getX()) + ', ' + IntToStr(getY()) + ')';
 end;
 
 end.

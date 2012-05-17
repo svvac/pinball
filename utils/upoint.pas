@@ -31,6 +31,7 @@ Type oPoint = class
     function sameAs(p: oPoint) : boolean;
     
     function toStr() : string;
+    function toString() : string;
   end;
 
 
@@ -112,12 +113,17 @@ begin
     setY(aPy);
 end;
 
-// string toStr(void)
+// string toString(void)
 // returns a string representation of the point as (X, Y)
+function oPoint.toString() : string;
+begin
+    toString := '(' + IntToStr(getX) + ', ' + IntToStr(getY) + ')';
+end;
 function oPoint.toStr() : string;
 begin
-    toStr := '(' + IntToStr(getX) + ', ' + IntToStr(getY) + ')';
+    toStr := toString();
 end;
+
 
 end.
 
