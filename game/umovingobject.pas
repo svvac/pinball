@@ -13,6 +13,7 @@ type aMovingObject = class(aObject)
     protected
         _speed: oVector;
         _oldpos: oPoint;
+        _succ_reverts: integer;
 
     public
         constructor create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler); virtual;
@@ -39,6 +40,7 @@ begin
     _speed := oVector.createCartesian(0, 0);
     inherited create(position, mask, face, dispatcher);
     _oldpos := oPoint.clone(_position);
+    _succ_reverts := 0;
 
     //s := TickSignal.create(self.getDispatcher());
     //self.getDispatcher().bind(s, @self.onTick);
@@ -54,12 +56,18 @@ procedure aMovingObject.setSafePosition();
 begin
     _oldpos.free();
     _oldpos := oPoint.clone(_position);
+    writeln(_id + ': Position ' + _oldpos.toString() + ' tagged safe');
+    _succ_reverts := 0;
 end;
 
 procedure aMovingObject.revertToSafePosition();
 begin
-    _position.free();
-    _position := oPoint.clone(_oldpos);
+    if _succ_reverts >= 3 then begin
+        writeln(_id + ': Reverting to last safe position ' + _oldpos.toString() + ' (was at ' + _position.toString() + ')');
+        _position.free();
+        _position := oPoint.clone(_oldpos);
+        _succ_reverts += 1;
+    end else writeln(_id + ': NOT reverting to last safe position. Too much reverts.');
 end;
 
 // elementaryMove(zone: oObjectCollection)
