@@ -146,7 +146,7 @@ begin
         if (j - dy) > dich.getHeight() then break;  // Exit if we're out of dich's mask (there won't be any collisions)
         for i := 0 to ich.getWidth() do begin  // Loop through ich's columns
             if isColliding then break;  // Exit if collision detected
-            if (j - dy) > dich.getWidth() then break;  // Exit if we're out of dich's mask (there won't be any collisions)
+            if (i - dx) > dich.getWidth() then break;  // Exit if we're out of dich's mask (there won't be any collisions)
 
             isColliding := (ich.getPoint(i, j) and dich.getPoint(i - dx, j - dy));  // Check for collision at (i, j)
         end;
