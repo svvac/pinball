@@ -12,6 +12,7 @@ const GEE = +9.8;
 type aMovingObject = class(aObject)
     protected
         _speed: oVector;
+        _oldpos: oPoint;
 
     public
         constructor create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler); virtual;
@@ -19,6 +20,9 @@ type aMovingObject = class(aObject)
         procedure onCollision(s: oSignal); override;
 
         procedure elementaryMove(zone: oObjectCollection); virtual;
+
+        procedure setSafePosition();
+        procedure revertToSafePosition();
 
         procedure onTick(s: oSignal); virtual;
 
@@ -34,6 +38,7 @@ var s: oSignal;
 begin
     _speed := oVector.createCartesian(0, 0);
     inherited create(position, mask, face, dispatcher);
+    _oldpos := oPoint.clone(_position);
 
     //s := TickSignal.create(self.getDispatcher());
     //self.getDispatcher().bind(s, @self.onTick);
@@ -43,6 +48,18 @@ end;
 procedure aMovingObject.onCollision(s: oSignal);
 begin
 
+end;
+
+procedure aMovingObject.setSafePosition();
+begin
+    _oldpos.free();
+    _oldpos := oPoint.clone(_position);
+end;
+
+procedure aMovingObject.revertToSafePosition();
+begin
+    _position.free();
+    _position := oPoint.clone(_oldpos);
 end;
 
 // elementaryMove(zone: oObjectCollection)
@@ -68,7 +85,11 @@ begin
         if self.isColliding(zone.get(i), p) then begin
             writeln(' [COLLISION]');
             getDispatcher().emit(zone.get(i).collisionSignalFactory(self, p));
-        end else writeln(' [PASS]');
+            revertToSafePosition();
+        end else begin
+            writeln(' [PASS]');
+            setSafePosition();
+        end;
     end;
 
 end;
