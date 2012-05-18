@@ -62,7 +62,7 @@ end;
 
 procedure aMovingObject.revertToSafePosition();
 begin
-    if _succ_reverts >= 3 then begin
+    if _succ_reverts <= 3 then begin
         writeln(_id + ': Reverting to last safe position ' + _oldpos.toString() + ' (was at ' + _position.toString() + ')');
         _position.free();
         _position := oPoint.clone(_oldpos);
