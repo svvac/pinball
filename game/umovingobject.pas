@@ -70,12 +70,14 @@ procedure aMovingObject.elementaryMove(zone: oObjectCollection);
 var ev: oVector;
     i: integer;
     p: oPoint;
+    colliding: boolean;
 begin
     // We create an elementary vector based on current speed indications
     ev := oVector.createPolar(1, _speed.getArgument());
     // Move the object accordingly
     _position.apply(ev);
     p := oPoint.create(0, 0);
+    colliding := false;
 
     writeln(_id + ': Found ' + IntToStr(zone.count()) + ' objects to check for collision');
 
@@ -85,12 +87,11 @@ begin
         if self.isColliding(zone.get(i), p) then begin
             writeln(' [COLLISION]');
             getDispatcher().emit(zone.get(i).collisionSignalFactory(self, p));
-            revertToSafePosition();
-        end else begin
-            writeln(' [PASS]');
-            setSafePosition();
-        end;
+            colliding := true;
+        end else writeln(' [PASS]');
     end;
+
+    if not colliding then setSafePosition() else revertToSafePosition();
 
 end;
 
