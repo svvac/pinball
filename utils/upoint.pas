@@ -27,11 +27,13 @@ Type oPoint = class
     procedure setXY(aPx, aPy: integer);
 
     procedure apply(v: oVector);
+
+    function position() : oVector;
     
     function sameAs(p: oPoint) : boolean;
     
     function toStr() : string;
-    function toString() : string;
+    function toString() : string; override;
   end;
 
 
@@ -111,6 +113,11 @@ procedure oPoint.setXY(aPx, aPy: integer);
 begin
     setX(aPx);
     setY(aPy);
+end;
+
+function oPoint.position() : oVector;
+begin
+    position := oVector.createCartesian(getX(), getY());
 end;
 
 // string toString(void)

@@ -25,6 +25,7 @@ type oVector=class
         procedure setModule(m : real);
         procedure setArgument(a : real);
         procedure sum(v: oVector);
+        procedure factor(k: real);
 
 
         function getX() : integer;
@@ -34,7 +35,7 @@ type oVector=class
         function getModule() : real;
         function getArgument() : real;
 
-        function toString() : string;
+        function toString() : string; override;
 end;
 
 
@@ -88,6 +89,12 @@ begin
     _x += v.getRX();
     _y += v.getRY();
     updatePolar();
+end;
+
+procedure oVector.factor(k: real);
+begin
+    _radius *= k;
+    updateCartesian();
 end;
 
 // setModule(x: integer)
