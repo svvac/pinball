@@ -17,7 +17,7 @@ oSignal = class //(tStringHash)
         function getName() : string; virtual;
         function getSender() : tObject; virtual;
 
-        function toString() : string; override;
+        function toString() : string;
 end;
 
 implementation

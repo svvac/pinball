@@ -35,7 +35,7 @@ type oVector=class
         function getModule() : real;
         function getArgument() : real;
 
-        function toString() : string; override;
+        function toString() : string;
 end;
 
 
@@ -73,7 +73,7 @@ end;
 procedure oVector.setX(ax : integer);
 begin
     _x := ax;
-    updateCartesian();
+    updatePolar();
 end;
 
 // setY(x: integer)
@@ -81,7 +81,7 @@ end;
 procedure oVector.setY(ay : integer);
 begin
     _y := ay;
-    updateCartesian();
+    updatePolar();
 end;
 
 procedure oVector.sum(v: oVector);

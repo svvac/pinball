@@ -33,7 +33,7 @@ Type oPoint = class
     function sameAs(p: oPoint) : boolean;
     
     function toStr() : string;
-    function toString() : string; override;
+    function toString() : string;
   end;
 
 
