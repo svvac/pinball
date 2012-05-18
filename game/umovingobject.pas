@@ -6,7 +6,7 @@ interface
 
 uses Classes, SysUtils, Graphics, eventhandler, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap;
 
-const GEE = -9.8;
+const GEE = +9.8;
 
 
 type aMovingObject = class(aObject)
@@ -35,8 +35,8 @@ begin
     _speed := oVector.createCartesian(0, 0);
     inherited create(position, mask, face, dispatcher);
 
-    s := TickSignal.create(self.getDispatcher());
-    self.getDispatcher().bind(s, @self.onTick);
+    //s := TickSignal.create(self.getDispatcher());
+    //self.getDispatcher().bind(s, @self.onTick);
 end;
 
 
@@ -63,9 +63,13 @@ begin
     writeln(_id + ': Found ' + IntToStr(zone.count()) + ' objects to check for collision');
 
     // Check for collision with objects in the zone, and triggers collision signals if needed
-    for i := 0 to zone.count() - 1 do
-        if self.isColliding(zone.get(i), p) then
+    for i := 0 to zone.count() - 1 do begin
+        write(_id + ':       * ' + zone.get(i).getId());
+        if self.isColliding(zone.get(i), p) then begin
+            writeln(' [COLLISION]');
             getDispatcher().emit(zone.get(i).collisionSignalFactory(self, p));
+        end else writeln(' [PASS]');
+    end;
 
 end;
 
@@ -83,8 +87,11 @@ begin
 end;
 
 procedure aMovingObject.setSpeed(v: oVector);
+var old: oVector;
 begin
-    _speed.sum(v);
+    old := _speed;
+    _speed := oVector.clone(v);
+    old.free();
 end;
 
 

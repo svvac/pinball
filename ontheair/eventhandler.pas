@@ -83,7 +83,7 @@ begin
     
     col.push(c);
 
-    debugLn('ontheair: Bound a new method to ' + sig.getName());
+    debugLn('ontheair:' + sig.getName() + ': bound new slot');
 end;
 
 // emit(sig: oSignal)
@@ -103,7 +103,7 @@ begin
     
     c := o as oCallbackCollection;
 
-    debugLn('ontheair: Signal ' + sig.getName() + ' emitted');
+    debugLn('ontheair:' + sig.toString());
     
     for i:= 0 to c.count() - 1 do begin
         c.get(i)(sig);   // Calls the callback c.get(i) with `sig' as an argument

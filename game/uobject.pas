@@ -4,7 +4,7 @@ unit uobject;
 
 interface
 
-uses Classes, SysUtils, Graphics, eventhandler, upoint, ushape, signal, ugamesignals, BGRABitmap, BGRABitmapTypes;
+uses Classes, SysUtils, Graphics, eventhandler, upoint, uvector, ushape, signal, ugamesignals, BGRABitmap, BGRABitmapTypes;
 
 
 type aObject = class
@@ -35,6 +35,8 @@ type aObject = class
         function getMask() : oShape;
         function getPosition() : oPoint;
         function getFace() : TBGRABitmap;
+
+        function getId() : string;
 end;
 
 implementation
@@ -100,6 +102,7 @@ procedure aObject.onRedraw(s: oSignal);
 var sig: RedrawSignal;
 begin
     sig := s as RedrawSignal;
+    writeln(_id + ': redrawing');
     self.draw(sig.bm);
 end;
 
@@ -111,6 +114,7 @@ function aObject.isColliding(o: aObject; var p: oPoint) : boolean;
 var ich, dich: oShape;
     dx, dy: integer;
     i, j: integer;
+    ref: oPoint;
 begin
     // Cartesian position deltas
     dx := o.getPosition().getX() - self.getPosition().getX();
@@ -125,10 +129,12 @@ begin
         ich := self.getMask(); dich := o.getMask();
         dx := +dx;
         dy := +dy;
+        ref := self.getPosition();
     end else begin
         ich := o.getMask(); dich := self.getMask();
         dx := -dx;
         dy := -dy;
+        ref := o.getPosition();
     end;
 
     // Assume there's no collision
@@ -137,20 +143,20 @@ begin
     // We exit the loop as soon as we got a collision : no need to look further
     for j := 0 to ich.getHeight() do begin  // Loop through ich's lines
         if isColliding then break;  // Exit if collision detected
-        if (j + dy) > dich.getHeight() then break;  // Exit if we're out of dich's mask (there won't be any collisions)
+        if (j - dy) > dich.getHeight() then break;  // Exit if we're out of dich's mask (there won't be any collisions)
         for i := 0 to ich.getWidth() do begin  // Loop through ich's columns
             if isColliding then break;  // Exit if collision detected
-            if (j + dy) > dich.getWidth() then break;  // Exit if we're out of dich's mask (there won't be any collisions)
+            if (j - dy) > dich.getWidth() then break;  // Exit if we're out of dich's mask (there won't be any collisions)
 
-            isColliding := (ich.getPoint(i, j) = dich.getPoint(i, j));  // Check for collision at (i, j)
+            isColliding := (ich.getPoint(i, j) and dich.getPoint(i - dx, j - dy));  // Check for collision at (i, j)
         end;
     end;
 
     // For now, we assume the collision is at the first point passing the above test
     // Not sure if this is safe though, but it's not completely wrong in theory, and it sets the
     // interface.
-    p.setXY(i, j);
-    
+    ref.apply(oVector.createCartesian(i, j));
+    p := ref;
 end;
 
 // isColliding(o: aObject) : boolean
@@ -193,6 +199,10 @@ begin
     getDispatcher := _dispatcher;
 end;
 
+function aObject.getId() : string;
+begin
+    getId := _id;
+end;
 
 
 end.

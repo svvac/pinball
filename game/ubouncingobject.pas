@@ -4,7 +4,7 @@ unit ubouncingobject;
 
 interface
 
-uses Classes, Graphics, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap;
+uses Classes, SysUtils, Graphics, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap;
 
 
 type aBouncingObject = class(aObject)
@@ -30,20 +30,30 @@ end;
 procedure aBouncingObject.onCollision(s: oSignal);
 var sig: CollisionSignal;
     o: aMovingObject;
-    v: oVector;
+    v, w: oVector;
     alpha: real;
+    pos: oPoint;
 begin
     sig := s as CollisionSignal;
     o := sig.getSender() as aMovingObject;
-    v := oVector.clone(o.getSpeed());
+    v := o.getSpeed();
 
-    alpha := o.getMask().getTangentAngleAt(sig.position);
+    // Compute relative position
+    pos := oPoint.clone(sig.position);
+    w := o.getPosition().position();
+    w.factor(-1);
+    pos.apply(w);
+    w.free();
 
-    o.getSpeed().setModule(v.getModule() * getBounceFactor());
-    o.getSpeed().setArgument(- v.getArgument() - 2 * alpha);
+    alpha := o.getMask().getTangentAngleAt(pos);
+
+    w := oVector.createPolar(v.getModule() * getBounceFactor(), -v.getArgument() - 2 * alpha);
+    o.setSpeed(w);
+
+    writeln(_id + ': Handling collision at ' + sig.position.toString() + ': α=' + FloatToStr(alpha) + '; speed: ' + v.toString() + ' -> ' + w.toString());
 
     v.free();
-
+    w.free();
 end;
 
 

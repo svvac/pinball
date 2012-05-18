@@ -92,8 +92,9 @@ begin
     // Map
     p := oPoint.create(0, 0);
     shape := oShape.create('bitmaps/canvas.bmp');
+    //shape.rawDebugDump();
     bm := TBGRABitmap.create('bitmaps/canvas.png');
-    bo := aBouncingObject.create(p, shape, bm, _dispatcher, 0.8);
+    bo := aBouncingObject.create(p, shape, bm, _dispatcher, 1);
     writeln('playground:populate: Added canvas at ' + bo.getPosition().toString());
     _objects.push(bo);
 
@@ -101,7 +102,7 @@ begin
     shape := oShape.create('bitmaps/ball.bmp');
     bm := TBGRABitmap.create('bitmaps/ball.png');
     _ball := aMovingObject.create(p, shape, bm, _dispatcher);
-    _ball.setSpeed(oVector.createCartesian(0, 3));
+    _ball.setSpeed(oVector.createCartesian(0, -15));
     writeln('playground:populate: Ball at ' + _ball.getPosition().toString() + ', with speed ' + _ball.getSpeed().toString());
 
     p.free();
@@ -115,6 +116,7 @@ end;
 
 procedure oPlayground.move();
 var i, n: integer;
+    v: oVector;
 begin
     n := round(_ball.getSpeed().getModule());
     writeln('playground: path discretization, v = ' + _ball.getSpeed().toString() + '  (' + IntToStr(n) + ' steps)');
@@ -122,6 +124,10 @@ begin
         writeln('playground: path discretization (' + IntToStr(i) + '/' + IntToStr(n) + '). Ball at ' + _ball.getPosition().toString());
         _ball.elementaryMove(self.getObjectsInZone(_ball.getPosition(), _ball.getMask().getWidth(), _ball.getMask.getHeight()));
     end;
+
+    v := _ball.getSpeed();
+    v.setY(v.getY() + 5);
+    _ball.setSpeed(v);
 end;
 
 procedure oPlayground.onScoreChange(s: oSignal);
@@ -135,8 +141,12 @@ procedure oPlayground.redraw();
 var sig: RedrawSignal;
 begin
     sig := RedrawSignal.create(self);
+    //sig.bm := TBGRABitmap.create(350, 600, BGRABlack);
     sig.bm := _world;
     _dispatcher.emit(sig);
+
+    //sig.bm.free();
+    sig.free();
 end;
 
 function oPlayground.getDispatcher() : oEventHandler;

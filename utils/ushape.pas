@@ -25,6 +25,8 @@ Type oShape = Class
         function getTangentAngleAt(p: oPoint) : real;
         function isOnEdge(p: oPoint) : boolean;
 
+        procedure rawDebugDump();
+
         function getWidth() : integer;
         function getHeight() : integer;
         //Procedure merge (s: oShape, p: oPoint);
@@ -122,7 +124,7 @@ begin
         r := edgePathFind(r, p, -1, PATHFIND_DEPTH);
     end;
     
-    if not q.sameAs(r) then getTangentAngleAt := arctan2(q.getX() - r.getX(), q.getY() - r.getY());
+    if not q.sameAs(r) then getTangentAngleAt := arctan2(q.getX() - r.getX(), q.getY() - r.getY()) + 2 * arctan(1);
 end;
 
 // oPoint edgePathFind(where, src: oPoint, dir: integer, depth: integer)
@@ -181,6 +183,16 @@ begin
                 break;
             end;
         end;
+    end;
+end;
+
+procedure oShape.rawDebugDump();
+var i, j: integer;
+begin
+    for j := 0 to getHeight() - 1 do begin
+        for i := 0 to getWidth() - 1 do
+            if getPoint(i, j) then write('#') else write(' ');
+        writeln;
     end;
 end;
 

@@ -17,9 +17,10 @@ type
     Timer1: TTimer;
 
     procedure FormCreate(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     procedure redraw(s: oSignal);
-    procedure Timer1Timer(Sender: TObject);
+    procedure Tick(Sender: TObject);
     
     private
         { private declarations }
@@ -45,17 +46,25 @@ begin
     playground.tick();
 end;
 
+procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+    playground.tick();
+end;
+
 procedure TForm1.redraw(s: oSignal);
 var sig: RedrawSignal;
 begin
     sig := s as RedrawSignal;
 
+    writeln('form: updating image');
+
+    Image1.Canvas.FillRect(0, 0, 350, 600);
     sig.bm.draw(Image1.Canvas, 0, 0, true);
 end;
 
-procedure TForm1.Timer1Timer(Sender: TObject);
+procedure TForm1.Tick(Sender: TObject);
 begin
-    playground.tick();
+    if false then playground.tick();
 end;
 
 end.

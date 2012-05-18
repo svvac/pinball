@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 841
+  Left = 994
   Height = 600
-  Top = 375
+  Top = 380
   Width = 350
   Caption = 'Form1'
   ClientHeight = 600
@@ -11,16 +11,17 @@ object Form1: TForm1
   Constraints.MinHeight = 600
   Constraints.MinWidth = 350
   OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   LCLVersion = '0.9.30.4'
   object Image1: TImage
     Left = 0
-    Height = 632
+    Height = 600
     Top = 0
-    Width = 528
+    Width = 350
   end
   object Timer1: TTimer
     Interval = 50
-    OnTimer = Timer1Timer
+    OnTimer = Tick
     left = 16
     top = 24
   end

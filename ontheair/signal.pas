@@ -16,6 +16,8 @@ oSignal = class //(tStringHash)
 
         function getName() : string; virtual;
         function getSender() : tObject; virtual;
+
+        function toString() : string; override;
 end;
 
 implementation
@@ -43,6 +45,11 @@ end;
 function oSignal.getSender() : tObject;
 begin
     getSender := _sender; //getValue('sender');
+end;
+
+function oSignal.toString() : string;
+begin
+    toString := getName() + ': Emited';
 end;
 
 

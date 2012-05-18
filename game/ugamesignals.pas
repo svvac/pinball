@@ -16,6 +16,7 @@ CollisionSignal = class(oSignal)
         constructor create(sender: TObject; id: string; p: oPoint);
         destructor destroy(); override;
         function getName() : string; override;
+        function toString() : string; override;
 end;
 
 // Signal triggered on score variation
@@ -62,6 +63,11 @@ end;
 function CollisionSignal.getName() : string;
 begin
     getName := _id;
+end;
+
+function CollisionSignal.toString() : string;
+begin
+    toString := inherited toString() + ' at ' + position.toString();
 end;
 
 constructor ScoreChangeSignal.create(sender: TObject; p: integer);
