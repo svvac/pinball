@@ -24,6 +24,7 @@ type
     
     private
         { private declarations }
+        autoanim: boolean;
     public
         { public declarations }
   end;
@@ -38,6 +39,7 @@ procedure TForm1.FormCreate(Sender: TObject);
 var s: oSignal;
 begin
     playground := oPlayground.create();
+    autoanim := false;
 
     s := RedrawSignal.create(self);
     playground.getDispatcher().bind(s, @self.redraw);
@@ -48,7 +50,8 @@ end;
 
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-    playground.tick();
+    //playground.tick();
+    autoanim := not autoanim;
 end;
 
 procedure TForm1.redraw(s: oSignal);
@@ -64,7 +67,7 @@ end;
 
 procedure TForm1.Tick(Sender: TObject);
 begin
-    if false then playground.tick();
+    if autoanim then playground.tick();
 end;
 
 end.
