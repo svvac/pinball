@@ -103,11 +103,15 @@ begin
     
     c := o as oCallbackCollection;
 
-    debugLn('ontheair:' + sig.toString());
+    debugLn('ontheair:' + sig.toString() + ': Starting event chain');
     
-    for i:= 0 to c.count() - 1 do begin
+    for i := 0 to c.count() - 1 do begin
+        debugLn('ontheair:' + sig.toString() + ': Running callback ' + IntToStr(i + 1) + '/' + IntToStr(c.count()));
         c.get(i)(sig);   // Calls the callback c.get(i) with `sig' as an argument
+        debugLn('ontheair:' + sig.toString() + ': Callback ' + IntToStr(i + 1) + '/' + IntToStr(c.count()) + ' finished.');
     end;
+
+    debugLn('ontheair:' + sig.toString() + ': End of event chain');
 end;
 
 

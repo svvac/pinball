@@ -24,6 +24,7 @@ constructor aBouncingObject.create(position: oPoint; mask: oShape; face: TBGRABi
 begin
     inherited create(position, mask, face, dispatcher);
     _bounce_factor := factor;
+    _collision_safe := false;
 end;
 
 
@@ -50,7 +51,7 @@ begin
     w := oVector.createPolar(v.getModule() * getBounceFactor(), -v.getArgument() - 2 * alpha);
     o.setSpeed(w);
 
-    writeln(_id + ': Handling collision at ' + sig.position.toString() + ': α=' + FloatToStr(alpha) + '; speed: ' + v.toString() + ' -> ' + w.toString());
+    writeln(_id + ': Handling bouncing at ' + sig.position.toString() + ': α=' + FloatToStr(alpha) + '; speed: ' + v.toString() + ' -> ' + w.toString());
 
     v.free();
     w.free();

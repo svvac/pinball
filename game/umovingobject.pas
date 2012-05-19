@@ -6,7 +6,7 @@ interface
 
 uses Classes, SysUtils, Graphics, eventhandler, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap;
 
-const GEE = +9.8;
+const GEE = +0;
 
 
 type aMovingObject = class(aObject)
@@ -42,8 +42,8 @@ begin
     _oldpos := oPoint.clone(_position);
     _succ_reverts := 0;
 
-    //s := TickSignal.create(self.getDispatcher());
-    //self.getDispatcher().bind(s, @self.onTick);
+    s := TickSignal.create(self.getDispatcher());
+    self.getDispatcher().bind(s, @self.onTick);
 end;
 
 
@@ -95,7 +95,9 @@ begin
         if self.isColliding(zone.get(i), p) then begin
             writeln(' [COLLISION]');
             getDispatcher().emit(zone.get(i).collisionSignalFactory(self, p));
-            colliding := true;
+
+            colliding := not zone.get(i).isCollisionSafe();
+            if colliding then writeln(_id + ': Collision was safe');
         end else writeln(' [PASS]');
     end;
 
@@ -106,6 +108,7 @@ end;
 procedure aMovingObject.onTick(s: oSignal);
 begin
     // Gravity :
+    writeln(_id + ': Hello, this is gravity');
     _speed.setY(round(_speed.getY() + GEE));
 end;
 

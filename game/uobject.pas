@@ -15,12 +15,15 @@ type aObject = class
         _score:         integer;
         _dispatcher:    oEventHandler;
         _id:            string;
+        _collision_safe:boolean;
 
         function getDispatcher() : oEventHandler;
 
     public
         constructor create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler);
         destructor destroy(); override;
+
+        function isCollisionSafe() : boolean;
 
         function isColliding(o: aObject; var p: oPoint) : boolean; virtual;
         function isColliding(o: aObject) : boolean;
@@ -56,6 +59,8 @@ begin
     _dispatcher := dispatcher;
     _face := face;
 
+    _collision_safe := true;
+
     // Generate object ID, used to create a separate collision signal per object instance
     _id := self.ClassName + '/' + IntToStr(__object_count);
     __object_count += 1;
@@ -81,6 +86,11 @@ begin
     _mask.free();
     _position.free();
     inherited;
+end;
+
+function aObject.isCollisionSafe() : boolean;
+begin
+    isCollisionSafe := _collision_safe;
 end;
 
 // Generates a CollisionSignal for this object (using the ID trick)

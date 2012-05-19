@@ -25,6 +25,7 @@ type oVector=class
         procedure setModule(m : real);
         procedure setArgument(a : real);
         procedure sum(v: oVector);
+        procedure diff(v: oVector);
         procedure factor(k: real);
 
 
@@ -88,6 +89,13 @@ procedure oVector.sum(v: oVector);
 begin
     _x += v.getRX();
     _y += v.getRY();
+    updatePolar();
+end;
+
+procedure oVector.diff(v: oVector);
+begin
+    _x -= v.getRX();
+    _y -= v.getRY();
     updatePolar();
 end;
 

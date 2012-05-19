@@ -38,20 +38,22 @@ implementation
 procedure TForm1.FormCreate(Sender: TObject);
 var s: oSignal;
 begin
-    playground := oPlayground.create();
     autoanim := false;
+    playground := oPlayground.create();
 
     s := RedrawSignal.create(self);
     playground.getDispatcher().bind(s, @self.redraw);
     s.free();
 
-    playground.tick();
+    playground.redraw();
+
+    //playground.tick();
 end;
 
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-    //playground.tick();
-    autoanim := not autoanim;
+    playground.tick();
+    //autoanim := not autoanim;
 end;
 
 procedure TForm1.redraw(s: oSignal);
@@ -61,13 +63,13 @@ begin
 
     writeln('form: updating image');
 
-    Image1.Canvas.FillRect(0, 0, 350, 600);
+    Image1.Canvas.FillRect(0, 0, 440, 490);
     sig.bm.draw(Image1.Canvas, 0, 0, true);
 end;
 
 procedure TForm1.Tick(Sender: TObject);
 begin
-    if autoanim then playground.tick();
+    if autoanim or false then playground.tick();
 end;
 
 end.

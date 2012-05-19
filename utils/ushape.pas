@@ -6,15 +6,13 @@ interface
 
 uses Classes, SysUtils, Graphics, upoint, utils, math, BGRABitmap, BGRABitmapTypes;
 
-const TAN_SAMPLE_HALF_WIDTH = 2;
-      PATHFIND_DEPTH = 2;
+const TAN_SAMPLE_HALF_WIDTH = 5;
+      PATHFIND_DEPTH = 3;
       SHAPE_COLOR_FULL = 65536;
 
 Type oShape = Class
     protected
         _bm: TBGRABitmap;
-
-        function edgePathFind(where, src: oPoint; dir: integer; depth: integer) : oPoint;
 
     public
         constructor create(path:string);
@@ -22,8 +20,16 @@ Type oShape = Class
 
         function getPoint(p: oPoint) : boolean;
         function getPoint(x, y: integer) : boolean;
+
         function getTangentAngleAt(p: oPoint) : real;
+        function getTangentAngleAt(p: oPoint; steps: integer) : real;
+        function getNormalAngleAt(p: oPoint) : real;
+        function getNormalAngleAt(p: oPoint; steps: integer) : real;
+
         function isOnEdge(p: oPoint) : boolean;
+        function edgeCoefficient(p: oPoint) : integer;
+
+        function edgePathFind(where, src: oPoint; dir: integer; depth: integer) : oPoint;
 
         procedure rawDebugDump();
 
@@ -91,9 +97,18 @@ end;
 // boolean isOnEdge(p: oPoint)
 // returns true if the point p is considered on the edge of the shape.
 function oShape.isOnEdge(p: oPoint) : boolean;
+var s: integer;
+begin
+    s := edgeCoefficient(p);
+    // The best way I found is to count the solid points in the direct neighbourhood of the point
+    if (s > 2) and (s < 8) then isOnEdge := true
+                           else isOnEdge := false;
+end;
+
+function oShape.edgeCoefficient(p: oPoint) : integer;
 var s, i, j: integer;
 begin
-    isOnEdge := false;
+    edgeCoefficient := 0;
 
     // To be on the edge, a point must be solid
     if getPoint(p) then begin
@@ -101,16 +116,14 @@ begin
         for i := p.getX() - 1 to p.getX() + 1 do
             for j := p.getY() - 1 to p.getY() + 1 do
                 if getPoint(i, j) then s += 1;
-        
-        // The best way I found is to count the solid points in the direct neighbourhood of the point
-        if (s > 2) and (s < 8) then isOnEdge := true
-                               else isOnEdge := false;
+
+        edgeCoefficient := s
     end;
 end;
 
 // real getTangentAngleAt(p: oPoint)
 // returns the angle of the tangent with the vertical at point p
-function oShape.getTangentAngleAt(p: oPoint) : real;
+function oShape.getTangentAngleAt(p: oPoint; steps: integer) : real;
 var q, r: oPoint;
     i: integer;
 begin
@@ -119,12 +132,29 @@ begin
     q := edgePathFind(p, p, +1, PATHFIND_DEPTH);
     r := edgePathFind(p, p, -1, PATHFIND_DEPTH);
 
-    for i := 1 to TAN_SAMPLE_HALF_WIDTH do begin
+    for i := 1 to steps do begin
         q := edgePathFind(q, p, +1, PATHFIND_DEPTH);
         r := edgePathFind(r, p, -1, PATHFIND_DEPTH);
     end;
+
+    writeln('shape: Computing tangent angle at ' + p.toString() + ' with points ' + q.toString() + ' and ' + r.toString());
     
     if not q.sameAs(r) then getTangentAngleAt := arctan2(q.getX() - r.getX(), q.getY() - r.getY()) + 2 * arctan(1);
+end;
+
+function oShape.getNormalAngleAt(p: oPoint; steps: integer) : real;
+begin
+    getNormalAngleAt := getTangentAngleAt(p, steps) - 2 * arctan(1);
+end;
+
+function oShape.getTangentAngleAt(p: oPoint) : real;
+begin
+    getTangentAngleAt := getTangentAngleAt(p, TAN_SAMPLE_HALF_WIDTH);
+end;
+
+function oShape.getNormalAngleAt(p: oPoint) : real;
+begin
+    getNormalAngleAt := getNormalAngleAt(p, TAN_SAMPLE_HALF_WIDTH);
 end;
 
 // oPoint edgePathFind(where, src: oPoint, dir: integer, depth: integer)
@@ -135,10 +165,13 @@ end;
 //    depth: the number of recursive calls to make if a given point isn't on the edge
 function oShape.edgePathFind(where, src: oPoint; dir: integer; depth: integer) : oPoint;
 var p, q: oPoint;
-    list: array [0 .. 3] of oPoint;
+    list:  array [0 .. 3] of oPoint;
+    coef, k: real;
+    i: integer;
 begin
     // If n point found (e.g. not on the edge), we default to the origin of the search
     edgePathFind := where;
+    coef := 100;
 
     // We only walk the shape if we've got some levels of recursion left
     if depth > 0 then begin
@@ -169,18 +202,20 @@ begin
         for p in list do begin
             // ignore the source and the origin
             if p.sameAs(where) or p.sameAs(src) then continue;
+            k := (edgeCoefficient(p) - 4.5) * src.distanceTo(p);
             // if we're not on the edge of the shape, make a recursive call
             if not isOnEdge(p) then begin
-               q := edgePathFind(p, where, dir, depth - 1);
-               // If the result is on the edge and not the subserach point, we keep it
-               if isOnEdge(q) and not q.sameAs(p) then begin
-                   edgePathFind := q;
-                   break;
+                q := edgePathFind(p, where, dir, depth - 1);
+                k := (edgeCoefficient(q) - 4.5) * src.distanceTo(q);
+                // If the result is on the edge and not the subserach point, we keep it
+                if (k < coef) and not q.sameAs(p) and not q.sameAs(src) and not q.sameAs(src) then begin
+                    coef := k;
+                    edgePathFind := q;
                end;
             // If we're on the edge, we got a winner!
-            end else begin
+            end else if (k < coef) and not p.sameAs(src) and not p.sameAs(src) then begin
+                coef := k;
                 edgePathFind := p;
-                break;
             end;
         end;
     end;

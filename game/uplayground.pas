@@ -4,7 +4,7 @@ unit uplayground;
 
 interface
 
-uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, uvector, umovingobject, ushape, BGRABitmap, BGRABitmapTypes;
+uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, uvector, uguide, umovingobject, ushape, BGRABitmap, BGRABitmapTypes;
 
 CONST NB_LIFES = 3;
 
@@ -18,7 +18,6 @@ type oPlayground = class
 
         _objects: oObjectCollection;
 
-        procedure redraw();
         procedure populate();
         procedure move();
 
@@ -35,6 +34,8 @@ type oPlayground = class
 
         procedure init();
         procedure start();
+        procedure redraw();
+        procedure drawSpeed(s: oSignal);
 
         function getDispatcher() : oEventHandler;
 
@@ -48,7 +49,7 @@ constructor oPlayground.create();
 var s: oSignal;
 begin
     _dispatcher := oEventHandler.create();
-    _world := TBGRABitmap.create(350, 600, BGRABlack);
+    _world := TBGRABitmap.create(440, 490, BGRAWhite);
     _objects := oObjectCollection.create();
 
     // Registers and binds ScoreChangeSignal
@@ -77,6 +78,10 @@ begin
 
     populate();
 
+    s := RedrawSignal.create(_dispatcher);
+    _dispatcher.bind(s, @self.drawSpeed);
+    s.free();
+
 end;
 
 destructor oPlayground.destroy();
@@ -88,6 +93,8 @@ var bo: aBouncingObject;
     shape: oShape;
     p: oPoint;
     bm: TBGRABitmap;
+    g: oGuide;
+    s1, s2: integer;
 begin
     // Map
     p := oPoint.create(0, 0);
@@ -98,12 +105,19 @@ begin
     writeln('playground:populate: Added canvas at ' + bo.getPosition().toString());
     _objects.push(bo);
 
-    p.setXY(318, 570);
+    p.setXY(384, 416);
     shape := oShape.create('bitmaps/ball.bmp');
     bm := TBGRABitmap.create('bitmaps/ball.png');
     _ball := aMovingObject.create(p, shape, bm, _dispatcher);
-    _ball.setSpeed(oVector.createCartesian(0, -15));
+    //randomize();
+    //_ball.setSpeed(oVector.createPolar(10, random(round(8*arctan(1)))));
+    _ball.setSpeed(oVector.createPolar(1, -2*arctan(1)));
     writeln('playground:populate: Ball at ' + _ball.getPosition().toString() + ', with speed ' + _ball.getSpeed().toString());
+
+    p.setXY(260, 34);
+    g := oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, -20);
+    g.getMask().rawDebugDump();
+    _objects.push(g);
 
     p.free();
 end;
@@ -124,10 +138,6 @@ begin
         writeln('playground: path discretization (' + IntToStr(i) + '/' + IntToStr(n) + '). Ball at ' + _ball.getPosition().toString());
         _ball.elementaryMove(self.getObjectsInZone(_ball.getPosition(), _ball.getMask().getWidth(), _ball.getMask.getHeight()));
     end;
-
-    v := _ball.getSpeed();
-    v.setY(v.getY() + 5);
-    _ball.setSpeed(v);
 end;
 
 procedure oPlayground.onScoreChange(s: oSignal);
@@ -139,6 +149,7 @@ end;
 
 procedure oPlayground.redraw();
 var sig: RedrawSignal;
+    p: oPoint;
 begin
     sig := RedrawSignal.create(self);
     //sig.bm := TBGRABitmap.create(350, 600, BGRABlack);
@@ -147,6 +158,39 @@ begin
 
     //sig.bm.free();
     sig.free();
+    p := _ball.getPosition();
+    p.apply(_ball.getSpeed());
+    writeln('playground: Vector to be drawn between ' + _ball.getPosition().toString() + ' and ' + p.toString());
+
+    _world.drawPolyLineAntialias([PointF(_ball.getPosition().getX(), _ball.getPosition().getY()), PointF(p.getX(), p.getY())], BGRA(255, 0, 0), 1);
+end;
+
+procedure oPlayground.drawSpeed(s: oSignal);
+var p, q, r: oPoint;
+    v: oVector;
+    sig: RedrawSignal;
+    o: aObject;
+    c: TBGRAPixel;
+    i: integer;
+begin
+    sig := s as RedrawSignal;
+    p := _ball.getPosition();
+    v := _ball.getSpeed();
+    v.factor(2);
+    p.apply(v);
+    writeln('playground: Vector to be drawn between ' + _ball.getPosition().toString() + ' and ' + p.toString());
+
+    sig.bm.drawPolyLineAntialias([PointF(_ball.getPosition().getX() + 7, _ball.getPosition().getY() + 7), PointF(p.getX() + 7, p.getY() + 7)], BGRA(255, 0, 0), 2);
+
+    {p.setXY(91, 100);
+    o := _objects.get(0);
+    if o.getMask().isOnEdge(p) then c := BGRA(0, 255, 0) else c := BGRA(255, 0, 0);
+
+    q := oPoint.clone(p);
+    for i := 0 to 100 do
+        q := o.getMask().edgePathFind(q, p, -1, 1);
+    sig.bm.drawPolyLineAntialias([PointF(p.getX(), p.getY()), PointF(q.getX(), q.getY())], BGRA(0, 0, 255), 5);
+    sig.bm.drawPolyLineAntialias([PointF(p.getX(), p.getY())], c, 5);}
 end;
 
 function oPlayground.getDispatcher() : oEventHandler;
