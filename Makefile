@@ -1,7 +1,7 @@
 # Makefile
 
 FPC=fpc
-SRCDIRS=. utils utils/bgrabitmap5.7.1 ontheair game
+SRCDIRS=. utils utils/bgrabitmap5.7.1 ontheair game tests
 LCLSRC=/usr/lib/lazarus/lcl/units/x86_64-linux
 GUIFLAVOR=gtk2
 FPCOPT=-MObjFPC -Schi -O1 -gl -vewnhi -l

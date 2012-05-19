@@ -4,18 +4,16 @@ unit ugamesignals;
 
 interface
 
-uses Classes, Graphics, signal, upoint, BGRABitmap;
+uses Classes, Graphics, signal, uniquesignal, upoint, BGRABitmap;
 
 type
 
 // Signal triggered on collision
-CollisionSignal = class(oSignal)
-    protected _id: string;
+CollisionSignal = class(oUniqueSignal)
     public
         position: oPoint;
         constructor create(sender: TObject; id: string; p: oPoint);
         destructor destroy(); override;
-        function getName() : string; override;
         function toString() : string; override;
 end;
 
@@ -50,19 +48,13 @@ implementation
 constructor CollisionSignal.create(sender: TObject; id: string; p: oPoint);
 begin
     position := oPoint.clone(p);
-    _id := self.ClassName + '/' + id;
-    inherited create(sender);
+    inherited create(sender, id);
 end;
 
 destructor CollisionSignal.destroy();
 begin
     position.free();
     inherited;
-end;
-
-function CollisionSignal.getName() : string;
-begin
-    getName := _id;
 end;
 
 function CollisionSignal.toString() : string;

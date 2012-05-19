@@ -48,7 +48,9 @@ begin
     pos.apply(w);
     w.free();
 
-    alpha := o.getMask().getNormalAngleAt(pos, abs(_steps)) * (_steps div abs(_steps));
+    alpha := o.getMask().getTangentAngleAt(pos, abs(_steps));
+
+    if _steps < 0 then alpha += 4*arctan(1);
 
     v.setArgument(alpha);
     o.setSpeed(v);
