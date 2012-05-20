@@ -48,12 +48,12 @@ begin
 
     // Compute relative position
     pos := oPoint.clone(sig.position);
-    w := o.getPosition().position();
+    w := self.getPosition().position();
     w.factor(-1);
     pos.apply(w);
     w.free();
 
-    alpha := o.getMask().getNormalAngleAt(pos);
+    alpha := self.getMask().getNormalAngleAt(pos);
 
     _dispatcher.emit(_speeddrawer1.signalFactory(self, oVector.createPolar(20, alpha), sig.position));
     _dispatcher.emit(_speeddrawer2.signalFactory(self, oVector.createPolar(-20, alpha), sig.position));
@@ -61,7 +61,7 @@ begin
     w := oVector.createPolar(v.getModule() * getBounceFactor(), 2 * alpha - v.getArgument() - 4 * arctan(1));
     o.setSpeed(w);
 
-    d(4, _id, 'Handling bouncing at ' + s(sig.position) + ': α=' + s(alpha) + '; speed: ' + s(v) + ' -> ' + s(w));
+    d(4, _id, 'Handling bouncing at ' + s(sig.position) + ': ' + s('alpha') + '=' + s(alpha) + '; speed: ' + s(v) + s('->') + s(w));
 
     v.free();
     w.free();

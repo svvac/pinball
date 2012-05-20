@@ -43,7 +43,7 @@ var sig: CollisionSignal;
 begin
     sig := si as CollisionSignal;
     o := sig.getSender() as aMovingObject;
-    v := o.getSpeed();
+    //v := o.getSpeed();
 
     // Compute relative position
     pos := oPoint.clone(sig.position);
@@ -52,17 +52,17 @@ begin
     pos.apply(w);
     w.free();
 
-    alpha := o.getMask().getSecantAngleAt(pos, abs(_steps));
-    alpha -= 2 * arctan(1);  // TODO: Temporary fix, for testing purposes
-
-    //if _steps < 0 then alpha += 4*arctan(1);
+    alpha := self.getMask().getNormalAngleAt(pos, abs(_steps));
+    
+    if _steps < 0 then alpha += 4 * arctan(1);
 
     _dispatcher.emit(_speeddrawer.signalFactory(self, oVector.createPolar(20, alpha), sig.position));
 
-    v.setArgument(alpha);
+    v := oVector.createPolar(o.getSpeed().getModule(), alpha);
+    d(4, _id, 'Handling guiding at ' + s(sig.position) + ': ' + s('alpha') + '=' + s(alpha));
+    d(12, _id, 'Speed before guiding was ' + s(o.getSpeed()));
     o.setSpeed(v);
-
-    d(4, _id, 'Handling guiding at ' + s(sig.position) + ': α=' + s(alpha));
+    d(12, _id, 'Speed after guiding was ' + s(o.getSpeed()));
 
     v.free();
 end;
