@@ -124,7 +124,8 @@ function aObject.isColliding(o: aObject; var p: oPoint) : boolean;
 var ich, dich: oShape;
     dx, dy: integer;
     i, j: integer;
-    ref: oPoint;
+    ref, sol, pp: oPoint;
+    k, q: real;
 begin
     // Cartesian position deltas
     dx := o.getPosition().getX() - self.getPosition().getX();
@@ -150,22 +151,35 @@ begin
     // Assume there's no collision
     isColliding := false;
 
+    q := 100;
+    sol := oPoint.clone(ref);
+    pp := oPoint.create(0, 0);
+
     // We exit the loop as soon as we got a collision : no need to look further
     for j := 0 to ich.getHeight() do begin  // Loop through ich's lines
-        if isColliding then break;  // Exit if collision detected
+        //if isColliding then break;  // Exit if collision detected
         if (j - dy) > dich.getHeight() then break;  // Exit if we're out of dich's mask (there won't be any collisions)
         for i := 0 to ich.getWidth() do begin  // Loop through ich's columns
-            if isColliding then break;  // Exit if collision detected
+            pp.setXY(i, j);
+            //if isColliding then break;  // Exit if collision detected
             if (i - dx) > dich.getWidth() then break;  // Exit if we're out of dich's mask (there won't be any collisions)
 
-            isColliding := (ich.getPoint(i, j) and dich.getPoint(i - dx, j - dy));  // Check for collision at (i, j)
+            if ich.getPoint(i, j) and dich.getPoint(i - dx, j - dy) then begin  // Check for collision at (i, j)
+                isColliding := true;
+                k := ich.edgeCoefficient(pp);
+                if k < q then begin
+                    q := k;
+                    sol.free();
+                    sol := oPoint.clone(pp);
+                end;
+            end;
         end;
     end;
 
     // For now, we assume the collision is at the first point passing the above test
     // Not sure if this is safe though, but it's not completely wrong in theory, and it sets the
     // interface.
-    ref.apply(oVector.createCartesian(i, j));
+    ref.apply(sol.position());
     p := ref;
 end;
 

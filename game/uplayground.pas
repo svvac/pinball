@@ -106,11 +106,11 @@ begin
     _ball := aMovingObject.create(p, shape, bm, _dispatcher);
     //randomize();
     //_ball.setSpeed(oVector.createPolar(5, random(round(8*arctan(1)))));
-    _ball.setSpeed(oVector.createPolar(10, -2*arctan(1)));
+    _ball.setSpeed(oVector.createPolar(1, -2*arctan(1)));
     writeln('playground:populate: Ball at ' + _ball.getPosition().toString() + ', with speed ' + _ball.getSpeed().toString());
 
     p.setXY(260, 34);
-    g := oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, -3);
+    g := oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, -10);
     _objects.push(g);
 
     p.free();

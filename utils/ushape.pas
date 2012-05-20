@@ -133,13 +133,15 @@ begin
         r := edgePathFind(r, p, -1, PATHFIND_DEPTH);
         a1 += (q.getX() - p.getX()) * (q.getY() - p.getY());
         a1 += (r.getX() - p.getX()) * (r.getY() - p.getY());
+
         a2 += (q.getX() - p.getX()) * (q.getX() - p.getX());
         a2 += (r.getX() - p.getX()) * (r.getX() - p.getX());
+        writeln('shape:    ' + IntToStr(i) + '/' + IntToStr(steps) + ':' + p.toString() + ' ' + q.toString() + ' ' + r.toString() + ' α=' + FloatToStr(a1) + '/' + FloatToStr(a2) + '=' + FloatToStr(getSecantAngleAt));
     end;
 
-    //writeln('shape: Computing tangent angle at ' + p.toString() + ' with points ' + q.toString() + ' and ' + r.toString());
-
     getSecantAngleAt := a1 / a2;
+
+    writeln('shape: Computing secant angle at ' + p.toString() + ' with points ' + q.toString() + ' and ' + r.toString() + ' ; α=' + FloatToStr(a1) + '/' + FloatToStr(a2) + '=' + FloatToStr(getSecantAngleAt));
     
     //if not q.sameAs(r) then getSecantAngleAt := arctan2(q.getX() - r.getX(), q.getY() - r.getY());
 end;

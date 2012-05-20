@@ -47,12 +47,13 @@ begin
 
     // Compute relative position
     pos := oPoint.clone(sig.position);
-    w := o.getPosition().position();
+    w := self.getPosition().position();
     w.factor(-1);
     pos.apply(w);
     w.free();
 
-    alpha := o.getMask().getNormalAngleAt(pos, abs(_steps));
+    alpha := o.getMask().getSecantAngleAt(pos, abs(_steps));
+    alpha -= 2 * arctan(1);  // TODO: Temporary fix, for testing purposes
 
     //if _steps < 0 then alpha += 4*arctan(1);
 

@@ -73,7 +73,10 @@ begin
         _position.free();
         _position := oPoint.clone(_oldpos);
         _succ_reverts += 1;
-    end else writeln(_id + ': NOT reverting to last safe position. Too much reverts.');
+    end else begin
+        writeln(_id + ': NOT reverting to last safe position : too much reverts. Reverting speed instead');
+        _speed.factor(-1);
+    end;
 end;
 
 // elementaryMove(zone: oObjectCollection)

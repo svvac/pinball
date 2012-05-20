@@ -612,7 +612,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);utils/bgrabitmap5.7.1"/>
-      <OtherUnitFiles Value="ontheair;ontheair/hash;utils;game;utils/bgrabitmap5.7.1"/>
+      <OtherUnitFiles Value="ontheair;ontheair/hash;utils;game;utils/bgrabitmap5.7.1;tests"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Parsing>
