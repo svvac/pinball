@@ -5,7 +5,7 @@ unit upoint;
 interface
 
 uses
-  Classes, SysUtils, uvector, printable; 
+  Classes, SysUtils, uvector, printable, utils; 
 
 Type _oPoint = class
 
@@ -125,7 +125,7 @@ end;
 // returns a string representation of the point as (X, Y)
 function oPoint.toString() : string;
 begin
-    toString := '(' + IntToStr(getX) + ', ' + IntToStr(getY) + ')';
+    toString := '(' + s(getX) + ', ' + s(getY) + ')';
 end;
 
 

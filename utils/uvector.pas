@@ -4,7 +4,7 @@ unit uvector;
 
 interface
 
-uses Classes, math, SysUtils, printable;
+uses Classes, math, SysUtils, printable, utils;
 
 type _oVector=class
     protected
@@ -185,7 +185,7 @@ end;
 
 function oVector.toString() : string;
 begin
-    toString := '(' + IntToStr(getX()) + ', ' + IntToStr(getY()) + ')';
+    toString := '[(x=' + s(getX()) + ', y=' + s(getY()) + ') = (' + s('rho') + '=' + s(getModule) + ', ' + s('theta') + '=' + s(getArgument()) + ' rad)]';
 end;
 
 end.
