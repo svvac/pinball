@@ -7,6 +7,7 @@ interface
 uses Classes, SysUtils, Graphics, eventhandler, utils, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap, drawspeed;
 
 const GEE = +0;
+      MAX_REVERTS = 3;
 
 
 type aMovingObject = class(aObject)
@@ -68,14 +69,14 @@ end;
 
 procedure aMovingObject.revertToSafePosition();
 begin
-    if _succ_reverts <= 3 then begin
-        d(7, _id, 'Reverting to last safe position ' + s(_oldpos) + ' (was at ' + s(_position) + ')');
+    if _succ_reverts <= MAX_REVERTS then begin
+        d(7, _id, 'Reverting to last safe position. ' + s(_position) + s('->') + s(_oldpos));
         _position.free();
         _position := oPoint.clone(_oldpos);
         _succ_reverts += 1;
     end else begin
-        d(7, _id, 'NOT reverting to last safe position : too much reverts. Reverting speed instead');
-        _speed.factor(-1);  // TODO: This is a temporary fix
+        d(7, _id, 'NOT reverting to last safe position : too much reverts.');
+        //_speed.factor(-1);  // TODO: This is a temporary fix
     end;
 end;
 
@@ -104,20 +105,22 @@ begin
     for i := 0 to zone.count() - 1 do begin
         d(5, _id, '       * ' + zone.get(i).getId(), '');
         if self.isColliding(zone.get(i), p) then begin
-            d(5, '', ' [COLLISION]', '');
+            d(5, '', ' [COLLISION]');
             getDispatcher().emit(zone.get(i).collisionSignalFactory(self, p));
 
             colliding := not zone.get(i).isCollisionSafe();
             if colliding then d(5, _id, 'Collision was safe');
-        end else d(5, '', ' [PASS]', '');
+        end else d(5, '', ' [PASS]');
     end;
 
     if not colliding then setSafePosition() else revertToSafePosition();
 
     p := oPoint.clone(_position);
     p.apply(oVector.createCartesian(7, 7));
+    ev := getSpeed();
+    ev.factor(10);
 
-    _dispatcher.emit(_speeddrawer.signalFactory(self, _speed, p));
+    _dispatcher.emit(_speeddrawer.signalFactory(self, ev, p));
 
 end;
 
@@ -140,6 +143,7 @@ var old: oVector;
 begin
     old := _speed;
     _speed := oVector.clone(v);
+    d(12, _id, 'Speed updated. ' + s(old) + s('->') + s(_speed));
     old.free();
 end;
 

@@ -107,9 +107,9 @@ begin
     d(3, 'ontheair:' + sig.getName(), 'Starting event chain');
     
     for i := 0 to c.count() - 1 do begin
-        d(4, 'ontheair:' + sig.toString(), 'Running callback ' + IntToStr(i + 1) + '/' + IntToStr(c.count()));
+        d(4, 'ontheair:' + sig.getName(), 'Running callback ' + s(i + 1) + '/' + s(c.count()));
         c.get(i)(sig);   // Calls the callback c.get(i) with `sig' as an argument
-        d(4, 'ontheair:' + sig.toString(), 'Callback ' + IntToStr(i + 1) + '/' + IntToStr(c.count()) + ' finished.');
+        d(4, 'ontheair:' + sig.getName(), 'Callback ' + s(i + 1) + '/' + s(c.count()) + ' finished.');
     end;
 
     d(3, 'ontheair:' + sig.getName(), 'End of event chain');
