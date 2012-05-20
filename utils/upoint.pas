@@ -5,9 +5,9 @@ unit upoint;
 interface
 
 uses
-  Classes, SysUtils, uvector; 
+  Classes, SysUtils, uvector, printable; 
 
-Type oPoint = class
+Type _oPoint = class
 
     protected
         _x, _y: real;
@@ -15,9 +15,8 @@ Type oPoint = class
     public
 
     constructor create(aPx, aPy : integer);
-    constructor clone(p: oPoint);
 
-    function distanceTo(p:oPoint) : real;
+    function distanceTo(p: _oPoint) : real;
 
     function getX() : integer;
     function getY() : integer;
@@ -30,11 +29,13 @@ Type oPoint = class
 
     function position() : oVector;
     
-    function sameAs(p: oPoint) : boolean;
-    
-    function toStr() : string;
+    function sameAs(p: _oPoint) : boolean;
+end;
+
+oPoint = class(_oPoint, iPrintable)
+    constructor clone(p: oPoint);
     function toString() : string;
-  end;
+end;
 
 
 
@@ -43,7 +44,7 @@ implementation
 
 // create(x, y: integer)
 // creates a point of coordinates (x, y)
-constructor oPoint.create(aPx, aPy: integer);
+constructor _oPoint.create(aPx, aPy: integer);
 begin
     _x := aPx;
     _y := aPy;
@@ -59,7 +60,7 @@ end;
 
 // apply(v: oVector)
 // Moves the point according to the vector `v'
-procedure oPoint.apply(v: oVector);
+procedure _oPoint.apply(v: oVector);
 begin
     _x += v.getRX();
     _y += v.getRY();
@@ -67,55 +68,55 @@ end;
 
 // real distanceTo(p: oPoint)
 // computes the distance to the point `p'
-function oPoint.distanceTo(p:oPoint):real;
+function _oPoint.distanceTo(p: _oPoint):real;
 begin
     distanceTo := sqrt((p.getX - _x) * (p.getX - _x) + (p.getY - _y) * (p.getY - _y));
 end;
 
 // boolean sameAs(p: oPoint)
 // returns true if `p' has the same coordinates
-function oPoint.sameAs(p: oPoint) : boolean;
+function _oPoint.sameAs(p: _oPoint) : boolean;
 begin
     sameAs := (p.getX = getX) and (p.getY = getY);
 end;
 
 // integer getX(void)
 // returns the X coordinate
-function oPoint.getX() : integer;
+function _oPoint.getX() : integer;
 begin
     getX := round(_x);
 end;
 
 // integer getY(void)
 // returns the Y coordinate
-function oPoint.getY() : integer;
+function _oPoint.getY() : integer;
 begin
     getY := round(_y);
 end;
 
 // setX(x: integer)
 // changes the X coordinate to x
-procedure oPoint.setX(aPx: integer);
+procedure _oPoint.setX(aPx: integer);
 begin
     _x := aPx;
 end;
 
 // setY(y: integer)
 // changes the Y coordinate to y
-procedure oPoint.setY(aPy: integer);
+procedure _oPoint.setY(aPy: integer);
 begin
     _y := aPy;
 end;
 
 // setXY(x, y: integer)
 // changes the X and Y coordinates, resp. to x and y
-procedure oPoint.setXY(aPx, aPy: integer);
+procedure _oPoint.setXY(aPx, aPy: integer);
 begin
     setX(aPx);
     setY(aPy);
 end;
 
-function oPoint.position() : oVector;
+function _oPoint.position() : oVector;
 begin
     position := oVector.createCartesian(getX(), getY());
 end;
@@ -125,10 +126,6 @@ end;
 function oPoint.toString() : string;
 begin
     toString := '(' + IntToStr(getX) + ', ' + IntToStr(getY) + ')';
-end;
-function oPoint.toStr() : string;
-begin
-    toStr := toString();
 end;
 
 

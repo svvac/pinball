@@ -4,7 +4,7 @@ unit umovingobject;
 
 interface
 
-uses Classes, SysUtils, Graphics, eventhandler, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap, drawspeed;
+uses Classes, SysUtils, Graphics, eventhandler, utils, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap, drawspeed;
 
 const GEE = +0;
 
@@ -62,20 +62,20 @@ procedure aMovingObject.setSafePosition();
 begin
     _oldpos.free();
     _oldpos := oPoint.clone(_position);
-    writeln(_id + ': Position ' + _oldpos.toString() + ' tagged safe');
+    d(7, _id, 'Position ' + s(_oldpos) + ' tagged safe');
     _succ_reverts := 0;
 end;
 
 procedure aMovingObject.revertToSafePosition();
 begin
     if _succ_reverts <= 3 then begin
-        writeln(_id + ': Reverting to last safe position ' + _oldpos.toString() + ' (was at ' + _position.toString() + ')');
+        d(7, _id, 'Reverting to last safe position ' + s(_oldpos) + ' (was at ' + s(_position) + ')');
         _position.free();
         _position := oPoint.clone(_oldpos);
         _succ_reverts += 1;
     end else begin
-        writeln(_id + ': NOT reverting to last safe position : too much reverts. Reverting speed instead');
-        _speed.factor(-1);
+        d(7, _id, 'NOT reverting to last safe position : too much reverts. Reverting speed instead');
+        _speed.factor(-1);  // TODO: This is a temporary fix
     end;
 end;
 
@@ -98,18 +98,18 @@ begin
     colliding := false;
 
 
-    writeln(_id + ': Found ' + IntToStr(zone.count()) + ' objects to check for collision');
+    d(4, _id, 'Found ' + s(zone.count()) + ' objects to check for collision');
 
     // Check for collision with objects in the zone, and triggers collision signals if needed
     for i := 0 to zone.count() - 1 do begin
-        write(_id + ':       * ' + zone.get(i).getId());
+        d(5, _id, '       * ' + zone.get(i).getId(), '');
         if self.isColliding(zone.get(i), p) then begin
-            writeln(' [COLLISION]');
+            d(5, '', ' [COLLISION]', '');
             getDispatcher().emit(zone.get(i).collisionSignalFactory(self, p));
 
             colliding := not zone.get(i).isCollisionSafe();
-            if colliding then writeln(_id + ': Collision was safe');
-        end else writeln(' [PASS]');
+            if colliding then d(5, _id, 'Collision was safe');
+        end else d(5, '', ' [PASS]', '');
     end;
 
     if not colliding then setSafePosition() else revertToSafePosition();
@@ -124,7 +124,7 @@ end;
 procedure aMovingObject.onTick(s: oSignal);
 begin
     // Gravity :
-    writeln(_id + ': Hello, this is gravity');
+    d(7, _id, 'Hello, this is gravity');
     _speed.setY(round(_speed.getY() + GEE));
 end;
 

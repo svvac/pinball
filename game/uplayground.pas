@@ -4,7 +4,7 @@ unit uplayground;
 
 interface
 
-uses Classes, SysUtils, Graphics, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, uvector, uguide, umovingobject, ushape, BGRABitmap, BGRABitmapTypes;
+uses Classes, SysUtils, Graphics, utils, upoint, uobject, math, objectcollection, eventhandler, signal, ugamesignals, ubouncingobject, uvector, uguide, umovingobject, ushape, BGRABitmap, BGRABitmapTypes;
 
 CONST NB_LIFES = 3;
 
@@ -27,8 +27,8 @@ type oPlayground = class
 
         function getObjectsInZone(p:oPoint; w,h: integer) : oObjectCollection;
 
-        procedure onScoreChange(s: oSignal);
-        procedure onTick(s: oSignal);
+        procedure onScoreChange(si: oSignal);
+        procedure onTick(si: oSignal);
 
         procedure tick();
 
@@ -96,18 +96,18 @@ begin
     shape := oShape.create('bitmaps/canvas.bmp');
     bm := TBGRABitmap.create('bitmaps/canvas.png');
     bo := aBouncingObject.create(p, shape, bm, _dispatcher, 1);
-    writeln('playground:populate: Added canvas at ' + bo.getPosition().toString());
+    d(4, 'playground:populate', 'Added canvas at ' + bo.getPosition().toString());
     _objects.push(bo);
 
-    p.setXY(384, 416);
-    //p.setXY(235, 416);
+    //p.setXY(384, 416);
+    p.setXY(235, 416);
     shape := oShape.create('bitmaps/ball.bmp');
     bm := TBGRABitmap.create('bitmaps/ball.png');
     _ball := aMovingObject.create(p, shape, bm, _dispatcher);
-    //randomize();
-    //_ball.setSpeed(oVector.createPolar(5, random(round(8*arctan(1)))));
-    _ball.setSpeed(oVector.createPolar(1, -2*arctan(1)));
-    writeln('playground:populate: Ball at ' + _ball.getPosition().toString() + ', with speed ' + _ball.getSpeed().toString());
+    randomize();
+    _ball.setSpeed(oVector.createPolar(5, random(round(8*arctan(1)))));
+    //_ball.setSpeed(oVector.createPolar(1, -2*arctan(1)));
+    d(4, 'playground:populate', 'Ball at ' + s(_ball.getPosition()) + ', with speed ' + s(_ball.getSpeed()));
 
     p.setXY(260, 34);
     g := oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, -10);
@@ -127,17 +127,17 @@ var i, n: integer;
     v: oVector;
 begin
     n := round(_ball.getSpeed().getModule());
-    writeln('playground: path discretization, v = ' + _ball.getSpeed().toString() + '  (' + IntToStr(n) + ' steps)');
+    d(5, 'playground', 'Path discretization, v = ' + s(_ball.getSpeed()) + '  (' + s(n) + ' steps)');
     for i := 1 to n do begin
-        writeln('playground: path discretization (' + IntToStr(i) + '/' + IntToStr(n) + '). Ball at ' + _ball.getPosition().toString());
+        d(6, 'playground',  'Path discretization (' + s(i) + '/' + s(n) + '). Ball at ' + s(_ball.getPosition()));
         _ball.elementaryMove(self.getObjectsInZone(_ball.getPosition(), _ball.getMask().getWidth(), _ball.getMask.getHeight()));
     end;
 end;
 
-procedure oPlayground.onScoreChange(s: oSignal);
+procedure oPlayground.onScoreChange(si: oSignal);
 var sig: ScoreChangeSignal;
 begin
-    sig := s as ScoreChangeSignal;
+    sig := si as ScoreChangeSignal;
     _score += sig.points;
 end;
 
@@ -160,7 +160,7 @@ begin
     getDispatcher := _dispatcher;
 end;
 
-procedure oPlayground.onTick(s: oSignal);
+procedure oPlayground.onTick(si: oSignal);
 begin
     move();
     redraw();

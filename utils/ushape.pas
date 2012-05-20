@@ -136,12 +136,12 @@ begin
 
         a2 += (q.getX() - p.getX()) * (q.getX() - p.getX());
         a2 += (r.getX() - p.getX()) * (r.getX() - p.getX());
-        writeln('shape:    ' + IntToStr(i) + '/' + IntToStr(steps) + ':' + p.toString() + ' ' + q.toString() + ' ' + r.toString() + ' α=' + FloatToStr(a1) + '/' + FloatToStr(a2) + '=' + FloatToStr(getSecantAngleAt));
+        d(10, 'shape', s(i) + '/' + s(steps) + ':' + s(p) + ' ' + s(q) + ' ' + s(r) + ' α=' + s(a1) + '/' + s(a2) + '=' + s(getSecantAngleAt));
     end;
 
     getSecantAngleAt := a1 / a2;
 
-    writeln('shape: Computing secant angle at ' + p.toString() + ' with points ' + q.toString() + ' and ' + r.toString() + ' ; α=' + FloatToStr(a1) + '/' + FloatToStr(a2) + '=' + FloatToStr(getSecantAngleAt));
+    d(9, 'shape', 'Computing secant angle at ' + s(p) + ' with points ' + s(q) + ' and ' + s(r) + ' ; α=' + s(a1) + '/' + s(a2) + '=' + s(getSecantAngleAt));
     
     //if not q.sameAs(r) then getSecantAngleAt := arctan2(q.getX() - r.getX(), q.getY() - r.getY());
 end;
@@ -226,7 +226,7 @@ begin
             //end;
         end;
 
-        writeln('shape: Got a winner at ' + edgePathFind.toString() + ' with coef k=' + FloatToStr(coef));
+        d(10, 'shape', 'Got a winner at ' + s(edgePathFind) + ' with coef k=' + s(coef));
     end;
 end;
 

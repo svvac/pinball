@@ -5,10 +5,10 @@ interface
 {$mode objfpc}{$H+}
 {$UNITPATH .}
 
-uses Classes;
+uses Classes, utils, printable;
 
 type
-oSignal = class //(tStringHash)
+_oSignal = class
     //protected pSignalName: string;
     protected _sender: TObject;
     public
@@ -16,15 +16,17 @@ oSignal = class //(tStringHash)
 
         function getName() : string; virtual;
         function getSender() : tObject; virtual;
+end;
 
-        function toString() : string; virtual;
+oSignal = class(_oSignal, iPrintable)
+    function toString() : string; virtual;
 end;
 
 implementation
 
 // create(sender: tObject)
 // Creates a signal with `sender' defined as the sender object.
-constructor oSignal.create(sender: tObject);
+constructor _oSignal.create(sender: tObject);
 begin
     //inherited create(false);
     //pSignalName := signame;
@@ -34,7 +36,7 @@ end;
 
 // string getName(void)
 // Returns the signal's name, used as ID (we use the class name)
-function oSignal.getName() : string;
+function _oSignal.getName() : string;
 begin
     //getName := pSignalName;
     getName := self.ClassName;
@@ -42,7 +44,7 @@ end;
 
 // tObject getSender(void)
 // Returns the object defined as emitter of the signal
-function oSignal.getSender() : tObject;
+function _oSignal.getSender() : tObject;
 begin
     getSender := _sender; //getValue('sender');
 end;

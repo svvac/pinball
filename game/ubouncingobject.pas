@@ -4,7 +4,7 @@ unit ubouncingobject;
 
 interface
 
-uses Classes, SysUtils, Graphics, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap, BGRABitmapTypes, drawspeed;
+uses Classes, SysUtils, Graphics, utils, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap, BGRABitmapTypes, drawspeed;
 
 
 type aBouncingObject = class(aObject)
@@ -16,7 +16,7 @@ type aBouncingObject = class(aObject)
     public
         constructor create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler; factor: real);
         function getBounceFactor() : real; virtual;
-        procedure onCollision(s: oSignal); override;
+        procedure onCollision(si: oSignal); override;
 
 end;
 
@@ -35,14 +35,14 @@ begin
 end;
 
 
-procedure aBouncingObject.onCollision(s: oSignal);
+procedure aBouncingObject.onCollision(si: oSignal);
 var sig: CollisionSignal;
     o: aMovingObject;
     v, w: oVector;
     alpha: real;
     pos: oPoint;
 begin
-    sig := s as CollisionSignal;
+    sig := si as CollisionSignal;
     o := sig.getSender() as aMovingObject;
     v := o.getSpeed();
 
@@ -61,7 +61,7 @@ begin
     w := oVector.createPolar(v.getModule() * getBounceFactor(), 2 * alpha - v.getArgument() - 4 * arctan(1));
     o.setSpeed(w);
 
-    writeln(_id + ': Handling bouncing at ' + sig.position.toString() + ': α=' + FloatToStr(alpha) + '; speed: ' + v.toString() + ' -> ' + w.toString());
+    d(4, _id, 'Handling bouncing at ' + s(sig.position) + ': α=' + s(alpha) + '; speed: ' + s(v) + ' -> ' + s(w));
 
     v.free();
     w.free();

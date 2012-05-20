@@ -4,7 +4,7 @@ unit uguide;
 
 interface
 
-uses Classes, SysUtils, Graphics, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap, BGRABitmapTypes, drawspeed;
+uses Classes, SysUtils, Graphics, utils, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap, BGRABitmapTypes, drawspeed;
 
 
 type oGuide = class(aObject)
@@ -14,7 +14,7 @@ type oGuide = class(aObject)
 
     public
         constructor create(position: oPoint; line: string; dispatcher: oEventHandler; steps: integer);
-        procedure onCollision(s: oSignal); override;
+        procedure onCollision(si: oSignal); override;
 
 end;
 
@@ -34,14 +34,14 @@ begin
 end;
 
 
-procedure oGuide.onCollision(s: oSignal);
+procedure oGuide.onCollision(si: oSignal);
 var sig: CollisionSignal;
     o: aMovingObject;
     v, w: oVector;
     alpha: real;
     pos: oPoint;
 begin
-    sig := s as CollisionSignal;
+    sig := si as CollisionSignal;
     o := sig.getSender() as aMovingObject;
     v := o.getSpeed();
 
@@ -62,7 +62,7 @@ begin
     v.setArgument(alpha);
     o.setSpeed(v);
 
-    writeln(_id + ': Handling guiding at ' + sig.position.toString() + ': α=' + FloatToStr(alpha));
+    d(4, _id, 'Handling guiding at ' + s(sig.position) + ': α=' + s(alpha));
 
     v.free();
 end;

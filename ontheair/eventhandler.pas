@@ -6,7 +6,7 @@ interface
 
 {$UNITPATH .}
 
-uses Classes, signal, stringhash, sysutils, callbackcollection, LCLProc;
+uses Classes, signal, stringhash, sysutils, callbackcollection, utils;
 
 type
 
@@ -32,7 +32,7 @@ implementation
 // Initializes an EventHandler
 constructor oEventHandler.create();
 begin
-    debugLn('ontheair: Created a new event handler');
+    d(1, 'ontheair', 'Created a new event handler');
     // Create the string hash mapping signal names to callbacks
     _known_signals := oStringHash.create();
 end;
@@ -60,7 +60,7 @@ begin
     
     _known_signals.setValue(sig.getName(), c);
 
-    debugLn('eventhandler: registered signal ' + sig.getName());
+    d(2, 'eventhandler', 'registered signal ' + sig.getName());
 end;
 
 // bind(sig: oSignal, c: tSignalCallback)
@@ -83,7 +83,7 @@ begin
     
     col.push(c);
 
-    debugLn('ontheair:' + sig.getName() + ': bound new slot');
+    d(2, 'ontheair:' + sig.getName(), 'bound new slot');
 end;
 
 // emit(sig: oSignal)
@@ -103,15 +103,16 @@ begin
     
     c := o as oCallbackCollection;
 
-    debugLn('ontheair:' + sig.toString() + ': Starting event chain');
+    d(3, 'ontheair', sig.toString());
+    d(3, 'ontheair:' + sig.getName(), 'Starting event chain');
     
     for i := 0 to c.count() - 1 do begin
-        debugLn('ontheair:' + sig.toString() + ': Running callback ' + IntToStr(i + 1) + '/' + IntToStr(c.count()));
+        d(4, 'ontheair:' + sig.toString(), 'Running callback ' + IntToStr(i + 1) + '/' + IntToStr(c.count()));
         c.get(i)(sig);   // Calls the callback c.get(i) with `sig' as an argument
-        debugLn('ontheair:' + sig.toString() + ': Callback ' + IntToStr(i + 1) + '/' + IntToStr(c.count()) + ' finished.');
+        d(4, 'ontheair:' + sig.toString(), 'Callback ' + IntToStr(i + 1) + '/' + IntToStr(c.count()) + ' finished.');
     end;
 
-    debugLn('ontheair:' + sig.toString() + ': End of event chain');
+    d(3, 'ontheair:' + sig.getName(), 'End of event chain');
 end;
 
 

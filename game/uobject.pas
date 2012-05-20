@@ -4,7 +4,7 @@ unit uobject;
 
 interface
 
-uses Classes, SysUtils, Graphics, eventhandler, upoint, uvector, ushape, signal, ugamesignals, BGRABitmap, BGRABitmapTypes;
+uses Classes, SysUtils, Graphics, eventhandler, upoint, uvector, ushape, signal, ugamesignals, BGRABitmap, BGRABitmapTypes, utils;
 
 
 type aObject = class
@@ -28,8 +28,8 @@ type aObject = class
         function isColliding(o: aObject; var p: oPoint) : boolean; virtual;
         function isColliding(o: aObject) : boolean;
 
-        procedure onCollision(s: oSignal); virtual; abstract;
-        procedure onRedraw(s: oSignal); virtual;
+        procedure onCollision(si: oSignal); virtual; abstract;
+        procedure onRedraw(si: oSignal); virtual;
 
         function collisionSignalFactory(sender: TObject; p: oPoint) : oSignal;
 
@@ -108,11 +108,11 @@ end;
 
 // onRedraw(s: oSignal)
 // Redraws the object on the canvas
-procedure aObject.onRedraw(s: oSignal);
+procedure aObject.onRedraw(si: oSignal);
 var sig: RedrawSignal;
 begin
-    sig := s as RedrawSignal;
-    writeln(_id + ': redrawing');
+    sig := si as RedrawSignal;
+    d(5, _id, 'Redrawing');
     self.draw(sig.bm);
 end;
 

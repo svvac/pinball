@@ -4,9 +4,9 @@ unit uvector;
 
 interface
 
-uses Classes, math, SysUtils;
+uses Classes, math, SysUtils, printable;
 
-type oVector=class
+type _oVector=class
     protected
         _x, _y: real;
         _radius, _angle: real;
@@ -18,14 +18,13 @@ type oVector=class
 
         constructor createCartesian(ax, ay : integer);
         constructor createPolar(m, a : real);
-        constructor clone(o: oVector);
 
         procedure setX(ax : integer);
         procedure setY(ay : integer);
         procedure setModule(m : real);
         procedure setArgument(a : real);
-        procedure sum(v: oVector);
-        procedure diff(v: oVector);
+        procedure sum(v: _oVector);
+        procedure diff(v: _oVector);
         procedure factor(k: real);
 
 
@@ -35,8 +34,11 @@ type oVector=class
         function getRY() : real;
         function getModule() : real;
         function getArgument() : real;
+end;
 
-        function toString() : string;
+oVector = class(_oVector, iPrintable)
+    constructor clone(o: oVector);
+    function toString() : string;
 end;
 
 
@@ -44,7 +46,7 @@ implementation
 
 // createCartesian(x, y: integer)
 // Creates a vector by giving its cartesian coordinates
-constructor oVector.createCartesian(ax, ay: integer);
+constructor _oVector.createCartesian(ax, ay: integer);
 begin
     _x := ax;
     _y := ay;
@@ -53,7 +55,7 @@ end;
 
 // createPolar(m, a: real)
 // Creates a vector by giving its polar coordinates (angle, module)
-constructor oVector.createPolar(m, a : real);
+constructor _oVector.createPolar(m, a : real);
 begin
     _radius := m;
     _angle := a;
@@ -71,7 +73,7 @@ end;
 
 // setX(x: integer)
 // Updates X cartesian coordinate
-procedure oVector.setX(ax : integer);
+procedure _oVector.setX(ax : integer);
 begin
     _x := ax;
     updatePolar();
@@ -79,27 +81,27 @@ end;
 
 // setY(x: integer)
 // Updates Y cartesian coordinate
-procedure oVector.setY(ay : integer);
+procedure _oVector.setY(ay : integer);
 begin
     _y := ay;
     updatePolar();
 end;
 
-procedure oVector.sum(v: oVector);
+procedure _oVector.sum(v: _oVector);
 begin
     _x += v.getRX();
     _y += v.getRY();
     updatePolar();
 end;
 
-procedure oVector.diff(v: oVector);
+procedure _oVector.diff(v: _oVector);
 begin
     _x -= v.getRX();
     _y -= v.getRY();
     updatePolar();
 end;
 
-procedure oVector.factor(k: real);
+procedure _oVector.factor(k: real);
 begin
     _radius *= k;
     updateCartesian();
@@ -107,7 +109,7 @@ end;
 
 // setModule(x: integer)
 // Updates module of polar coordinates
-procedure oVector.setModule(m : real) ;
+procedure _oVector.setModule(m : real) ;
 begin
     _radius := m;
     updatePolar();
@@ -115,7 +117,7 @@ end;
 
 // setArgument(x: integer)
 // Updates argument of polar coordinates
-procedure oVector.setArgument(a : real);
+procedure _oVector.setArgument(a : real);
 begin
     _angle := a;
     updatePolar();
@@ -123,7 +125,7 @@ end;
 
 // updatePolar()
 // Updates polar coordinates after a change in cartesians
-procedure ovector.updatePolar() ;
+procedure _oVector.updatePolar() ;
 begin
     // Boring math stuff. See OMSI or shit
     _radius := sqrt(_x*_x + _y*_y);
@@ -132,7 +134,7 @@ end;
 
 // updateCartesian()
 // Updates cartesian coordinates after a change in polars
-procedure  ovector.updateCartesian();
+procedure  _oVector.updateCartesian();
 begin
     // Boring math stuff. See OMSI or shit
     _x := _radius * cos(_angle);
@@ -141,42 +143,42 @@ end;
 
 // getX() : integer
 // returns X cartesian coordinate
-function ovector.GetX() : integer;
+function _oVector.GetX() : integer;
 begin
     getX := round(_x);
 end;
 
 // getY() : integer
 // returns Y cartesian coordinate
-function ovector.getY() : integer ;
+function _oVector.getY() : integer ;
 begin
     getY := round(_y);
 end;
 
 // getRX() : integer
 // returns X cartesian real coordinate
-function ovector.GetRX() : real;
+function _oVector.GetRX() : real;
 begin
     getRX := _x;
 end;
 
 // getRY() : integer
 // returns Y cartesian real coordinate
-function ovector.getRY() : real ;
+function _oVector.getRY() : real ;
 begin
     getRY := _y;
 end;
 
 // getModule() : real
 // returns module from polar coord
-function ovector.getModule() : real ;
+function _oVector.getModule() : real ;
 begin
     getModule:=_radius;
 end;
 
 // getArgument() : real
 // returns argument from polar coord
-function ovector.getArgument() : real  ;
+function _oVector.getArgument() : real  ;
 begin
     getArgument:=_angle;
 end;

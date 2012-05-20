@@ -5,7 +5,7 @@ unit main;
 interface
 
 uses Classes, SysUtils, FileUtil, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, uplayground, ugamesignals, signal;
+  ExtCtrls, uplayground, ugamesignals, signal, utils;
 
 type
 
@@ -19,7 +19,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 
-    procedure redraw(s: oSignal);
+    procedure redraw(si: oSignal);
     procedure Tick(Sender: TObject);
     
     private
@@ -38,6 +38,8 @@ implementation
 procedure TForm1.FormCreate(Sender: TObject);
 var s: oSignal;
 begin
+    verbosity(15);
+    
     autoanim := false;
     playground := oPlayground.create();
 
@@ -52,16 +54,16 @@ end;
 
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
-    playground.tick();
-    //autoanim := not autoanim;
+    //playground.tick();
+    autoanim := not autoanim;
 end;
 
-procedure TForm1.redraw(s: oSignal);
+procedure TForm1.redraw(si: oSignal);
 var sig: RedrawSignal;
 begin
-    sig := s as RedrawSignal;
+    sig := si as RedrawSignal;
 
-    writeln('form: updating image');
+    d(5, 'form', 'Updating image');
 
     Image1.Canvas.FillRect(0, 0, 440, 490);
     sig.bm.draw(Image1.Canvas, 0, 0, true);
