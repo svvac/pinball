@@ -4,7 +4,7 @@ unit ubouncingobject;
 
 interface
 
-uses Classes, SysUtils, Graphics, utils, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap, BGRABitmapTypes, drawspeed;
+uses Classes, SysUtils, math, Graphics, utils, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap, BGRABitmapTypes, drawspeed;
 
 
 type aBouncingObject = class(aObject)
@@ -54,6 +54,9 @@ begin
     w.free();
 
     alpha := self.getMask().getNormalAngleAt(pos);
+
+    if isNan(alpha) then alpha := v.getModule() + 4*arctan(1); // Dirty hack
+    //if isNan(alpha) then alpha := 2 * arctan(1);
 
     _dispatcher.emit(_speeddrawer1.signalFactory(self, oVector.createPolar(20, alpha), sig.position));
     _dispatcher.emit(_speeddrawer2.signalFactory(self, oVector.createPolar(-20, alpha), sig.position));
