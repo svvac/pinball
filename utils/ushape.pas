@@ -7,8 +7,9 @@ interface
 uses Classes, SysUtils, Graphics, upoint, utils, math, BGRABitmap, BGRABitmapTypes;
 
 const TAN_SAMPLE_HALF_WIDTH = 5;
-      PATHFIND_DEPTH = 3;
+      PATHFIND_DEPTH = 5;
       SHAPE_COLOR_FULL = 65536;
+      ON_EDGE = 1;
 
 Type oShape = Class
     protected
@@ -21,13 +22,13 @@ Type oShape = Class
         function getPoint(p: oPoint) : boolean;
         function getPoint(x, y: integer) : boolean;
 
-        function getTangentAngleAt(p: oPoint) : real;
-        function getTangentAngleAt(p: oPoint; steps: integer) : real;
+        function getSecantAngleAt(p: oPoint) : real;
+        function getSecantAngleAt(p: oPoint; steps: integer) : real;
         function getNormalAngleAt(p: oPoint) : real;
         function getNormalAngleAt(p: oPoint; steps: integer) : real;
 
         function isOnEdge(p: oPoint) : boolean;
-        function edgeCoefficient(p: oPoint) : integer;
+        function edgeCoefficient(p: oPoint) : real;
 
         function edgePathFind(where, src: oPoint; dir: integer; depth: integer) : oPoint;
 
@@ -97,59 +98,60 @@ end;
 // boolean isOnEdge(p: oPoint)
 // returns true if the point p is considered on the edge of the shape.
 function oShape.isOnEdge(p: oPoint) : boolean;
-var s: integer;
 begin
-    s := edgeCoefficient(p);
     // The best way I found is to count the solid points in the direct neighbourhood of the point
-    if (s > 2) and (s < 8) then isOnEdge := true
-                           else isOnEdge := false;
+    if edgeCoefficient(p) < ON_EDGE then isOnEdge := true
+                                    else isOnEdge := false;
 end;
 
-function oShape.edgeCoefficient(p: oPoint) : integer;
+function oShape.edgeCoefficient(p: oPoint) : real;
 var s, i, j: integer;
 begin
-    edgeCoefficient := 0;
+    s := 0;
+    for i := p.getX() - 1 to p.getX() + 1 do
+        for j := p.getY() - 1 to p.getY() + 1 do
+            if getPoint(i, j) then s += 1;
 
-    // To be on the edge, a point must be solid
-    if getPoint(p) then begin
-        s := 0;
-        for i := p.getX() - 1 to p.getX() + 1 do
-            for j := p.getY() - 1 to p.getY() + 1 do
-                if getPoint(i, j) then s += 1;
-
-        edgeCoefficient := s
-    end;
+    edgeCoefficient := abs(s - 4.5) / 2;
 end;
 
-// real getTangentAngleAt(p: oPoint)
+// real getSecantAngleAt(p: oPoint)
 // returns the angle of the tangent with the vertical at point p
-function oShape.getTangentAngleAt(p: oPoint; steps: integer) : real;
+function oShape.getSecantAngleAt(p: oPoint; steps: integer) : real;
 var q, r: oPoint;
     i: integer;
+
+    a1, a2: real;
 begin
-    getTangentAngleAt := 0.0;
+    getSecantAngleAt := 0.0;
+    a1 := 0;
+    a2 := 0;
 
-    q := edgePathFind(p, p, +1, PATHFIND_DEPTH);
-    r := edgePathFind(p, p, -1, PATHFIND_DEPTH);
-
+    q := oPoint.clone(p); r := oPoint.clone(p);
     for i := 1 to steps do begin
         q := edgePathFind(q, p, +1, PATHFIND_DEPTH);
         r := edgePathFind(r, p, -1, PATHFIND_DEPTH);
+        a1 += (q.getX() - p.getX()) * (q.getY() - p.getY());
+        a1 += (r.getX() - p.getX()) * (r.getY() - p.getY());
+        a2 += (q.getX() - p.getX()) * (q.getX() - p.getX());
+        a2 += (r.getX() - p.getX()) * (r.getX() - p.getX());
     end;
 
-    writeln('shape: Computing tangent angle at ' + p.toString() + ' with points ' + q.toString() + ' and ' + r.toString());
+    //writeln('shape: Computing tangent angle at ' + p.toString() + ' with points ' + q.toString() + ' and ' + r.toString());
+
+    getSecantAngleAt := a1 / a2;
     
-    if not q.sameAs(r) then getTangentAngleAt := arctan2(q.getX() - r.getX(), q.getY() - r.getY()) + 2 * arctan(1);
+    //if not q.sameAs(r) then getSecantAngleAt := arctan2(q.getX() - r.getX(), q.getY() - r.getY());
 end;
 
 function oShape.getNormalAngleAt(p: oPoint; steps: integer) : real;
 begin
-    getNormalAngleAt := getTangentAngleAt(p, steps) - 2 * arctan(1);
+    getNormalAngleAt := getSecantAngleAt(p, steps) - 2 * arctan(1);
 end;
 
-function oShape.getTangentAngleAt(p: oPoint) : real;
+function oShape.getSecantAngleAt(p: oPoint) : real;
 begin
-    getTangentAngleAt := getTangentAngleAt(p, TAN_SAMPLE_HALF_WIDTH);
+    getSecantAngleAt := getSecantAngleAt(p, TAN_SAMPLE_HALF_WIDTH);
 end;
 
 function oShape.getNormalAngleAt(p: oPoint) : real;
@@ -171,7 +173,7 @@ var p, q: oPoint;
 begin
     // If n point found (e.g. not on the edge), we default to the origin of the search
     edgePathFind := where;
-    coef := 100;
+    coef := 10000;
 
     // We only walk the shape if we've got some levels of recursion left
     if depth > 0 then begin
@@ -202,22 +204,27 @@ begin
         for p in list do begin
             // ignore the source and the origin
             if p.sameAs(where) or p.sameAs(src) then continue;
-            k := (edgeCoefficient(p) - 4.5) * src.distanceTo(p);
+            k := edgeCoefficient(p);
             // if we're not on the edge of the shape, make a recursive call
-            if not isOnEdge(p) then begin
-                q := edgePathFind(p, where, dir, depth - 1);
-                k := (edgeCoefficient(q) - 4.5) * src.distanceTo(q);
+            //if not isOnEdge(p) then begin
+                //q := edgePathFind(p, where, dir, depth - 1);
+                //k *= edgeCoefficient(q);
+
+                //writeln('shape:                 k''=' + FloatToStr(k) + ' at ' + q.toString());
+
                 // If the result is on the edge and not the subserach point, we keep it
-                if (k < coef) and not q.sameAs(p) and not q.sameAs(src) and not q.sameAs(src) then begin
+                if (k < coef) and not src.sameAs(p) then begin
                     coef := k;
-                    edgePathFind := q;
+                    edgePathFind := p;
                end;
             // If we're on the edge, we got a winner!
-            end else if (k < coef) and not p.sameAs(src) and not p.sameAs(src) then begin
-                coef := k;
-                edgePathFind := p;
-            end;
+            //end else if k < coef then begin
+            //    coef := k;
+            //    edgePathFind := p;
+            //end;
         end;
+
+        writeln('shape: Got a winner at ' + edgePathFind.toString() + ' with coef k=' + FloatToStr(coef));
     end;
 end;
 
