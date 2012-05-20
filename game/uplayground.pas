@@ -95,23 +95,30 @@ begin
     p := oPoint.create(0, 0);
     shape := oShape.create('bitmaps/canvas.bmp');
     bm := TBGRABitmap.create('bitmaps/canvas.png');
-    bo := aBouncingObject.create(p, shape, bm, _dispatcher, 1);
-    d(4, 'playground:populate', 'Added canvas at ' + bo.getPosition().toString());
+    bo := aBouncingObject.create(p, shape, bm, _dispatcher, 0.9);
+    d(4, 'playground:populate', 'Added canvas at ' + s(bo.getPosition()) + '(w=' + s(shape.getWidth()) + ', h=' + s(shape.getHeight()));
     _objects.push(bo);
 
-    //p.setXY(384, 416);
-    p.setXY(235, 416);
+    p.setXY(380, 416);
+    //p.setXY(235, 416);
     shape := oShape.create('bitmaps/ball.bmp');
     bm := TBGRABitmap.create('bitmaps/ball.png');
     _ball := aMovingObject.create(p, shape, bm, _dispatcher);
-    randomize();
-    _ball.setSpeed(oVector.createPolar(5, random(round(8*arctan(1)))));
-    //_ball.setSpeed(oVector.createPolar(1, -2*arctan(1)));
-    d(4, 'playground:populate', 'Ball at ' + s(_ball.getPosition()) + ', with speed ' + s(_ball.getSpeed()));
+    //randomize();
+    //_ball.setSpeed(oVector.createPolar(5, random(round(8*arctan(1)))));
+    _ball.setSpeed(oVector.createPolar(60, -1.70012494347881));
+    //_ball.setSpeed(oVector.createPolar(30, -2*arctan(1) + 0.233));
+    d(4, 'playground:populate', 'Added ball at ' + s(_ball.getPosition()) + ', with speed ' + s(_ball.getSpeed()));
 
-    p.setXY(260, 34);
-    g := oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, -10);
-    _objects.push(g);
+    //p.setXY(255, 40);
+    //g := oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, 10);
+    //d(4, 'playground:populate', 'Added canvas at ' + s(g.getPosition()));
+    //_objects.push(g);
+
+    //p.setXY(263, 33);
+    //g := oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, 10);
+    //d(4, 'playground:populate', 'Added canvas at ' + s(g.getPosition()));
+    //_objects.push(g);
 
     p.free();
 end;

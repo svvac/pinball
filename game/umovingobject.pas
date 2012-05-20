@@ -6,7 +6,7 @@ interface
 
 uses Classes, SysUtils, Graphics, eventhandler, utils, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap, drawspeed;
 
-const GEE = +0;
+const GEE = +1;
       MAX_REVERTS = 3;
 
 

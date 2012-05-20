@@ -124,8 +124,8 @@ var q, r: oPoint;
     a1, a2: real;
 begin
     getSecantAngleAt := 0.0;
-    a1 := 0;
-    a2 := 0;
+    a1 := 0.0;
+    a2 := 0.0;
 
     q := oPoint.clone(p); r := oPoint.clone(p);
     for i := 1 to steps do begin
@@ -136,7 +136,7 @@ begin
 
         a2 += (q.getX() - p.getX()) * (q.getX() - p.getX());
         a2 += (r.getX() - p.getX()) * (r.getX() - p.getX());
-        d(10, 'shape', s(i) + '/' + s(steps) + ':' + s(p) + ' ' + s(q) + ' ' + s(r) + ' α=' + s(a1) + '/' + s(a2) + '=' + s(getSecantAngleAt));
+        d(15, 'shape', s(i) + '/' + s(steps) + ':' + s(p) + ' ' + s(q) + ' ' + s(r) + ' α=' + s(a1) + '/' + s(a2) + '=' + s(getSecantAngleAt));
     end;
 
     getSecantAngleAt := a1 / a2;
@@ -148,7 +148,7 @@ end;
 
 function oShape.getNormalAngleAt(p: oPoint; steps: integer) : real;
 begin
-    getNormalAngleAt := getSecantAngleAt(p, steps) - 2 * arctan(1);
+    getNormalAngleAt := getSecantAngleAt(p, steps) + 2 * arctan(1);
 end;
 
 function oShape.getSecantAngleAt(p: oPoint) : real;
@@ -226,7 +226,7 @@ begin
             //end;
         end;
 
-        d(10, 'shape', 'Got a winner at ' + s(edgePathFind) + ' with coef k=' + s(coef));
+        d(13, 'shape', 'Got a winner at ' + s(edgePathFind) + ' with coef k=' + s(coef));
     end;
 end;
 
