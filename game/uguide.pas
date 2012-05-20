@@ -4,12 +4,13 @@ unit uguide;
 
 interface
 
-uses Classes, SysUtils, Graphics, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap;
+uses Classes, SysUtils, Graphics, signal, uobject, upoint, ushape, eventhandler, uvector, umovingobject, ugamesignals, BGRABitmap, BGRABitmapTypes, drawspeed;
 
 
 type oGuide = class(aObject)
     protected
         _steps: integer;
+        _speeddrawer: Test_SpeedDrawer;
 
     public
         constructor create(position: oPoint; line: string; dispatcher: oEventHandler; steps: integer);
@@ -27,6 +28,9 @@ begin
     s := oShape.create(line + '.bmp');
     inherited create(position, s, bm, dispatcher);
     _steps := steps;
+
+    _speeddrawer := Test_SpeedDrawer.create(_dispatcher);
+    _speeddrawer.color := BGRA(0, 255, 0);
 end;
 
 
@@ -48,9 +52,11 @@ begin
     pos.apply(w);
     w.free();
 
-    alpha := o.getMask().getTangentAngleAt(pos, abs(_steps));
+    alpha := o.getMask().getNormalAngleAt(pos, abs(_steps));
 
-    if _steps < 0 then alpha += 4*arctan(1);
+    //if _steps < 0 then alpha += 4*arctan(1);
+
+    _dispatcher.emit(_speeddrawer.signalFactory(self, oVector.createPolar(20, alpha), sig.position));
 
     v.setArgument(alpha);
     o.setSpeed(v);

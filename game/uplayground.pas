@@ -35,7 +35,6 @@ type oPlayground = class
         procedure init();
         procedure start();
         procedure redraw();
-        procedure drawSpeed(s: oSignal);
 
         function getDispatcher() : oEventHandler;
 
@@ -49,7 +48,7 @@ constructor oPlayground.create();
 var s: oSignal;
 begin
     _dispatcher := oEventHandler.create();
-    _world := TBGRABitmap.create(440, 490, BGRAWhite);
+    _world := TBGRABitmap.create(440, 490, BGRABlack);
     _objects := oObjectCollection.create();
 
     // Registers and binds ScoreChangeSignal
@@ -78,10 +77,6 @@ begin
 
     populate();
 
-    s := RedrawSignal.create(_dispatcher);
-    _dispatcher.bind(s, @self.drawSpeed);
-    s.free();
-
 end;
 
 destructor oPlayground.destroy();
@@ -104,18 +99,18 @@ begin
     writeln('playground:populate: Added canvas at ' + bo.getPosition().toString());
     _objects.push(bo);
 
-    //p.setXY(384, 416);
-    p.setXY(235, 416);
+    p.setXY(384, 416);
+    //p.setXY(235, 416);
     shape := oShape.create('bitmaps/ball.bmp');
     bm := TBGRABitmap.create('bitmaps/ball.png');
     _ball := aMovingObject.create(p, shape, bm, _dispatcher);
     //randomize();
-    //_ball.setSpeed(oVector.createPolar(10, random(round(8*arctan(1)))));
+    //_ball.setSpeed(oVector.createPolar(5, random(round(8*arctan(1)))));
     _ball.setSpeed(oVector.createPolar(10, -2*arctan(1)));
     writeln('playground:populate: Ball at ' + _ball.getPosition().toString() + ', with speed ' + _ball.getSpeed().toString());
 
     p.setXY(260, 34);
-    g := oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, -20);
+    g := oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, -3);
     _objects.push(g);
 
     p.free();
@@ -152,29 +147,12 @@ var sig: RedrawSignal;
 begin
     sig := RedrawSignal.create(self);
     //sig.bm := TBGRABitmap.create(350, 600, BGRABlack);
+    _world.fillRect(0, 0, 440, 490, BGRABlack, dmSet);
     sig.bm := _world;
     _dispatcher.emit(sig);
 
     //sig.bm.free();
     sig.free();
-end;
-
-procedure oPlayground.drawSpeed(s: oSignal);
-var p, q, r: oPoint;
-    v: oVector;
-    sig: RedrawSignal;
-    o: aObject;
-    c: TBGRAPixel;
-    i: integer;
-begin
-    sig := s as RedrawSignal;
-    p := _ball.getPosition();
-    v := _ball.getSpeed();
-    v.factor(2);
-    p.apply(v);
-    writeln('playground: Vector to be drawn between ' + _ball.getPosition().toString() + ' and ' + p.toString());
-
-    sig.bm.drawPolyLineAntialias([PointF(_ball.getPosition().getX() + 7, _ball.getPosition().getY() + 7), PointF(p.getX() + 7, p.getY() + 7)], BGRA(255, 0, 0), 2);
 end;
 
 function oPlayground.getDispatcher() : oEventHandler;

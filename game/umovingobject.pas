@@ -4,7 +4,7 @@ unit umovingobject;
 
 interface
 
-uses Classes, SysUtils, Graphics, eventhandler, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap;
+uses Classes, SysUtils, Graphics, eventhandler, signal, uobject, upoint, uvector, ushape, ugamesignals, objectcollection, BGRABitmap, drawspeed;
 
 const GEE = +0;
 
@@ -14,6 +14,8 @@ type aMovingObject = class(aObject)
         _speed: oVector;
         _oldpos: oPoint;
         _succ_reverts: integer;
+
+        _speeddrawer: Test_SpeedDrawer;
 
     public
         constructor create(position: oPoint; mask: oShape; face: TBGRABitmap; dispatcher: oEventHandler); virtual;
@@ -44,6 +46,10 @@ begin
 
     s := TickSignal.create(self.getDispatcher());
     self.getDispatcher().bind(s, @self.onTick);
+    s.free();
+
+    _speeddrawer := Test_SpeedDrawer.create(_dispatcher);
+
 end;
 
 
@@ -79,6 +85,7 @@ var ev: oVector;
     i: integer;
     p: oPoint;
     colliding: boolean;
+    t: Test_SpeedDrawer;
 begin
     // We create an elementary vector based on current speed indications
     ev := oVector.createPolar(1, _speed.getArgument());
@@ -86,6 +93,7 @@ begin
     _position.apply(ev);
     p := oPoint.create(0, 0);
     colliding := false;
+
 
     writeln(_id + ': Found ' + IntToStr(zone.count()) + ' objects to check for collision');
 
@@ -102,6 +110,11 @@ begin
     end;
 
     if not colliding then setSafePosition() else revertToSafePosition();
+
+    p := oPoint.clone(_position);
+    p.apply(oVector.createCartesian(7, 7));
+
+    _dispatcher.emit(_speeddrawer.signalFactory(self, _speed, p));
 
 end;
 
