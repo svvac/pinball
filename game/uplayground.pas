@@ -10,7 +10,7 @@ uses
     // home-baked classes
     ugamesignals,
         // objects
-        ubouncingobject, umovingobject, uobject, 
+        uball, ubouncingobject, umovingobject, uobject, 
         // utils
         objectcollection, upoint, ushape, utils, uvector,
     // custom graphics lib
@@ -150,9 +150,7 @@ begin
 
     p.setXY(380, 416);
     //p.setXY(235, 416);
-    shape := oShape.create('bitmaps/ball.bmp');
-    bm := TBGRABitmap.create('bitmaps/ball.png');
-    _ball := aMovingObject.create(p, shape, bm, _dispatcher);
+    _ball := oBall.create(p, _dispatcher);
     //randomize();
     //_ball.setSpeed(oVector.createPolar(5, random(round(8*arctan(1)))));
     _ball.setSpeed(oVector.createPolar(60, -1.72052494347881));
