@@ -10,7 +10,7 @@ uses
     // home-baked classes
     ugamesignals,
         // objects
-        uball, ubouncingobject, umovingobject, uobject, 
+        uball, ubouncingobject, ufield, umovingobject, uobject, 
         // utils
         objectcollection, upoint, ushape, utils, uvector,
     // custom graphics lib
@@ -127,26 +127,18 @@ end;
 // populate()
 // Creates and adds the objects to the playground
 procedure oPlayground.populate();
-var bo: aBouncingObject;
-    shape: oShape;
+var o: aObject;
     p: oPoint;
-    bm: TBGRABitmap;
-    s1, s2: integer;
 begin
     // Map
     p := oPoint.create(0, 0);
-    shape := oShape.create('bitmaps/canvas.bmp');
-    bm := TBGRABitmap.create('bitmaps/canvas.png');
-    bo := aBouncingObject.create(p, shape, bm, _dispatcher, 0.9);
-    _objects.push(bo);
-    d(4, 'playground:populate', 'Added canvas at ' + s(bo.getPosition())
-                              + '(w=' + s(shape.getWidth())
-                              + ', h=' + s(shape.getHeight()));
+    o := oField.create(p, _dispatcher);
+    _objects.push(o);
     
     // We'll need the dimensions of the playground, so we get it from the
     // field size. This avoids hardcoding it
-    _bottomright := oPoint.create(bo.getMask().getWidth(),
-                                  bo.getMask().getHeight());
+    _bottomright := oPoint.create(o.getMask().getWidth(),
+                                  o.getMask().getHeight());
 
     p.setXY(380, 416);
     //p.setXY(235, 416);
