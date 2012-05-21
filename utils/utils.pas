@@ -66,31 +66,38 @@ begin
 end;
 
 // verbosity(i: integer)
-// if `i' is positive or null, changes the current verbosity level to `i'
-// if `i' is negative, add it to the current verbosity level (i.e. verbosity decrease)
+// Changes the verbosity level.
+//  * if `i' is positive or null, changes the current verbosity level to `i'
+//  * if `i' is negative, add it to the current verbosity level
+//    (i.e. verbosity decrease)
 procedure verbosity(i: integer);
 begin
     if i < 0 then __debug_verbose += i else __debug_verbose := i;
 end;
 
+// string s(i: integer)
 // Returns a string representation of an integer
 function s(i: real) : string;
 begin
     s := FloatToStr(i);
 end;
 
+// string s(i: real)
 // Returns a string representation of a float
 function s(i: integer) : string;
 begin
     s := IntToStr(i);
 end;
 
-// Returns a string representation of an object implementing the Printable interface
+// string s(i: iPrintable)
+// Returns a string representation of an object implementing the Printable
 function s(i: iPrintable) : string;
 begin
     s := i.toString();
 end;
 
+// string s(i: string)
+// Convinience text shortcuts
 function s(i: string) : string;
 begin
     s := i;

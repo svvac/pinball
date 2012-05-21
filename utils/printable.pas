@@ -1,13 +1,16 @@
 unit printable;
 
 {$mode objfpc}{$H+}
-{$INTERFACES CORBA}
+{$INTERFACES CORBA}  // Avoid useless instance counter shit
 
 interface
 
 uses
-  Classes, SysUtils;
+	// stdlib
+    Classes
+    ;
 
+// Defines the printable interface
 type iPrintable = interface
     function toString() : string;
 end;

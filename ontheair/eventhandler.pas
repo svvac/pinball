@@ -6,7 +6,14 @@ interface
 
 {$UNITPATH .}
 
-uses Classes, signal, stringhash, sysutils, callbackcollection, utils;
+uses
+    // ontheair units
+    callbackcollection, signal, stringhash,
+    // home-baked units
+    utils,
+    // std lib
+    Classes, SysUtils
+    ;
 
 type
 
@@ -46,14 +53,16 @@ end;
 
 
 // register(sig: oSignal)
-// Registers the signal type `sig' to the event handler, allowing methods to listen for it
+// Registers the signal type `sig' to the event handler, allowing methods to
+// listen for it
 procedure oEventHandler.register(sig: oSignal);
 var c: oCallbackCollection;
 begin
     // Make sure no signal with the same ID is already defined.
     // We use the class name to ID a signal
     if _known_signals.exists(sig.getName()) then
-        raise ESignalOverrideException.create('Will override signal ' + sig.getName());
+        raise ESignalOverrideException.create('Will override signal '
+                                             + sig.getName());
     
     // Create a callback collection to store methods listening for this signal
     c := oCallbackCollection.create();
@@ -71,13 +80,16 @@ var col: oCallbackCollection;
 begin
     // Check if the signal is properly registred
     if not _known_signals.exists(sig.getName()) then
-        raise ESignalUnknownException.create('No such signal ' + sig.getName());
+        raise ESignalUnknownException.create('No such signal '
+                                            + sig.getName());
     
     o := _known_signals.getValue(sig.getName());
 
     // Ensure we got a oCallbackCollection
     if o.ClassType <> oCallbackCollection then
-        raise Exception.create('Inconsistency in object storage. Got ' + o.ClassName + ', expected oCallbackCollection');
+        raise Exception.create('Inconsistency in object storage. Got '
+                              + o.ClassName
+                              + ', expected oCallbackCollection');
     
     col := o as oCallbackCollection;
     
@@ -94,12 +106,15 @@ var i: integer;
     o: TObject;
 begin
     if not _known_signals.exists(sig.getName()) then
-        raise ESignalUnknownException.create('No such signal ' + sig.getName());
+        raise ESignalUnknownException.create('No such signal '
+                                            + sig.getName());
     
     o := _known_signals.getValue(sig.getName());
 
     if o.ClassType <> oCallbackCollection then
-        raise Exception.create('Inconsistency in object storage. Got ' + o.ClassName + ', expected oCallbackCollection');
+        raise Exception.create('Inconsistency in object storage. Got '
+                              + o.ClassName
+                              + ', expected oCallbackCollection');
     
     c := o as oCallbackCollection;
 
@@ -107,9 +122,13 @@ begin
     d(3, 'ontheair:' + sig.getName(), 'Starting event chain');
     
     for i := 0 to c.count() - 1 do begin
-        d(4, 'ontheair:' + sig.getName(), 'Running callback ' + s(i + 1) + '/' + s(c.count()));
-        c.get(i)(sig);   // Calls the callback c.get(i) with `sig' as an argument
-        d(4, 'ontheair:' + sig.getName(), 'Callback ' + s(i + 1) + '/' + s(c.count()) + ' finished.');
+        d(4, 'ontheair:' + sig.getName(), 'Running callback '
+                                        + s(i + 1) + '/' + s(c.count()));
+        c.get(i)(sig);   // Calls the callback c.get(i) with `sig' as an
+                         // argument
+        d(4, 'ontheair:' + sig.getName(), 'Callback '
+                                        + s(i + 1) + '/' + s(c.count())
+                                        + ' finished.');
     end;
 
     d(3, 'ontheair:' + sig.getName(), 'End of event chain');

@@ -5,20 +5,30 @@ interface
 {$mode objfpc}{$H+}
 {$UNITPATH .}
 
-uses Classes, signal, sysutils;
+uses
+    // ontheair
+    signal,
+    // home-baked units
+    utils,
+    // stdlib
+    Classes, SysUtils
+    ;
 
-const MAXBOUND = 128;
+const
+    // Maximum number of callbacks bound to a signal
+    MAXBOUND = 128;
 
 type
+// callback type
 tSignalCallback = procedure(x: oSignal) of object;
 tCallbackCollection = array [0 .. MAXBOUND - 1] of tSignalCallback;
+
 oCallbackCollection = class(tObject)
     protected
         o: tCallbackCollection;
         n: integer;
     public
         constructor create();
-        //destructor destroy(); override;
         procedure push(c: tSignalCallback);
         function get(i: integer): tSignalCallback;
         function count(): integer;
@@ -38,8 +48,7 @@ end;
 // Adds the callback `c' to the collection
 procedure oCallbackCollection.push(c: tSignalCallback);
 begin
-    if n >= MAXBOUND then
-        raise Exception.create('No more slots available');
+    if n >= MAXBOUND then raise Exception.create('No more slots available');
     
     o[n] := c;
     n := n + 1;

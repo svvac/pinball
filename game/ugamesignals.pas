@@ -4,7 +4,16 @@ unit ugamesignals;
 
 interface
 
-uses Classes, Graphics, signal, uniquesignal, upoint, BGRABitmap;
+uses
+    // ontheair
+    signal, uniquesignal,
+    // home-baked units
+    upoint,
+    // cutsom graphics library
+    BGRABitmap,
+    // stdlib
+    Classes
+    ;
 
 type
 
@@ -23,7 +32,7 @@ ScoreChangeSignal = class(oSignal)
     constructor create(sender: TObject; p: integer);
 end;
 
-// Signal triggered when the player dies
+// Signal triggered when the ball dies
 DeathSignal = class(oSignal);
 
 // Signal triggered when we need to redraw

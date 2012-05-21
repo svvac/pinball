@@ -5,33 +5,39 @@ unit upoint;
 interface
 
 uses
-  Classes, SysUtils, uvector, printable, utils; 
+    // home-baked units
+    printable, utils, uvector,
+    // stdlib
+    Classes, SysUtils
+    ;
 
-Type _oPoint = class
+Type
+// core implementation (not supposed to be used)
+_oPoint = class
 
     protected
         _x, _y: real;
 
     public
+        constructor create(aPx, aPy : integer);
 
-    constructor create(aPx, aPy : integer);
+        function distanceTo(p: _oPoint) : real;
 
-    function distanceTo(p: _oPoint) : real;
+        function getX() : integer;
+        function getY() : integer;
+        
+        procedure setX(aPx: integer);
+        procedure setY(aPy: integer);
+        procedure setXY(aPx, aPy: integer);
 
-    function getX() : integer;
-    function getY() : integer;
-    
-    procedure setX(aPx: integer);
-    procedure setY(aPy: integer);
-    procedure setXY(aPx, aPy: integer);
+        procedure apply(v: oVector);
 
-    procedure apply(v: oVector);
-
-    function position() : oVector;
-    
-    function sameAs(p: _oPoint) : boolean;
+        function position() : oVector;
+        
+        function sameAs(p: _oPoint) : boolean;
 end;
 
+// Vendor class, implementing the printable interface
 oPoint = class(_oPoint, iPrintable)
     constructor clone(p: oPoint);
     function toString() : string;
@@ -70,7 +76,9 @@ end;
 // computes the distance to the point `p'
 function _oPoint.distanceTo(p: _oPoint):real;
 begin
-    distanceTo := sqrt((p.getX - _x) * (p.getX - _x) + (p.getY - _y) * (p.getY - _y));
+    // Well, Pythagore...
+    distanceTo := sqrt((p.getX - _x) * (p.getX - _x)
+                     + (p.getY - _y) * (p.getY - _y));
 end;
 
 // boolean sameAs(p: oPoint)
@@ -116,6 +124,8 @@ begin
     setY(aPy);
 end;
 
+// oVector position()
+// Returns the vector from the origin to the point
 function _oPoint.position() : oVector;
 begin
     position := oVector.createCartesian(getX(), getY());

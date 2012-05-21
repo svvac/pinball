@@ -6,10 +6,20 @@ interface
 
 {$UNITPATH .}
 
-uses Classes, signal, eventhandler, uniquesignal, sysutils, uvector, upoint, ugamesignals, BGRABitmap, BGRABitmapTypes;
+uses
+    // ontheair
+    eventhandler, signal, uniquesignal,
+    // home-baked units
+    ugamesignals, upoint, utils, uvector,
+    // Custom graphics lib
+    BGRABitmap, BGRABitmapTypes,
+    // stdlib
+    Classes
+    ;
 
 type
 
+// (unique) signal emitted by the drawer
 DrawSpeedSignal = class(oUniqueSignal)
     v: oVector;
     p: oPoint;
@@ -27,52 +37,64 @@ Test_SpeedDrawer = class(tObject)
         thickness: 1..10;
         constructor create(dispatcher: oEventHandler);
 
-        function signalFactory(s: TObject; v: oVector; p: oPoint) : DrawSpeedSignal;
+        function signalFactory(o: TObject; v: oVector;
+                               p: oPoint) : DrawSpeedSignal;
 
-        procedure updateVector(s: oSignal);
-        procedure drawVector(s: oSignal);
+        procedure updateVector(si: oSignal);
+        procedure drawVector(si: oSignal);
 end;
 
 
 implementation
-
+// Object counter, to generate signal UIDs
 var __object_count: integer = 0;
 
+// create(dispatcher: oEventHandler)
+// Creates a drawer and register/binds the stuff to the dispatcher
 constructor Test_SpeedDrawer.create(dispatcher: oEventHandler);
-var s: oSignal;
+var sig: oSignal;
 begin
     _dispatcher := dispatcher;
-    _id := IntToStr(__object_count);
+    _id := s(__object_count);
     _speed := oVector.createCartesian(0, 0);
     _point := oPoint.create(0, 0);
-    _set := false;
+    _set := false; // No data set yet, don't draw anything
 
+    // Public values, to allow user to change line color and thickness
     color := BGRA(255, 0, 0);
     thickness := 2;
 
-    s := self.signalFactory(_dispatcher, _speed, _point);
-    _dispatcher.register(s);
-    _dispatcher.bind(s, @self.updateVector);
-    s.free();
+    // registers the unique signal, and binds it to updateVector
+    sig := self.signalFactory(_dispatcher, _speed, _point);
+    _dispatcher.register(sig);
+    _dispatcher.bind(sig, @self.updateVector);
+    sig.free();
 
-    s := RedrawSignal.create(_dispatcher);
-    _dispatcher.bind(s, @self.drawVector);
-    s.free();
+    // Bind drawVector to the RedrawSignal
+    sig := RedrawSignal.create(_dispatcher);
+    _dispatcher.bind(sig, @self.drawVector);
+    sig.free();
 
     __object_count += 1;
 end;
 
-function Test_SpeedDrawer.signalFactory(s: TObject; v: oVector; p: oPoint) : DrawSpeedSignal;
+// DrawSpeedSignal signalFactory(s: tObject; v: oVector; p: oPoint)
+// Create a unique signal associated to this object
+function Test_SpeedDrawer.signalFactory(o: TObject; v: oVector;
+                                        p: oPoint) : DrawSpeedSignal;
 begin
-    signalFactory := DrawSpeedSignal.create(s, _id);
+    signalFactory := DrawSpeedSignal.create(o, _id);
     signalFactory.v := v;
     signalFactory.p := p;
 end;
 
-procedure Test_SpeedDrawer.updateVector(s: oSignal);
+// updateVector(s: oSignal)
+// Callback used to update the vector to draw
+procedure Test_SpeedDrawer.updateVector(si: oSignal);
 var sig: DrawSpeedSignal;
 begin
-    sig := s as DrawSpeedSignal;
+    sig := si as DrawSpeedSignal;
+    // Copy data to the object
     _speed.free();
     _point.free();
     _speed := oVector.clone(sig.v);
@@ -80,14 +102,19 @@ begin
     _set := true;
 end;
 
-procedure Test_SpeedDrawer.drawVector(s: oSignal);
+// drawVector(s: oSignal)
+// Callback used to draw the vectors to the display
+procedure Test_SpeedDrawer.drawVector(si: oSignal);
 var sig: RedrawSignal;
     p2: oPoint;
 begin
-    sig := s as RedrawSignal;
+    sig := si as RedrawSignal;
     p2 := oPoint.clone(_point);
     p2.apply(_speed);
-    sig.bm.drawPolyLineAntialias([PointF(_point.getX(), _point.getY()), PointF(p2.getX(), p2.getY())], color, thickness);
+    // Not much to say, this is how we draw a line with a BGRABitmap
+    sig.bm.drawPolyLineAntialias([PointF(_point.getX(), _point.getY()),
+                                  PointF(p2.getX(), p2.getY())],
+                                  color, thickness);
 end;
 
 

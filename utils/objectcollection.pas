@@ -5,12 +5,19 @@ interface
 {$mode objfpc}{$H+}{$M+}
 {$UNITPATH .}
 
-uses Classes, uobject, sysutils;
+uses
+    // home-baked units
+    uobject, utils,
+    // stdlib
+    Classes, SysUtils
+    ;
 
-const MAXOBJ = 128;
+const
+    // Maximum number of objects stored
+    MAXOBJ = 128;
 
 type
-oObjectCollection = class(tObject)
+oObjectCollection = class
     protected
         _objects: array [0 .. MAXOBJ - 1] of aObject;
         _count: integer;
@@ -47,7 +54,7 @@ end;
 // returns the object identified by index `i'
 function oObjectCollection.get(i: integer) : aObject;
 begin
-    if i > count() then raise Exception.create('No object indexed ' + intToStr(i));
+    if i > count() then raise Exception.create('No object indexed ' + s(i));
 
     get := _objects[i];
 end;

@@ -4,12 +4,22 @@ unit ushape;
 
 interface
 
-uses Classes, SysUtils, Graphics, upoint, utils, math, BGRABitmap, BGRABitmapTypes;
+uses
+    // custom graphics lib
+    BGRABitmap, BGRABitmapTypes,
+    // Home-baked units
+    utils, upoint,
+    // std lib
+    Classes, Graphics, Math, SysUtils
+    ;
 
-const TAN_SAMPLE_HALF_WIDTH = 5;
-      PATHFIND_DEPTH = 5;
-      SHAPE_COLOR_FULL = 65536;
-      ON_EDGE = 1;
+const
+    // Sample to consider when approximating secant 
+    TAN_SAMPLE_HALF_WIDTH = 5;
+    // Maximum recursion level for edgePathFind
+    PATHFIND_DEPTH = 5;
+    // Boundary for being considered "on edge" (see isOnEdge)
+    ON_EDGE = 1;
 
 Type oShape = Class
     protected
@@ -30,15 +40,15 @@ Type oShape = Class
         function isOnEdge(p: oPoint) : boolean;
         function edgeCoefficient(p: oPoint) : real;
 
-        function edgePathFind(where, src: oPoint; dir: integer; depth: integer) : oPoint;
+        function edgePathFind(where, src: oPoint;
+                              dir: integer;
+                              depth: integer) : oPoint;
 
         procedure rawDebugDump();
 
         function getWidth() : integer;
         function getHeight() : integer;
-        //Procedure merge (s: oShape, p: oPoint);
-        //Function hasoverlap(s: oShape);
-  end;
+end;
 
 
 implementation
@@ -66,19 +76,19 @@ begin
 end;
 
 // boolean getPoint(x, y: integer)
-// returns true if the point at (`x', `y') is solid on the shape, false otherwise.
+// returns true if the point at (`x', `y') is solid on the shape, false
+// otherwise.
 function oShape.getPoint(x, y: integer) : boolean;
 var p: TBGRAPixel;
 begin
-    getPoint := false; // We return false if we're outside of the box defined by the shape
-    if  (x >= 0) and (x <= getWidth() - 1)
-    and (y >= 0) and (y <= getHeight() - 1)
-        //then getPoint := (_bm.Canvas.Pixels[x, y] = SHAPE_COLOR_FULL);  // A point is solid if the associated pixel is white
-        then begin
-            //p := _bm.getPixel(x, y);
-            //getPoint := ((p.red = BGRAWhite.red) and (p.green = BGRAWhite.green) and (p.blue = BGRAWhite.blue) and (p.alpha = BGRAWhite.alpha));
-            getPoint := (_bm.getPixel(x, y) = BGRAWhite);
-        end;
+    getPoint := false; // We return false if we're outside of the box defined
+                       // by the shape
+    // Ensure we're on the box (no need to check otherwise)
+    if  true
+        and (x >= 0)    and (x <= getWidth() - 1)
+        and (y >= 0)    and (y <= getHeight() - 1)
+        // A point is solid if the associated pixel on the mask is white
+        then getPoint := (_bm.getPixel(x, y) = BGRAWhite);
 end;
 
 // integer getWidth(void)
@@ -99,87 +109,138 @@ end;
 // returns true if the point p is considered on the edge of the shape.
 function oShape.isOnEdge(p: oPoint) : boolean;
 begin
-    // The best way I found is to count the solid points in the direct neighbourhood of the point
+    // We consider the point on the edge if the edge coefficient is lower than
+    // the defined boundary
     if edgeCoefficient(p) < ON_EDGE then isOnEdge := true
                                     else isOnEdge := false;
 end;
 
+// real edgeCoefficient(p: oPoint)
+// returns the (float) coefficient characterizing the "proximity" of `p' to an
+// edge of a shape
 function oShape.edgeCoefficient(p: oPoint) : real;
 var s, i, j: integer;
 begin
+    // Basically, count the number of solid pixels in the direct neighbourhood
+    // of the point
     s := 0;
     for i := p.getX() - 1 to p.getX() + 1 do
         for j := p.getY() - 1 to p.getY() + 1 do
             if getPoint(i, j) then s += 1;
 
-    edgeCoefficient := abs(s - 4.5) / 2;
+    // Then apply a magic formula. The factor is mostly arbitrary, and 4.5 is
+    // the count of solid points if half the neighbours were solid.
+    edgeCoefficient := abs(s - 4.5) / (2 * ON_EDGE);
 end;
 
-// real getSecantAngleAt(p: oPoint)
-// returns the angle of the tangent with the vertical at point p
+// real getSecantAngleAt(p: oPoint; steps: integer)
+// returns the angle of the secant with the horizontal at point p, with a
+// sample of +/- `steps'
 function oShape.getSecantAngleAt(p: oPoint; steps: integer) : real;
 var q, r: oPoint;
     i: integer;
-
     a1, a2: real;
 begin
     getSecantAngleAt := 0.0;
     a1 := 0.0;
     a2 := 0.0;
 
+    // Magic tangent formula on a curve :
+    // Discovered a sunday morning, while eating cornflakes and reading a
+    // paper wrote by three chinese students of don't-know-where university
+    // (somewhere lost in the middle of a rice field).
+    // From the bottom of my heart: thanks guys.
+    //
+    //            k+s
+    //           \‾‾‾
+    //            >    (x_j - x_k)(y_j - y_k)
+    //           /___
+    //           j=k-s
+    // α(k) = ──────────────────────────────────
+    //                k+s
+    //               \‾‾‾
+    //                >    (x_j - x_k)²
+    //               /___
+    //               j=k-s
+    //
     q := oPoint.clone(p); r := oPoint.clone(p);
     for i := 1 to steps do begin
+        // We walk on the edge of the shape
         q := edgePathFind(q, p, +1, PATHFIND_DEPTH);
         r := edgePathFind(r, p, -1, PATHFIND_DEPTH);
+
+        // Apply the yellow formula
         a1 += (q.getX() - p.getX()) * (q.getY() - p.getY());
         a1 += (r.getX() - p.getX()) * (r.getY() - p.getY());
-
         a2 += (q.getX() - p.getX()) * (q.getX() - p.getX());
         a2 += (r.getX() - p.getX()) * (r.getX() - p.getX());
-        d(15, 'shape', s(i) + '/' + s(steps) + ':' + s(p) + ' ' + s(q) + ' ' + s(r) + ' α=' + s(a1) + '/' + s(a2) + '=' + s(getSecantAngleAt));
+
+        d(15, 'shape', s(i) + '/' + s(steps) + ':' + s(p) + ' ' + s(q) + ' '
+                     + s(r) + ' ' + s('alpha') + '=' + s(a1) + '/' + s(a2)
+                     + '=' + s(getSecantAngleAt));
     end;
 
+    // Finally divide the two sums
     getSecantAngleAt := a1 / a2;
 
-    d(9, 'shape', 'Computing secant angle at ' + s(p) + ' with points ' + s(q) + ' and ' + s(r) + ' ; α=' + s(a1) + '/' + s(a2) + '=' + s(getSecantAngleAt));
-    
-    //if not q.sameAs(r) then getSecantAngleAt := arctan2(q.getX() - r.getX(), q.getY() - r.getY());
+    d(9, 'shape', 'Computing secant angle at ' + s(p) + ' with points ' + s(q)
+                + ' and ' + s(r) + ' ; α=' + s(a1) + '/' + s(a2) + '='
+                + s(getSecantAngleAt));
 end;
 
+// real getNormalAngleAt(p: oPoint; steps: integer)
+// returns the angle of the normal with the horizontal at point p, with a
+// sample of +/- `steps'.
 function oShape.getNormalAngleAt(p: oPoint; steps: integer) : real;
 begin
+    // Simply enough, we get the secant, and add π/2
     getNormalAngleAt := getSecantAngleAt(p, steps) + 2 * arctan(1);
 end;
 
+// real getNormalAngleAt(p: oPoint)
+// returns the angle of the normal with the horizontal at point p, with the
+// default sample width.
 function oShape.getSecantAngleAt(p: oPoint) : real;
 begin
     getSecantAngleAt := getSecantAngleAt(p, TAN_SAMPLE_HALF_WIDTH);
 end;
 
+// real getNormalAngleAt(p: oPoint)
+// returns the angle of the normal with the horizontal at point p, with the
+// default sample width.
 function oShape.getNormalAngleAt(p: oPoint) : real;
 begin
     getNormalAngleAt := getNormalAngleAt(p, TAN_SAMPLE_HALF_WIDTH);
 end;
 
 // oPoint edgePathFind(where, src: oPoint, dir: integer, depth: integer)
-// Walks the edge of the figure in the direction `dir' from `where' and returns a solid point.
-//    where: the point from where we search
-//    src:   the original origin of the walk (we'll manage to return an other point than this one)
-//    dir:   the direction of the walk. If positive, we search on the right of `where', and on the left otherwise
-//    depth: the number of recursive calls to make if a given point isn't on the edge
-function oShape.edgePathFind(where, src: oPoint; dir: integer; depth: integer) : oPoint;
+// Walks the edge of the figure in the direction `dir' from `where' and
+// returns a solid point.
+//    where: the point from where we search ;
+//    src:   the original origin of the walk (we'll manage to return an other
+//           point than this one) ;
+//    dir:   the direction of the walk. If positive, we search on the right of
+//           `where', and on the left otherwise ;
+//    depth: the number of recursive calls to make if a given point isn't on
+//           the edge.
+//           NOT USED ANYMORE. Will be removed.
+function oShape.edgePathFind(where, src: oPoint;
+                             dir: integer;
+                             depth: integer) : oPoint;
 var p, q: oPoint;
     list:  array [0 .. 3] of oPoint;
     coef, k: real;
     i: integer;
 begin
-    // If n point found (e.g. not on the edge), we default to the origin of the search
+    // If n point found (e.g. not on the edge), we default to the origin of
+    // the search
     edgePathFind := where;
     coef := 10000;
 
     // We only walk the shape if we've got some levels of recursion left
     if depth > 0 then begin
-        // Instead of looping through the adjacent points, we define the ones inspected depending on the direction.
+        // Instead of looping through the adjacent points, we define the ones
+        // inspected depending on the direction.
         if dir > 0 then begin
             // O = where ; X = inspected points ; . ignored points
             //    . . . . .
@@ -206,30 +267,23 @@ begin
         for p in list do begin
             // ignore the source and the origin
             if p.sameAs(where) or p.sameAs(src) then continue;
+
+            // We get the edge coef of the point, and we keep the lowest score
             k := edgeCoefficient(p);
-            // if we're not on the edge of the shape, make a recursive call
-            //if not isOnEdge(p) then begin
-                //q := edgePathFind(p, where, dir, depth - 1);
-                //k *= edgeCoefficient(q);
-
-                //writeln('shape:                 k''=' + FloatToStr(k) + ' at ' + q.toString());
-
-                // If the result is on the edge and not the subserach point, we keep it
-                if (k < coef) and not src.sameAs(p) then begin
-                    coef := k;
-                    edgePathFind := p;
-               end;
-            // If we're on the edge, we got a winner!
-            //end else if k < coef then begin
-            //    coef := k;
-            //    edgePathFind := p;
-            //end;
+            if (k < coef) and not src.sameAs(p) then begin
+                coef := k;
+                edgePathFind := p;
+            end;
         end;
 
-        d(13, 'shape', 'Got a winner at ' + s(edgePathFind) + ' with coef k=' + s(coef));
+        d(13, 'shape', 'Got a winner at ' + s(edgePathFind) + ' with coef k='
+                     + s(coef));
     end;
 end;
 
+// rawDebugDump()
+// Prints a ASCII representation of the binary mask. Used for debug purposes
+// only.
 procedure oShape.rawDebugDump();
 var i, j: integer;
 begin
