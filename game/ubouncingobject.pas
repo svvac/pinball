@@ -78,33 +78,40 @@ begin
     pos.apply(w);
     w.free();
 
-    // Compute the angle of the normal at the collision point
-    alpha := self.getMask().getNormalAngleAt(pos);
+    if v.getModule() > 10 then begin
+        // Compute the angle of the normal at the collision point
+        alpha := self.getMask().getNormalAngleAt(pos);
 
-    // Sometimes, the angle returned by the fuction is Nan (aka oo), so we
-    // need to handle this case
-    if isNan(alpha) then alpha := v.getModule() + 4*arctan(1); // Dirty hack
+        // Sometimes, the angle returned by the fuction is Nan (aka oo), so we
+        // need to handle this case
+        if isNan(alpha) then alpha := v.getArgument() + 4*arctan(1); // Dirty hack
+
+        // Compute the new angle of the speed vector.
+        //   outgoing = 2 normal - incoming - pi
+        // Basically, this comes from a change of reference. Can't really draw the
+        // details here.
+        w := oVector.createPolar(v.getModule() * getBounceFactor(),
+                                 2 * alpha - v.getArgument() - 4 * arctan(1));
+        // Updates speed
+        o.setSpeed(w);
+
+        d(4, _id, 'Handling bouncing at ' + s(sig.position) + ': ' + s('alpha')
+                + '=' + s(alpha) + '; speed: ' + s(v) + s('->') + s(w));
+
+        v.free();
+        w.free();
+    end else begin
+        alpha := self.getMask().getSecantAngleAt(pos);
+        if isNan(alpha) then alpha := v.getArgument() + 2*arctan(1);
+        w := oVector.createPolar(v.getModule() * getBounceFactor(), alpha);
+        o.setSpeed(w);
+    end;
 
     // Draws debug vectors
     _dispatcher.emit(_speeddrawer1.signalFactory(self,
         oVector.createPolar(20, alpha), sig.position));
     _dispatcher.emit(_speeddrawer2.signalFactory(self,
         oVector.createPolar(-20, alpha), sig.position));
-
-    // Compute the new angle of the speed vector.
-    //   outgoing = 2 normal - incoming - pi
-    // Basically, this comes from a change of reference. Can't really draw the
-    // details here.
-    w := oVector.createPolar(v.getModule() * getBounceFactor(),
-                             2 * alpha - v.getArgument() - 4 * arctan(1));
-    // Updates speed
-    o.setSpeed(w);
-
-    d(4, _id, 'Handling bouncing at ' + s(sig.position) + ': ' + s('alpha')
-            + '=' + s(alpha) + '; speed: ' + s(v) + s('->') + s(w));
-
-    v.free();
-    w.free();
 end;
 
 // real getBounceFactor()

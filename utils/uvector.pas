@@ -110,7 +110,7 @@ end;
 // Updates module of polar coordinates
 procedure _oVector.setModule(m : real) ;
 begin
-    _radius := m;
+    _radius := m - int(m / (8 * arctan(1))) * 8 * arctan(1);
     updatePolar();
 end;
 
