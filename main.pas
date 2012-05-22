@@ -18,6 +18,7 @@ type
 
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 
     procedure redraw(si: oSignal);
     procedure Tick(Sender: TObject);
@@ -25,6 +26,8 @@ type
     private
         { private declarations }
         autoanim: boolean;
+        _flipleft: boolean;
+        _flipright : boolean;
     public
         { public declarations }
   end;
@@ -41,6 +44,8 @@ begin
     verbosity(15);
     
     autoanim := false;
+    _flipleft := false;
+    _flipright := false;
     playground := oPlayground.create();
 
     s := RedrawSignal.create(self);
@@ -61,8 +66,16 @@ begin
 
     case key of 
         32: autoanim := not autoanim;
-        37: playground.flipLeft();
-        39: playground.flipRight();
+        37: _flipleft := true;
+        39: _flipright := true;
+    end;
+end;
+
+procedure TForm1.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+begin
+    case key of 
+        37: _flipleft := false;
+        39: _flipright := false;
     end;
 end;
 
@@ -79,6 +92,9 @@ end;
 
 procedure TForm1.Tick(Sender: TObject);
 begin
+    if _flipleft then playground.flipLeft();
+    if _flipright then playground.flipRight();
+
     if autoanim then playground.tick();
 end;
 

@@ -4,14 +4,15 @@ object Form1: TForm1
   Top = 380
   Width = 440
   Caption = 'Form1'
-  ClientHeight = 600
-  ClientWidth = 350
+  ClientHeight = 490
+  ClientWidth = 440
   Constraints.MaxHeight = 490
   Constraints.MaxWidth = 440
   Constraints.MinHeight = 490
   Constraints.MinWidth = 440
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
+  OnKeyUp = FormKeyUp
   LCLVersion = '0.9.30.4'
   object Image1: TImage
     Left = 0
