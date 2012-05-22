@@ -19,6 +19,10 @@ uses
     Classes, SysUtils
     ;
 
+const
+    // steps
+    TICK_STEPS = 10;
+
 type aFlip = class(aBouncingObject)
     protected
         _masks: array of oShape;
@@ -26,6 +30,8 @@ type aFlip = class(aBouncingObject)
         _pos: integer;
         _maxpos: integer;
         _update: integer;
+
+        procedure changePos(i: integer);
     public
         constructor create(position: oPoint; pattern: string; n: integer;
                            bindto: oSignal;
@@ -33,6 +39,8 @@ type aFlip = class(aBouncingObject)
 
         procedure nextPos();
         procedure prevPos();
+
+        function getBounceFactor() : real; override;
 
         procedure onFlipUp(si: oSignal);
         procedure onFlipDown(si: oSignal);
@@ -74,32 +82,46 @@ begin
     d(4, _id, 'Added at ' + s(self.getPosition()));
 end;
 
-procedure aFlip.nextPos();
+procedure aFlip.changePos(i: integer);
 begin
-    if _pos < _maxpos then begin
-        _pos := min(_pos + _update, _maxpos);
+    if (i >= 0) and (i <= _maxpos) then begin
+        _pos := i;
         _mask := _masks[_pos];
         _face := _faces[_pos];
-    end else _update *= -1;
+        _dispatcher.emit(PerformCollisionCheckSignal.create(self));
+    end;
+end;
+
+procedure aFlip.nextPos();
+var i: integer;
+begin
+    if _pos < _maxpos then
+        for i := _pos to min(_pos + _update, _maxpos) do changePos(i)
+    else _update *= -1;
 end;
 
 procedure aFlip.prevPos();
+    var i: integer;
 begin
-    if _pos > 0 then begin
-        _pos := max(0, _pos + _update);
-        _mask := _masks[_pos];
-        _face := _faces[_pos];
-    end else _update := 0;
+    if _pos > 0 then
+        for i := _pos downto max(_pos + _update, 0) do changePos(i)
+    else _update := 0;
+end;
+
+function aFlip.getBounceFactor() : real;
+begin
+    if _pos = 0 then getBounceFactor := 0.5
+    else getBounceFactor := inherited getBounceFactor();
 end;
 
 procedure aFlip.onFlipUp(si: oSignal);
 begin
-    _update := +5;
+    _update := +TICK_STEPS;
 end;
 
 procedure aFlip.onFlipDown(si: oSignal);
 begin
-    _update := -5;
+    _update := -TICK_STEPS;
 end;
 
 procedure aFlip.onTick(si: oSignal);

@@ -52,6 +52,8 @@ FlipRightSignal= class(oSignal);
 PlungerPullSignal = class(oSignal);
 PlungerReleaseSignal = class(oSignal);
 
+PerformCollisionCheckSignal = class(oSignal);
+
 
 
 

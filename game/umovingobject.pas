@@ -22,6 +22,8 @@ const
     GEE = +1;
     // Maximum successive position rollbacks
     MAX_REVERTS = 3;
+    // Maximal speed
+    MAX_SPEED = 60.0;
 
 
 type aMovingObject = class(aObject)
@@ -44,6 +46,7 @@ type aMovingObject = class(aObject)
         procedure onCollision(s: oSignal); override;
 
         procedure elementaryMove(zone: oObjectCollection); virtual;
+        procedure elementaryMove(zone: oObjectCollection; norm: integer); virtual;
 
         procedure gravity(s: oSignal); virtual;
 
@@ -123,11 +126,16 @@ begin
     _succ_reverts += 1;
 end;
 
+procedure aMovingObject.elementaryMove(zone: oObjectCollection);
+begin
+    elementaryMove(zone, 1);
+end;
+
 // elementaryMove(zone: oObjectCollection)
 // Performs an elementary move of the object, triggering collisions and so.
 // Note that this method WON'T bother looking wether or not it should move,
 // nor will manage to discretize the path. See oPlayground for that matter.
-procedure aMovingObject.elementaryMove(zone: oObjectCollection);
+procedure aMovingObject.elementaryMove(zone: oObjectCollection; norm: integer);
 var ev: oVector;
     i: integer;
     p: oPoint;
@@ -136,7 +144,7 @@ var ev: oVector;
     sticky: boolean;
 begin
     // We create an elementary vector based on current speed indications
-    ev := oVector.createPolar(1, _speed.getArgument());
+    ev := oVector.createPolar(norm, _speed.getArgument());
     // Move the object accordingly
     _position.apply(ev);
 
@@ -201,6 +209,7 @@ var old: oVector;
 begin
     old := _speed;
     _speed := oVector.clone(v);
+    if _speed.getModule() > MAX_SPEED then _speed.setModule(MAX_SPEED);
     d(12, _id, 'Speed updated. ' + s(old) + s('->') + s(_speed));
     old.free();
 end;

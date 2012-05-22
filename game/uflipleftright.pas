@@ -40,7 +40,7 @@ constructor oFlipRight.create(position: oPoint; dispatcher: oEventHandler);
 var sig: oSignal;
 begin
     sig := FlipRightSignal.create(dispatcher);
-    inherited create(position, 'rflip', 13, sig, dispatcher);
+    inherited create(position, 'flip-right/flip', 70, sig, dispatcher);
     sig.free();
 end;
 
@@ -50,7 +50,7 @@ constructor oFlipLeft.create(position: oPoint; dispatcher: oEventHandler);
 var sig: oSignal;
 begin
     sig := FlipLeftSignal.create(dispatcher);
-    inherited create(position, 'lflip', 13, sig, dispatcher);
+    inherited create(position, 'flip-left/flip', 70, sig, dispatcher);
     sig.free();
 end;
 

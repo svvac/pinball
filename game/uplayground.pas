@@ -53,6 +53,7 @@ type oPlayground = class
         procedure onScoreChange(si: oSignal);
         procedure onTick(si: oSignal);
         procedure onDeath(si: oSignal);
+        procedure onCollisionCheck(si: oSignal);
 
         procedure tick();
         procedure flipLeft();
@@ -133,6 +134,12 @@ begin
     _dispatcher.bind(s, @self.onTick);
     s.free();
 
+    // Registers PerformCollisionCheckSignal
+    s := PerformCollisionCheckSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    _dispatcher.bind(s, @self.onCollisionCheck);
+    s.free();
+
     // Initializes vars
     init();
 
@@ -180,19 +187,24 @@ begin
     //p.setXY(127, 40);
     //_objects.push(oBumper.create(p, _dispatcher));
 
-    p.setXY(150, 390);
+    p.setXY(150, 400);
     _objects.push(oFlipLeft.create(p, _dispatcher));
-    p.setXY(220, 390);
+    p.setXY(220, 400);
     _objects.push(oFlipRight.create(p, _dispatcher));
 
     p.setXY(0, 470);
     _objects.push(oDeathPit.create(p, _dispatcher));
 
+    {p.setXY(260, 34);
+    _objects.push(oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, 10));
+    p.setXY(243, 34);
+    _objects.push(oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, 10));}
+
     p.setXY(371, 435);
     _objects.push(oPlunger.create(p, oVector.createPolar(60, -1.720524943478),
                                   _dispatcher));
 
-    p.setXY(380, 416);
+    p.setXY(374, 416);
     //p.setXY(235, 416);
     _ball := oBall.create(p, _dispatcher);
     d(4, 'playground:populate', 'Added ball at ' + s(_ball.getPosition())
@@ -237,6 +249,15 @@ begin
             _ball.getMask.getHeight()
         ));
     end;
+end;
+
+procedure oPlayground.onCollisionCheck(si: oSignal);
+begin
+    _ball.elementaryMove(self.getObjectsInZone(
+        _ball.getPosition(),
+        _ball.getMask().getWidth(),
+        _ball.getMask.getHeight()
+    ), 0);
 end;
 
 // onScoreChange(si: oSignal)
