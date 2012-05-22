@@ -43,6 +43,9 @@ end;
 // Signal triggered at every tick of our discretized time
 TickSignal = class(oSignal);
 
+FlipLeftSignal = class(oSignal);
+FlipRightSignal= class(oSignal);
+
 
 
 

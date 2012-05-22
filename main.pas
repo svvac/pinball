@@ -55,7 +55,15 @@ end;
 procedure TForm1.FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
     //playground.tick();
-    autoanim := not autoanim;
+    //autoanim := not autoanim;
+
+    d(12, 'form', 'key pressed: ' + s(key));
+
+    case key of 
+        32: autoanim := not autoanim;
+        37: playground.flipLeft();
+        39: playground.flipRight();
+    end;
 end;
 
 procedure TForm1.redraw(si: oSignal);
@@ -71,7 +79,7 @@ end;
 
 procedure TForm1.Tick(Sender: TObject);
 begin
-    if autoanim or false then playground.tick();
+    if autoanim then playground.tick();
 end;
 
 end.

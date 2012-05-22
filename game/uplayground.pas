@@ -10,7 +10,7 @@ uses
     // home-baked classes
     ugamesignals,
         // objects
-        uball, ubouncingobject, ufield, umovingobject, uobject, 
+        uball, ubouncingobject, ubumper, ufield, uflipleft, uflipright, umovingobject, uobject, 
         // utils
         objectcollection, upoint, ushape, utils, uvector,
     // custom graphics lib
@@ -53,6 +53,8 @@ type oPlayground = class
         procedure onTick(si: oSignal);
 
         procedure tick();
+        procedure flipLeft();
+        procedure flipRight();
 
         procedure init();
         procedure start();
@@ -92,6 +94,16 @@ begin
 
     // Registers RedrawSignal
     s := RedrawSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    s.free();
+
+    // Registers FlipLeftSignal
+    s := FlipLeftSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    s.free();
+
+    // Registers FlipRightSignal
+    s := FlipRightSignal.create(_dispatcher);
     _dispatcher.register(s);
     s.free();
 
@@ -139,6 +151,19 @@ begin
     // field size. This avoids hardcoding it
     _bottomright := oPoint.create(o.getMask().getWidth(),
                                   o.getMask().getHeight());
+
+
+    p.setXY(340, 319);
+    _objects.push(oBumper.create(p, _dispatcher));
+    p.setXY(126, 375);
+    _objects.push(oBumper.create(p, _dispatcher));
+    //p.setXY(127, 40);
+    //_objects.push(oBumper.create(p, _dispatcher));
+
+    p.setXY(150, 390);
+    _objects.push(oFlipLeft.create(p, _dispatcher));
+    p.setXY(220, 390);
+    _objects.push(oFlipRight.create(p, _dispatcher));
 
     p.setXY(380, 416);
     //p.setXY(235, 416);
@@ -245,11 +270,31 @@ begin
     _dispatcher.emit(s);
 end;
 
+// flipLeft()
+// Toggle left flip up
+procedure oPlayground.flipLeft();
+var s: oSignal;
+begin
+    // Well, create the signal and emit it
+    s := FlipLeftSignal.create(self);
+    _dispatcher.emit(s);
+end;
+
+// flipRight()
+// Toggle right flip up
+procedure oPlayground.flipRight();
+var s: oSignal;
+begin
+    // Well, create the signal and emit it
+    s := FlipRightSignal.create(self);
+    _dispatcher.emit(s);
+end;
+
 // start()
 // Start the game
 procedure oPlayground.start();
 begin
-    // Welll, not sure whether or this is needed after all
+    // Well, not sure whether or this is needed after all
 end;
 
 // oObjectCollection getObjectsInZone(p: oPoint; w, h: integer)
@@ -320,7 +365,7 @@ begin
             and (op.getY() + ov.getY() <= zp.getY() + zv.getY())
         )
     );
-end; 
+end;
 
 
 end.
