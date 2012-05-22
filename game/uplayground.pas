@@ -185,7 +185,7 @@ begin
     p.setXY(220, 390);
     _objects.push(oFlipRight.create(p, _dispatcher));
 
-    p.setXY(123, 466);
+    p.setXY(0, 470);
     _objects.push(oDeathPit.create(p, _dispatcher));
 
     p.setXY(371, 435);
