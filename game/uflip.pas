@@ -62,7 +62,7 @@ begin
     _maxpos := n - 1;
     _update := 0;
 
-    inherited create(position, _masks[0], _faces[0], dispatcher, 1.2);
+    inherited create(position, _masks[0], _faces[0], dispatcher, 1);
 
     _dispatcher.bind(bindto, @self.onFlipUp);
 

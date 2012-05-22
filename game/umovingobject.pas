@@ -47,6 +47,7 @@ type aMovingObject = class(aObject)
 
         function getSpeed() : oVector;
         procedure setSpeed(v: oVector);
+        procedure setPosition(p: oPoint);
 
 end;
 
@@ -186,6 +187,17 @@ begin
     old := _speed;
     _speed := oVector.clone(v);
     d(12, _id, 'Speed updated. ' + s(old) + s('->') + s(_speed));
+    old.free();
+end;
+
+// setPosition(p: oPoint)
+// changes the position of the object
+procedure aMovingObject.setPosition(p: oPoint);
+var old: oPoint;
+begin
+    old := _position;
+    _position := oPoint.clone(p);
+    d(12, _id, 'Position updated. ' + s(old) + s('->') + s(_position));
     old.free();
 end;
 

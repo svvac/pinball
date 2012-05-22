@@ -10,7 +10,8 @@ uses
     // home-baked classes
     ugamesignals,
         // objects
-        uball, ubouncingobject, ubumper, ufield, uflipleftright, umovingobject, uobject, 
+        uball, ubouncingobject, ubumper, udeathpit, ufield, uflipleftright,
+        umovingobject, uobject, 
         // utils
         objectcollection, upoint, ushape, utils, uvector,
     // custom graphics lib
@@ -51,6 +52,7 @@ type oPlayground = class
 
         procedure onScoreChange(si: oSignal);
         procedure onTick(si: oSignal);
+        procedure onDeath(si: oSignal);
 
         procedure tick();
         procedure flipLeft();
@@ -89,6 +91,12 @@ begin
 
     // registers DeathSignal
     s := DeathSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    _dispatcher.bind(s, @onDeath);
+    s.free();
+
+    // registers GameOverSignal
+    s := GameOverSignal.create(_dispatcher);
     _dispatcher.register(s);
     s.free();
 
@@ -165,6 +173,9 @@ begin
     p.setXY(220, 390);
     _objects.push(oFlipRight.create(p, _dispatcher));
 
+    p.setXY(123, 466);
+    _objects.push(oDeathPit.create(p, _dispatcher));
+
     p.setXY(380, 416);
     //p.setXY(235, 416);
     _ball := oBall.create(p, _dispatcher);
@@ -222,6 +233,18 @@ var sig: ScoreChangeSignal;
 begin
     sig := si as ScoreChangeSignal;
     _score += sig.points;
+end;
+
+// onDeath(si: oSignal)
+// callback triggered when ball dies
+procedure oPlayground.onDeath(si: oSignal);
+begin
+    _lifes -= 1;
+    _ball.setSpeed(oVector.createCartesian(0, 0));
+    _ball.setPosition(oPoint.create(376, 348));
+    if _lifes = 0 then begin
+        _dispatcher.emit(GameOverSignal.create(self));
+    end;
 end;
 
 // redraw()

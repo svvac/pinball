@@ -35,6 +35,9 @@ end;
 // Signal triggered when the ball dies
 DeathSignal = class(oSignal);
 
+// Signal triggered when the game is over
+GameOverSignal = class(oSignal);
+
 // Signal triggered when we need to redraw
 RedrawSignal = class(oSignal)
     bm: TBGRABitmap;
