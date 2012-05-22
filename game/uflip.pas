@@ -28,7 +28,8 @@ type aFlip = class(aBouncingObject)
         _update: integer;
     public
         constructor create(position: oPoint; pattern: string; n: integer;
-                           bindto: oSignal; dispatcher: oEventHandler); virtual;
+                           bindto: oSignal;
+                           dispatcher: oEventHandler); virtual;
 
         procedure nextPos();
         procedure prevPos();

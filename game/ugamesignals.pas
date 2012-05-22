@@ -49,6 +49,9 @@ TickSignal = class(oSignal);
 FlipLeftSignal = class(oSignal);
 FlipRightSignal= class(oSignal);
 
+PlungerPullSignal = class(oSignal);
+PlungerReleaseSignal = class(oSignal);
+
 
 
 

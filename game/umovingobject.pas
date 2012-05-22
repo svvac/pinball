@@ -33,7 +33,9 @@ type aMovingObject = class(aObject)
         _speeddrawer: Test_SpeedDrawer;
 
         procedure tagSafePosition();
+        procedure rollbackToSafePosition(sticky: boolean);
         procedure rollbackToSafePosition();
+        procedure do_rollbackToSafePosition();
 
     public
         constructor create(position: oPoint; mask: oShape; face: TBGRABitmap;
@@ -96,33 +98,42 @@ begin
     _succ_reverts := 0; // Resets the successive rollbacks counter
 end;
 
-// rollbackToSafePosition()
-// Rollback to the last "safe" position
-procedure aMovingObject.rollbackToSafePosition();
+procedure aMovingObject.rollbackToSafePosition(sticky: boolean);
 begin
-    // Check if we're not blocking at the same point for a while
-    if _succ_reverts <= MAX_REVERTS then begin
+    if sticky or (_succ_reverts <= MAX_REVERTS) then begin
         d(7, _id, 'Reverting to last safe position. '
                 + s(_position) + s('->') + s(_oldpos));
-        _position.free();
-        _position := oPoint.clone(_oldpos);
-        _succ_reverts += 1;
+        do_rollbackToSafePosition();
     end else begin
         d(7, _id, 'NOT reverting to last safe position : too much reverts.');
-        //_speed.factor(-1);  // TODO: This is a temporary fix
     end;
+end;
+
+procedure aMovingObject.rollbackToSafePosition();
+begin
+    rollbackToSafePosition(isSticky());
+end;
+
+// do_rollbackToSafePosition()
+// Rollback to the last "safe" position
+procedure aMovingObject.do_rollbackToSafePosition();
+begin
+    _position.free();
+    _position := oPoint.clone(_oldpos);
+    _succ_reverts += 1;
 end;
 
 // elementaryMove(zone: oObjectCollection)
 // Performs an elementary move of the object, triggering collisions and so.
-// Note that this method WON'T bother looking wether or not it should move, nor will
-// manage to discretize the path.
+// Note that this method WON'T bother looking wether or not it should move,
+// nor will manage to discretize the path. See oPlayground for that matter.
 procedure aMovingObject.elementaryMove(zone: oObjectCollection);
 var ev: oVector;
     i: integer;
     p: oPoint;
     colliding: boolean;
     t: Test_SpeedDrawer;
+    sticky: boolean;
 begin
     // We create an elementary vector based on current speed indications
     ev := oVector.createPolar(1, _speed.getArgument());
@@ -131,6 +142,8 @@ begin
 
     p := oPoint.create(0, 0);
     colliding := false;
+
+    sticky := isSticky();
 
 
     d(4, _id, 'Found ' + s(zone.count()) + ' objects to check for collision');
@@ -144,13 +157,15 @@ begin
 
             getDispatcher().emit(zone.get(i).collisionSignalFactory(self, p));
             colliding := not zone.get(i).isCollisionSafe();
+            if zone.get(i).isSticky() then sticky := true;
 
             if colliding then d(5, _id, 'Collision was safe');
         end else d(5, '', ' [PASS]');
     end;
 
     // Tag position if safe, or rollback
-    if not colliding then tagSafePosition() else rollbackToSafePosition();
+    if not colliding then tagSafePosition()
+                     else rollbackToSafePosition(sticky);
 
     // Display speed vector. We need a little more computation than usual to
     // display its origin at the center of the ball. Otherwise, it'll be

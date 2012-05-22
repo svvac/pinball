@@ -11,7 +11,7 @@ uses
     ugamesignals,
         // objects
         uball, ubouncingobject, ubumper, udeathpit, ufield, uflipleftright,
-        umovingobject, uobject, 
+        umovingobject, uobject, uplunger,
         // utils
         objectcollection, upoint, ushape, utils, uvector,
     // custom graphics lib
@@ -57,6 +57,8 @@ type oPlayground = class
         procedure tick();
         procedure flipLeft();
         procedure flipRight();
+        procedure plungPull();
+        procedure plungRelease();
 
         procedure init();
         procedure start();
@@ -112,6 +114,16 @@ begin
 
     // Registers FlipRightSignal
     s := FlipRightSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    s.free();
+
+    // Registers PlungerPullSignal
+    s := PlungerPullSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    s.free();
+
+    // Registers PlungerReleaseSignal
+    s := PlungerReleaseSignal.create(_dispatcher);
     _dispatcher.register(s);
     s.free();
 
@@ -176,12 +188,13 @@ begin
     p.setXY(123, 466);
     _objects.push(oDeathPit.create(p, _dispatcher));
 
+    p.setXY(371, 435);
+    _objects.push(oPlunger.create(p, oVector.createPolar(60, -1.720524943478),
+                                  _dispatcher));
+
     p.setXY(380, 416);
     //p.setXY(235, 416);
     _ball := oBall.create(p, _dispatcher);
-    //randomize();
-    //_ball.setSpeed(oVector.createPolar(5, random(round(8*arctan(1)))));
-    _ball.setSpeed(oVector.createPolar(60, -1.72052494347881));
     d(4, 'playground:populate', 'Added ball at ' + s(_ball.getPosition())
                               + ', with speed ' + s(_ball.getSpeed()));
 
@@ -291,6 +304,7 @@ begin
     // Well, create the signal and emit it
     s := TickSignal.create(self);
     _dispatcher.emit(s);
+    s.free();
 end;
 
 // flipLeft()
@@ -301,6 +315,7 @@ begin
     // Well, create the signal and emit it
     s := FlipLeftSignal.create(self);
     _dispatcher.emit(s);
+    s.free();
 end;
 
 // flipRight()
@@ -311,6 +326,29 @@ begin
     // Well, create the signal and emit it
     s := FlipRightSignal.create(self);
     _dispatcher.emit(s);
+    s.free();
+end;
+
+// plungPull()
+// pulls the plunger
+procedure oPlayground.plungPull();
+var s: oSignal;
+begin
+    // Well, create the signal and emit it
+    s := PlungerPullSignal.create(self);
+    _dispatcher.emit(s);
+    s.free();
+end;
+
+// plungRelease()
+// releases the plunger
+procedure oPlayground.plungRelease();
+var s: oSignal;
+begin
+    // Well, create the signal and emit it
+    s := PlungerReleaseSignal.create(self);
+    _dispatcher.emit(s);
+    s.free();
 end;
 
 // start()

@@ -26,6 +26,7 @@ type aObject = class
         _dispatcher:    oEventHandler;
         _id:            string;
         _collision_safe:boolean;
+        _sticky:        boolean;
 
         function getDispatcher() : oEventHandler;
 
@@ -50,6 +51,7 @@ type aObject = class
         function getMask() : oShape;
         function getPosition() : oPoint;
         function getFace() : TBGRABitmap;
+        function isSticky() : boolean;
 
         function getId() : string;
 end;
@@ -72,6 +74,7 @@ begin
     _score := 0;
     _dispatcher := dispatcher;
     _face := face;
+    _sticky := false;
 
     // Whether or not a collision with this object is considered "safe"
     // (i.e. doesn't influence the speed/position)
@@ -278,6 +281,13 @@ end;
 function aObject.getDispatcher() : oEventHandler;
 begin
     getDispatcher := _dispatcher;
+end;
+
+// boolean getDispatcher()
+// Tells whetehr or not one should stick on this object if sufficiently slow
+function aObject.isSticky() : boolean;
+begin
+    isSticky := _sticky;
 end;
 
 // string getId()

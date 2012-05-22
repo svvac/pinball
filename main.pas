@@ -43,7 +43,7 @@ var s: oSignal;
 begin
     verbosity(15);
     
-    autoanim := false;
+    autoanim := true;
     _flipleft := false;
     _flipright := false;
     playground := oPlayground.create();
@@ -65,7 +65,7 @@ begin
     d(12, 'form', 'key pressed: ' + s(key));
 
     case key of 
-        32: autoanim := not autoanim;
+        32: playground.plungPull();
         37: _flipleft := true;
         39: _flipright := true;
     end;
@@ -74,6 +74,7 @@ end;
 procedure TForm1.FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
 begin
     case key of 
+        32: playground.plungRelease();
         37: _flipleft := false;
         39: _flipright := false;
     end;
