@@ -10,7 +10,7 @@ uses
     // home-baked classes
     ugamesignals,
         // objects
-        uball, ubouncingobject, ubumper, ufield, uflipleft, uflipright, umovingobject, uobject, 
+        uball, ubouncingobject, ubumper, ufield, uflipleftright, umovingobject, uobject, 
         // utils
         objectcollection, upoint, ushape, utils, uvector,
     // custom graphics lib
