@@ -111,7 +111,7 @@ end;
 procedure _oVector.setModule(m : real) ;
 begin
     _radius := m - int(m / (8 * arctan(1))) * 8 * arctan(1);
-    updatePolar();
+    updateCartesian();
 end;
 
 // setArgument(x: integer)
@@ -119,7 +119,7 @@ end;
 procedure _oVector.setArgument(a : real);
 begin
     _angle := a;
-    updatePolar();
+    updateCartesian();
 end;
 
 // sum(v: oVector)

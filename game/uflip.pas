@@ -72,7 +72,7 @@ begin
     _maxpos := n - 1;
     _update := 0;
 
-    inherited create(position, _masks[0], _faces[0], dispatcher, 1.0);
+    inherited create(position, _masks[0], _faces[0], dispatcher, 1.3);
 
     _dispatcher.bind(bindto, @self.onFlipUp);
 
@@ -114,7 +114,7 @@ end;
 
 function aFlip.getBounceFactor() : real;
 begin
-    if _pos = 0 then getBounceFactor := 0.5
+    if (_pos = 0) or (_pos = _maxpos) then getBounceFactor := 1.0
     else getBounceFactor := inherited getBounceFactor();
 end;
 

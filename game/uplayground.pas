@@ -23,6 +23,7 @@ uses
 const
     // Number of balls on a game
     NB_LIFES = 3;
+    NANO_REDRAW_TICKS = 10;
 
 type oPlayground = class
     protected
@@ -235,37 +236,46 @@ end;
 // Performs a move of the ball. This procedure is in charge of discretizing
 // the path of the ball to avoid "passing through" objecs due to great speed
 procedure oPlayground.move();
-var i, n, ticks: integer;
+var i, ii, n, ticks, f: integer;
     v: oVector;
     sig: NanoTickSignal;
 begin
     // The dimensions are discrete (-> pixels), so the norm of the speed
     // vector gives the number of elementary moves to perform.
     n := round(_ball.getSpeed().getModule());
-    sig := NanoTickSignal.create(self, 0, n);
 
     ticks := max(n, _nanoticks);
+    sig := NanoTickSignal.create(self, 0, ticks);
+
+    f := floor(ticks / n);
 
 
     d(5, 'playground', 'Path discretization, v = ' + s(_ball.getSpeed())
                      + '  (' + s(n) + ' steps)');
-    for i := 1 to n do begin
-        d(6, 'playground',  'Path discretization (' + s(i) + '/' + s(n)
-                         + '). Ball at ' + s(_ball.getPosition()));
+    ii := 0;
+    for i := 1 to ticks do begin
         sig.i := i;
         _dispatcher.emit(sig);
 
+        if (i mod f) = 0 then begin
+            ii += 1;
+            d(6, 'playground',  'Path discretization (' + s(ii) + '/' + s(n)
+                             + '). Ball at ' + s(_ball.getPosition()));
 
-        // Performs the move
-        // We could basically pass the whole objectcollection to the
-        // procedure, bit this implies a lot of unnecessary computation sice
-        // we can round it down at first by knowing the objects having
-        // influence (well, matter) at the neighbourhood of the ball.
-        _ball.elementaryMove(self.getObjectsInZone(
-            _ball.getPosition(),
-            _ball.getMask().getWidth(),
-            _ball.getMask.getHeight()
-        ));
+
+            // Performs the move
+            // We could basically pass the whole objectcollection to the
+            // procedure, bit this implies a lot of unnecessary computation sice
+            // we can round it down at first by knowing the objects having
+            // influence (well, matter) at the neighbourhood of the ball.
+            _ball.elementaryMove(self.getObjectsInZone(
+                _ball.getPosition(),
+                _ball.getMask().getWidth(),
+                _ball.getMask.getHeight()
+            ));
+        end;
+
+        if (i mod NANO_REDRAW_TICKS) = 0 then redraw();
     end;
 
     sig.free();
@@ -295,7 +305,7 @@ begin
     _lifes -= 1;
     _ball.setSpeed(oVector.createCartesian(0, 0));
     //_ball.setPosition(oPoint.create(376, 348));
-    _ball.setPosition(oPoint.create(216, 123));
+    _ball.setPosition(oPoint.create(244, 123));
     if _lifes = 0 then begin
         _dispatcher.emit(GameOverSignal.create(self));
     end;

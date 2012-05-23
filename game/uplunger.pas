@@ -63,7 +63,7 @@ begin
     _plung := false;
     _pow := BREATH_LEVEL;
     _kick := oVector.clone(kick);
-    _sticky := true;
+    _sticky := false;
 
     sig := PlungerPullSignal.create(_dispatcher);
     _dispatcher.bind(sig, @self.onPull);

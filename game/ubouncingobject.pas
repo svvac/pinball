@@ -78,7 +78,7 @@ begin
     pos.apply(w);
     w.free();
 
-    //if v.getModule() > 5 or not _st then begin
+    if (v.getModule() > 3) {or not _sticky} then begin
         // Compute the angle of the normal at the collision point
         alpha := self.getMask().getNormalAngleAt(pos);
 
@@ -103,9 +103,9 @@ begin
     {end else begin
         alpha := self.getMask().getSecantAngleAt(pos);
         if isNan(alpha) then alpha := v.getArgument() + 2*arctan(1);
-        w := oVector.createPolar(v.getModule() * getBounceFactor(), alpha);
-        o.setSpeed(w);
-    end;}
+        w := oVector.createPolar(v.getModule(), alpha);
+        o.setSpeed(w);}
+    end;
 
     // Draws debug vectors
     _dispatcher.emit(_speeddrawer1.signalFactory(self,

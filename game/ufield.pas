@@ -38,6 +38,9 @@ begin
 
     inherited create(position, m, bm, dispatcher, 0.4);
 
+    _sticky := true;
+    _collision_safe := false;
+
     d(4, _id, 'Added at ' + s(self.getPosition()));
 end;
 
