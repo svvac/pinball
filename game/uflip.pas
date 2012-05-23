@@ -16,12 +16,12 @@ uses
     // custom graphics library
     BGRABitmap,
     // stdlib
-    Classes, SysUtils
+    Classes, Math, SysUtils
     ;
 
 const
     // steps
-    TICK_STEPS = 10;
+    TICK_STEPS = 23;
 
 type aFlip = class(aBouncingObject)
     protected
@@ -45,6 +45,7 @@ type aFlip = class(aBouncingObject)
         procedure onFlipUp(si: oSignal);
         procedure onFlipDown(si: oSignal);
         procedure onTick(si: oSignal);
+        procedure onNanoTick(si: oSignal);
 end;
 
 implementation
@@ -71,12 +72,16 @@ begin
     _maxpos := n - 1;
     _update := 0;
 
-    inherited create(position, _masks[0], _faces[0], dispatcher, 1.1);
+    inherited create(position, _masks[0], _faces[0], dispatcher, 1.0);
 
     _dispatcher.bind(bindto, @self.onFlipUp);
 
     sig := TickSignal.create(_dispatcher);
     _dispatcher.bind(sig, @self.onTick);
+    sig.free();
+
+    sig := NanoTickSignal.create(_dispatcher, 0, 0);
+    _dispatcher.bind(sig, @self.onNanoTick);
     sig.free();
 
     d(4, _id, 'Added at ' + s(self.getPosition()));
@@ -88,7 +93,6 @@ begin
         _pos := i;
         _mask := _masks[_pos];
         _face := _faces[_pos];
-        _dispatcher.emit(PerformCollisionCheckSignal.create(self));
     end;
 end;
 
@@ -126,8 +130,28 @@ end;
 
 procedure aFlip.onTick(si: oSignal);
 begin
-    if _update > 0      then nextPos()
-    else if _update < 0 then prevPos();
+    _dispatcher.emit(NanoTickRegisterSignal.create(self, abs(_update)));
+    if (_update > 0) and (_pos = _maxpos) then _update *= -1
+    else if (_update < 0) and (_pos = 0) then _update := 0;
+    //if _update > 0      then nextPos()
+    //else if _update < 0 then prevPos();
+end;
+
+procedure aFlip.onNanoTick(si: oSignal);
+var sig: NanoTickSignal;
+    m, n: integer;
+begin
+    sig := si as NanoTickSignal;
+    if _update <> 0 then begin
+        m := floor(sig.len / abs(_update));
+
+        d(5, _id, 'Update every ' + s(m) + ' nanoticks (' + s(sig.len) + ')');
+
+        if (m > 1) and ((sig.i mod m) = 0) then changePos(_pos + round(sig.len / _update))
+        else if m < 1 then
+            for n := 0 to round(abs(_update) / sig.len) do
+                changePos(_pos + n * (abs(_update) div _update));
+    end;
 end;
 
 

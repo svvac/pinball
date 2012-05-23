@@ -23,7 +23,7 @@ const
     // Maximum successive position rollbacks
     MAX_REVERTS = 3;
     // Maximal speed
-    MAX_SPEED = 60.0;
+    MAX_SPEED = 100.0;
 
 
 type aMovingObject = class(aObject)
@@ -146,7 +146,7 @@ begin
     // We create an elementary vector based on current speed indications
     ev := oVector.createPolar(norm, _speed.getArgument());
     // Move the object accordingly
-    _position.apply(ev);
+    //_position.apply(ev);
 
     p := oPoint.create(0, 0);
     colliding := false;
@@ -183,6 +183,11 @@ begin
     ev := getSpeed();
     ev.factor(10);
     _dispatcher.emit(_speeddrawer.signalFactory(self, ev, p));
+
+    // We create an elementary vector based on current speed indications
+    ev := oVector.createPolar(norm, _speed.getArgument());
+    // Move the object accordingly
+    _position.apply(ev);
 
 end;
 

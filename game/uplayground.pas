@@ -32,6 +32,8 @@ type oPlayground = class
         _lifes: integer;
         _dispatcher: oEventHandler;
 
+        _nanoticks: integer;
+
         _bottomright: oPoint;
 
         _objects: oObjectCollection;
@@ -53,7 +55,7 @@ type oPlayground = class
         procedure onScoreChange(si: oSignal);
         procedure onTick(si: oSignal);
         procedure onDeath(si: oSignal);
-        procedure onCollisionCheck(si: oSignal);
+        procedure onNanoRegister(si: oSignal);
 
         procedure tick();
         procedure flipLeft();
@@ -83,6 +85,8 @@ begin
     _dispatcher := oEventHandler.create();
     // We'll store all the objects in an "object collection"
     _objects := oObjectCollection.create();
+
+    _nanoticks := 0;
 
     /////////////////////////  REGISTER SIGNALS  /////////////////////////////
 
@@ -134,10 +138,15 @@ begin
     _dispatcher.bind(s, @self.onTick);
     s.free();
 
-    // Registers PerformCollisionCheckSignal
-    s := PerformCollisionCheckSignal.create(_dispatcher);
+    // Registers NanoTickSignal
+    s := NanoTickRegisterSignal.create(_dispatcher, 0);
     _dispatcher.register(s);
-    _dispatcher.bind(s, @self.onCollisionCheck);
+    _dispatcher.bind(s, @self.onNanoRegister);
+    s.free();
+
+    // Registers NanoTickSignal
+    s := NanoTickSignal.create(_dispatcher, 0, 0);
+    _dispatcher.register(s);
     s.free();
 
     // Initializes vars
@@ -201,7 +210,7 @@ begin
     _objects.push(oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, 10));}
 
     p.setXY(371, 435);
-    _objects.push(oPlunger.create(p, oVector.createPolar(60, -1.720524943478),
+    _objects.push(oPlunger.create(p, oVector.createPolar(100, -1.720524943478),
                                   _dispatcher));
 
     p.setXY(374, 416);
@@ -226,17 +235,26 @@ end;
 // Performs a move of the ball. This procedure is in charge of discretizing
 // the path of the ball to avoid "passing through" objecs due to great speed
 procedure oPlayground.move();
-var i, n: integer;
+var i, n, ticks: integer;
     v: oVector;
+    sig: NanoTickSignal;
 begin
     // The dimensions are discrete (-> pixels), so the norm of the speed
     // vector gives the number of elementary moves to perform.
     n := round(_ball.getSpeed().getModule());
+    sig := NanoTickSignal.create(self, 0, n);
+
+    ticks := max(n, _nanoticks);
+
+
     d(5, 'playground', 'Path discretization, v = ' + s(_ball.getSpeed())
                      + '  (' + s(n) + ' steps)');
     for i := 1 to n do begin
         d(6, 'playground',  'Path discretization (' + s(i) + '/' + s(n)
                          + '). Ball at ' + s(_ball.getPosition()));
+        sig.i := i;
+        _dispatcher.emit(sig);
+
 
         // Performs the move
         // We could basically pass the whole objectcollection to the
@@ -249,15 +267,16 @@ begin
             _ball.getMask.getHeight()
         ));
     end;
+
+    sig.free();
 end;
 
-procedure oPlayground.onCollisionCheck(si: oSignal);
+procedure oPlayground.onNanoRegister(si: oSignal);
+var sig: NanoTickRegisterSignal;
 begin
-    _ball.elementaryMove(self.getObjectsInZone(
-        _ball.getPosition(),
-        _ball.getMask().getWidth(),
-        _ball.getMask.getHeight()
-    ), 0);
+    sig := si as NanoTickRegisterSignal;
+
+    if sig.n > _nanoticks then _nanoticks := sig.n;
 end;
 
 // onScoreChange(si: oSignal)
@@ -275,7 +294,8 @@ procedure oPlayground.onDeath(si: oSignal);
 begin
     _lifes -= 1;
     _ball.setSpeed(oVector.createCartesian(0, 0));
-    _ball.setPosition(oPoint.create(376, 348));
+    //_ball.setPosition(oPoint.create(376, 348));
+    _ball.setPosition(oPoint.create(216, 123));
     if _lifes = 0 then begin
         _dispatcher.emit(GameOverSignal.create(self));
     end;
@@ -326,6 +346,8 @@ begin
     s := TickSignal.create(self);
     _dispatcher.emit(s);
     s.free();
+
+    _nanoticks := 0;
 end;
 
 // flipLeft()

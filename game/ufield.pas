@@ -36,7 +36,7 @@ begin
     m := oShape.create('bitmaps/field.bmp');
     bm := TBGRABitmap.create('bitmaps/field.png');
 
-    inherited create(position, m, bm, dispatcher, 0.8);
+    inherited create(position, m, bm, dispatcher, 0.4);
 
     d(4, _id, 'Added at ' + s(self.getPosition()));
 end;

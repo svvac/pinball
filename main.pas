@@ -68,6 +68,7 @@ begin
         32: playground.plungPull();
         37: _flipleft := true;
         39: _flipright := true;
+        27: playground.getDispatcher().emit(DeathSignal.create(self));
     end;
 end;
 

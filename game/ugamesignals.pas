@@ -8,7 +8,7 @@ uses
     // ontheair
     signal, uniquesignal,
     // home-baked units
-    upoint,
+    upoint, utils,
     // cutsom graphics library
     BGRABitmap,
     // stdlib
@@ -46,13 +46,26 @@ end;
 // Signal triggered at every tick of our discretized time
 TickSignal = class(oSignal);
 
+NanoTickSignal = class(oSignal)
+    public
+        len: integer;
+        i: integer;
+        constructor create(sender: tObject; a, b: integer);
+        function toString() : string;
+end;
+
+NanoTickRegisterSignal = class(oSignal)
+    public
+        n: integer;
+        constructor create(sender: tObject; a: integer);
+        function toString() : string;
+end;
+
 FlipLeftSignal = class(oSignal);
 FlipRightSignal= class(oSignal);
 
 PlungerPullSignal = class(oSignal);
 PlungerReleaseSignal = class(oSignal);
-
-PerformCollisionCheckSignal = class(oSignal);
 
 
 
@@ -64,6 +77,30 @@ PerformCollisionCheckSignal = class(oSignal);
 
 
 implementation
+
+constructor NanoTickSignal.create(sender: tObject; a, b: integer);
+begin
+    i := a;
+    len := b;
+    inherited create(sender);
+end;
+
+function NanoTickSignal.toString() : string;
+begin
+    toString := inherited toString() + ' ' + s(i) + '/' + s(len);
+end;
+
+
+constructor NanoTickRegisterSignal.create(sender: tObject; a: integer);
+begin
+    n := a;
+    inherited create(sender);
+end;
+
+function NanoTickRegisterSignal.toString() : string;
+begin
+    toString := inherited toString() + ' ' + s(n) + ' nanoticks registered';
+end;
 
 constructor CollisionSignal.create(sender: TObject; id: string; p: oPoint);
 begin
