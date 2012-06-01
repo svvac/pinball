@@ -72,7 +72,7 @@ begin
     _maxpos := n - 1;
     _update := 0;
 
-    inherited create(position, _masks[0], _faces[0], dispatcher, 1.3);
+    inherited create(position, _masks[0], _faces[0], dispatcher, 5);
 
     _dispatcher.bind(bindto, @self.onFlipUp);
 
@@ -87,8 +87,11 @@ begin
     d(4, _id, 'Added at ' + s(self.getPosition()));
 end;
 
+// changePos(i: integer)
+// Update current flip position to the `i'th
 procedure aFlip.changePos(i: integer);
 begin
+    // check if such a pos exists
     if (i >= 0) and (i <= _maxpos) then begin
         _pos := i;
         _mask := _masks[_pos];
@@ -96,6 +99,8 @@ begin
     end;
 end;
 
+// nextPos()
+// go to the next position
 procedure aFlip.nextPos();
 var i: integer;
 begin
@@ -104,6 +109,8 @@ begin
     else _update *= -1;
 end;
 
+// prevPos()
+// go to the previous position
 procedure aFlip.prevPos();
     var i: integer;
 begin
@@ -112,31 +119,41 @@ begin
     else _update := 0;
 end;
 
+// float prevPos()
+// returns the bounce factor
 function aFlip.getBounceFactor() : real;
 begin
-    if (_pos = 0) or (_pos = _maxpos) then getBounceFactor := 1.0
+    // Well, according to the position, ymmv
+    if (_pos = 0) or (_pos = _maxpos) then getBounceFactor := 2.0
     else getBounceFactor := inherited getBounceFactor();
 end;
 
+// onFlipUp(si: oSignal)
+// triggered when the flip's up
 procedure aFlip.onFlipUp(si: oSignal);
 begin
     _update := +TICK_STEPS;
 end;
 
+// onFlipDown(si: oSignal)
+// triggered when the flip's down
 procedure aFlip.onFlipDown(si: oSignal);
 begin
     _update := -TICK_STEPS;
 end;
 
+// onTick(si: oSignal)
+// triggered on each tick
 procedure aFlip.onTick(si: oSignal);
 begin
     _dispatcher.emit(NanoTickRegisterSignal.create(self, abs(_update)));
-    if (_update > 0) and (_pos = _maxpos) then _update *= -1
-    else if (_update < 0) and (_pos = 0) then _update := 0;
-    //if _update > 0      then nextPos()
-    //else if _update < 0 then prevPos();
+
+    if      (_update > 0) and (_pos = _maxpos) then _update *= -1
+    else if (_update < 0) and (_pos = 0)       then _update := 0;
 end;
 
+// onNanoTick(si: oSignal)
+// triggered on each nanotick
 procedure aFlip.onNanoTick(si: oSignal);
 var sig: NanoTickSignal;
     m, n: integer;

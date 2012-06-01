@@ -11,7 +11,7 @@ uses
     ugamesignals,
         // objects
         uball, ubouncingobject, ubumper, udeathpit, ufield, uflipleftright,
-        umovingobject, uobject, uplunger,
+        ukicker, umovingobject, uobject, uplunger,
         // utils
         objectcollection, upoint, ushape, utils, uvector,
     // custom graphics lib
@@ -22,8 +22,8 @@ uses
 
 const
     // Number of balls on a game
-    NB_LIFES = 3;
-    NANO_REDRAW_TICKS = 10;
+    NB_LIFES = 300;
+    NANO_REDRAW_TICKS = 20;
 
 type oPlayground = class
     protected
@@ -105,6 +105,11 @@ begin
 
     // registers GameOverSignal
     s := GameOverSignal.create(_dispatcher);
+    _dispatcher.register(s);
+    s.free();
+
+    // registers GameStartSignal
+    s := GameStartSignal.create(_dispatcher);
     _dispatcher.register(s);
     s.free();
 
@@ -190,12 +195,22 @@ begin
                                   o.getMask().getHeight());
 
 
-    p.setXY(340, 319);
+    p.setXY(100, 100);
     _objects.push(oBumper.create(p, _dispatcher));
-    p.setXY(126, 375);
+    p.setXY(278, 127);
     _objects.push(oBumper.create(p, _dispatcher));
-    //p.setXY(127, 40);
-    //_objects.push(oBumper.create(p, _dispatcher));
+    p.setXY(127, 40);
+    _objects.push(oBumper.create(p, _dispatcher));
+    p.setXY(354, 426);
+    _objects.push(oBumper.create(p, _dispatcher));
+    p.setXY(134, 129);
+    _objects.push(oBumper.create(p, _dispatcher));
+
+
+    p.setXY(122, 328);
+    _objects.push(oKickerLeft.create(p, _dispatcher));
+    p.setXY(260, 328);
+    _objects.push(oKickerRight.create(p, _dispatcher));
 
     p.setXY(150, 400);
     _objects.push(oFlipLeft.create(p, _dispatcher));
@@ -211,7 +226,7 @@ begin
     _objects.push(oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, 10));}
 
     p.setXY(371, 435);
-    _objects.push(oPlunger.create(p, oVector.createPolar(100, -1.720524943478),
+    _objects.push(oPlunger.create(p, oVector.createPolar(15, 2.967059),
                                   _dispatcher));
 
     p.setXY(374, 416);
@@ -227,9 +242,13 @@ end;
 // init()
 // (re-?)Initializes game values
 procedure oPlayground.init();
+var sig: oSignal;
 begin
     _score := 0;
     _lifes := NB_LIFES;
+    sig := GameStartSignal.create(self);
+    _dispatcher.emit(sig);
+    sig.free();
 end;
 
 // move()
@@ -302,12 +321,15 @@ end;
 // callback triggered when ball dies
 procedure oPlayground.onDeath(si: oSignal);
 begin
-    _lifes -= 1;
-    _ball.setSpeed(oVector.createCartesian(0, 0));
-    //_ball.setPosition(oPoint.create(376, 348));
-    _ball.setPosition(oPoint.create(244, 123));
-    if _lifes = 0 then begin
-        _dispatcher.emit(GameOverSignal.create(self));
+    if _lifes > 0 then begin
+        _lifes -= 1;
+        _ball.setSpeed(oVector.createCartesian(0, 0));
+
+        _ball.setPosition(oPoint.create(376, 348));
+        //_ball.setPosition(oPoint.create(244, 123));
+        if _lifes = 0 then begin
+            _dispatcher.emit(GameOverSignal.create(self));
+        end;
     end;
 end;
 

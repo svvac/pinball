@@ -23,9 +23,9 @@ const
     // Maximum successive position rollbacks
     MAX_REVERTS = 3;
     // Maximal speed
-    MAX_SPEED = 200.0;
+    MAX_SPEED = 30.0;
     // History size
-    HISTORY_SIZE = 20;
+    HISTORY_SIZE = 10;
 
 
 type aMovingObject = class(aObject)
@@ -104,7 +104,7 @@ procedure aMovingObject.tagSafePosition();
 var i: integer;
 begin
     _oldpos[HISTORY_SIZE - 1].free();
-    for i := 1 to HISTORY_SIZE - 1 do _oldpos[i] := _oldpos[i - 1];
+    for i := 1 to max(1, HISTORY_SIZE - 1) do _oldpos[i] := _oldpos[i - 1];
     
     _oldpos[0] := oPoint.clone(_position);
     d(7, _id, 'Position ' + s(_oldpos[0]) + ' tagged safe');
@@ -115,7 +115,7 @@ end;
 procedure aMovingObject.rollbackToSafePosition(sticky: boolean);
 begin
     if _succ_reverts <= MAX_REVERTS then begin
-        d(7, _id, 'Reverting to last safe position. '
+        d(7, _id, 'Reverting to last (' + s(_revpow) + ') safe position. '
                 + s(_position) + s('->') + s(_oldpos[_revpow]));
         do_rollbackToSafePosition();
     end else begin

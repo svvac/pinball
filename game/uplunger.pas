@@ -34,6 +34,7 @@ type oPlunger = class(aBouncingObject)
         _pow: real;
         _plung: boolean;
         _wait: integer;
+        _working: boolean;
     public
         constructor create(position: oPoint; kick: oVector;
                            dispatcher: oEventHandler); virtual;
@@ -42,6 +43,8 @@ type oPlunger = class(aBouncingObject)
         procedure onRelease(si: oSignal);
         procedure onTick(si: oSignal);
         procedure onCollision(si: oSignal); override;
+        procedure onGameOver(si: oSignal);
+        procedure onGameStart(si: oSignal);
 end;
 
 implementation
@@ -64,6 +67,7 @@ begin
     _pow := BREATH_LEVEL;
     _kick := oVector.clone(kick);
     _sticky := false;
+    _working := true;
 
     sig := PlungerPullSignal.create(_dispatcher);
     _dispatcher.bind(sig, @self.onPull);
@@ -77,6 +81,14 @@ begin
     _dispatcher.bind(sig, @self.onTick);
     sig.free();
 
+    sig := GameOverSignal.create(_dispatcher);
+    _dispatcher.bind(sig, @self.onGameOver);
+    sig.free();
+
+    sig := GameOverSignal.create(_dispatcher);
+    _dispatcher.bind(sig, @self.onGameStart);
+    sig.free();
+
     d(4, _id, 'Added at ' + s(self.getPosition()));
 end;
 
@@ -84,6 +96,9 @@ procedure oPlunger.onPull(si: oSignal);
 begin
     if (_wait = 0) and not _plung then begin
         _pow *= LOAD_FACTOR;
+
+        d(5, _id, 'Plunger pulled at '
+                + s(int(_pow * 100 / PLUNG_THRESHOLD)) + '%');
 
         if (_pow >= PLUNG_THRESHOLD) then begin
             _pow := PLUNG_THRESHOLD;
@@ -95,7 +110,10 @@ end;
 
 procedure oPlunger.onRelease(si: oSignal);
 begin
-    if _wait = 0 then _plung := true;
+    if _wait = 0 then begin
+        _plung := true;
+        d(5, _id, 'Releasing');
+    end;
 end;
 
 procedure oPlunger.onTick(si: oSignal);
@@ -113,16 +131,30 @@ begin
     o := sig.getSender() as aMovingObject;
     inherited onCollision(sig);
 
-    if _plung then begin
+    if _plung and _working then begin
         v := oVector.clone(_kick);
         v.factor(_pow);
+
+        d(5, _id, 'Kicking with ' + s(v));
+
         o.setSpeed(v);
+        o.setPosition(oPoint.create(256, 39));
         v.free();
 
         _plung := false;
         _wait := REST_STEPS;
         _pow := BREATH_LEVEL;
     end;
+end;
+
+procedure oPlunger.onGameOver(si: oSignal);
+begin
+    _working := false;
+end;
+
+procedure oPlunger.onGameStart(si: oSignal);
+begin
+    _working := true;
 end;
 
 

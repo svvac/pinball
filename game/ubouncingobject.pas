@@ -19,6 +19,10 @@ uses
     Classes, Math, SysUtils
     ;
 
+const
+    // Points basis
+    MEXICAN_GOLD = 200;
+
 
 type aBouncingObject = class(aObject)
     protected
@@ -78,34 +82,42 @@ begin
     pos.apply(w);
     w.free();
 
-    if (v.getModule() > 3) {or not _sticky} then begin
-        // Compute the angle of the normal at the collision point
-        alpha := self.getMask().getNormalAngleAt(pos);
-
-        // Sometimes, the angle returned by the fuction is Nan (aka oo), so we
-        // need to handle this case
-        if isNan(alpha) then alpha := v.getArgument() + 4*arctan(1); // Dirty hack
-
-        // Compute the new angle of the speed vector.
-        //   outgoing = 2 normal - incoming - pi
-        // Basically, this comes from a change of reference. Can't really draw the
-        // details here.
-        w := oVector.createPolar(v.getModule() * getBounceFactor(),
-                                 2 * alpha - v.getArgument() - 4 * arctan(1));
-        // Updates speed
-        o.setSpeed(w);
-
-        d(4, _id, 'Handling bouncing at ' + s(sig.position) + ': ' + s('alpha')
-                + '=' + s(alpha) + '; speed: ' + s(v) + s('->') + s(w));
-
-        v.free();
-        w.free();
-    {end else begin
-        alpha := self.getMask().getSecantAngleAt(pos);
-        if isNan(alpha) then alpha := v.getArgument() + 2*arctan(1);
-        w := oVector.createPolar(v.getModule(), alpha);
-        o.setSpeed(w);}
+    //if (v.getModule() > 3) {or not _sticky} then begin
+    if getBounceFactor() > 1 then begin
+        // Give some points 
+        si := ScoreChangeSignal.create(
+            self, round(MEXICAN_GOLD * getBounceFactor()));
+        _dispatcher.emit(si);
+        si.free();
     end;
+
+    // Compute the angle of the normal at the collision point
+    alpha := self.getMask().getNormalAngleAt(pos);
+
+    // Sometimes, the angle returned by the fuction is Nan (aka oo), so we
+    // need to handle this case
+    if isNan(alpha) then alpha := v.getArgument() + 4*arctan(1); // Dirty hack
+
+    // Compute the new angle of the speed vector.
+    //   outgoing = 2 normal - incoming - pi
+    // Basically, this comes from a change of reference. Can't really draw the
+    // details here.
+    w := oVector.createPolar(v.getModule() * getBounceFactor(),
+                             2 * alpha - v.getArgument() - 4 * arctan(1));
+    // Updates speed
+    o.setSpeed(w);
+
+    d(4, _id, 'Handling bouncing at ' + s(sig.position) + ': ' + s('alpha')
+            + '=' + s(alpha) + '; speed: ' + s(v) + s('->') + s(w));
+
+    v.free();
+    w.free();
+{end else begin
+    alpha := self.getMask().getSecantAngleAt(pos);
+    if isNan(alpha) then alpha := v.getArgument() + 2*arctan(1);
+    w := oVector.createPolar(v.getModule(), alpha);
+    o.setSpeed(w);}
+    //end else begin
 
     // Draws debug vectors
     _dispatcher.emit(_speeddrawer1.signalFactory(self,

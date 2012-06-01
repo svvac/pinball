@@ -22,6 +22,7 @@ type
 
     procedure redraw(si: oSignal);
     procedure Tick(Sender: TObject);
+    procedure controls(si: oSignal);
     
     private
         { private declarations }
@@ -41,7 +42,7 @@ implementation
 procedure TForm1.FormCreate(Sender: TObject);
 var s: oSignal;
 begin
-    verbosity(15);
+    verbosity(0);
     
     autoanim := true;
     _flipleft := false;
@@ -50,6 +51,10 @@ begin
 
     s := RedrawSignal.create(self);
     playground.getDispatcher().bind(s, @self.redraw);
+    s.free();
+
+    s := NanoTickSignal.create(self, 0, 0);
+    playground.getDispatcher().bind(s, @self.controls);
     s.free();
 
     playground.redraw();
@@ -69,6 +74,7 @@ begin
         37: _flipleft := true;
         39: _flipright := true;
         27: playground.getDispatcher().emit(DeathSignal.create(self));
+        56: playground.init();
     end;
 end;
 
@@ -94,10 +100,13 @@ end;
 
 procedure TForm1.Tick(Sender: TObject);
 begin
+    if autoanim then playground.tick();
+end;
+
+procedure TForm1.controls(si: oSignal);
+begin
     if _flipleft then playground.flipLeft();
     if _flipright then playground.flipRight();
-
-    if autoanim then playground.tick();
 end;
 
 end.

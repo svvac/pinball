@@ -21,6 +21,8 @@ function s(i: integer) : string;
 function s(i: iPrintable) : string;
 function s(i: string) : string;
 
+function smartround(v: real; t: real) : integer;
+
 implementation
 
 var __debug_verbose: integer = 0;
@@ -128,6 +130,12 @@ begin
         '=>':                   s := '⇒';
         '<=':                   s := '⇐';
     end;
+end;
+
+function smartround(v: real; t: real) : integer;
+begin
+    smartround := round(v);
+    if abs(abs(smartround) - abs(v)) > abs(t) then smartround += 1;
 end;
 
 end.

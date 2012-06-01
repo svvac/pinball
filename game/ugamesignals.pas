@@ -37,6 +37,7 @@ DeathSignal = class(oSignal);
 
 // Signal triggered when the game is over
 GameOverSignal = class(oSignal);
+GameStartSignal = class(oSignal);
 
 // Signal triggered when we need to redraw
 RedrawSignal = class(oSignal)

@@ -11,6 +11,9 @@ uses
     Classes, Math, SysUtils
     ;
 
+const
+    ROUND_THRESHOLD = 0.2;
+
 type
 // Core implementation (not public)
 _oVector=class
@@ -170,14 +173,14 @@ end;
 // returns X cartesian coordinate
 function _oVector.GetX() : integer;
 begin
-    getX := round(_x);
+    getX := smartround(_x, ROUND_THRESHOLD);
 end;
 
 // integer getY()
 // returns Y cartesian coordinate
 function _oVector.getY() : integer ;
 begin
-    getY := round(_y);
+    getY := smartround(_y, ROUND_THRESHOLD);
 end;
 
 // integer getRX()
