@@ -26,7 +26,9 @@ const
     LOAD_FACTOR = 1.8;
     BREATH_LEVEL = 0.1; // 4 steps
     // Number of ticks to wait before being able to pull again
-    REST_STEPS = 10;
+    REST_STEPS = 100;
+    // Numbers of ticks to store the kick
+    MAX_SLEEP = 10000;
 
 type oPlunger = class(aBouncingObject)
     protected
@@ -35,6 +37,7 @@ type oPlunger = class(aBouncingObject)
         _plung: boolean;
         _wait: integer;
         _working: boolean;
+        _sleep: integer;
     public
         constructor create(position: oPoint; kick: oVector;
                            dispatcher: oEventHandler); virtual;
@@ -63,6 +66,7 @@ begin
     inherited create(position, m, bm, dispatcher, 0.1);
 
     _wait := 0;
+    _sleep := 0;
     _plung := false;
     _pow := BREATH_LEVEL;
     _kick := oVector.clone(kick);
@@ -119,7 +123,13 @@ end;
 procedure oPlunger.onTick(si: oSignal);
 begin
     if _wait > 0 then _wait -= 1;
+    if _plung then _sleep += 1;
 
+    if _sleep > MAX_SLEEP then begin
+        _plung := false;
+        _pow := BREATH_LEVEL;
+        _sleep := 0;
+    end;
 end;
 
 procedure oPlunger.onCollision(si: oSignal);
@@ -142,6 +152,7 @@ begin
         v.free();
 
         _plung := false;
+        _sleep := 0;
         _wait := REST_STEPS;
         _pow := BREATH_LEVEL;
     end;

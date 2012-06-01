@@ -23,7 +23,7 @@ const
     // Maximum successive position rollbacks
     MAX_REVERTS = 3;
     // Maximal speed
-    MAX_SPEED = 30.0;
+    MAX_SPEED = 100.0;
     // History size
     HISTORY_SIZE = 10;
 

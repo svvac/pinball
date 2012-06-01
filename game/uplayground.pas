@@ -226,6 +226,7 @@ begin
     _objects.push(oGuide.create(p, 'bitmaps/kick-guide', _dispatcher, 10));}
 
     p.setXY(371, 435);
+    //_objects.push(oPlunger.create(p, oVector.createPolar(60, -1.720524943478),
     _objects.push(oPlunger.create(p, oVector.createPolar(15, 2.967059),
                                   _dispatcher));
 
@@ -294,7 +295,7 @@ begin
             ));
         end;
 
-        if (i mod NANO_REDRAW_TICKS) = 0 then redraw();
+        //if (i mod NANO_REDRAW_TICKS) = 0 then redraw();
     end;
 
     sig.free();
